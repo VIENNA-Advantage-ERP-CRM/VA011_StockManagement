@@ -1779,6 +1779,8 @@
     <Content Include="DLL\Npgsql.dll" />
     <Content Include="DLL\PdfSharp.dll" />
     <Content Include="DLL\SecureEngineUtility.dll" />
+    <Content Include="DLL\VAICNT.dll" />
+    <Content Include="DLL\VAICNTSvc.dll" />
     <Content Include="DLL\ViennaBase.dll" />
     <Content Include="DLL\VIS.dll" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />

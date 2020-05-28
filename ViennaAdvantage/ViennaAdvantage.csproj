@@ -118,6 +118,12 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="VAICNT">
+      <HintPath>..\ViennaAdvantageWeb\DLL\VAICNT.dll</HintPath>
+    </Reference>
+    <Reference Include="VAICNTSvc">
+      <HintPath>..\ViennaAdvantageWeb\DLL\VAICNTSvc.dll</HintPath>
+    </Reference>
     <Reference Include="VIS, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\ViennaAdvantageWeb\DLL\VIS.dll</HintPath>
