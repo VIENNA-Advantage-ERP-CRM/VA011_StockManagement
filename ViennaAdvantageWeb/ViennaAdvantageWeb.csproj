@@ -56,7 +56,7 @@
       <HintPath>..\..\..\..\HTML5 Shared Files\Dlls\CrystalDecisions.Shared.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.Web.v14.2">
-      <HintPath>E:\Dll\Web\DevExpress.Web.v14.2.dll</HintPath>
+      <HintPath>DLL\DevExpress.Web.v14.2.dll</HintPath>
     </Reference>
     <Reference Include="DotNetOpenAuth">
       <HintPath>E:\Dll\Web\DotNetOpenAuth.dll</HintPath>
@@ -110,15 +110,7 @@
       <HintPath>..\..\..\..\HTML5 Shared Files\Module Files\Market\htmlbin\Ionic.Zip.dll</HintPath>
     </Reference>
     <Reference Include="itextsharp">
-      <HintPath>E:\Dll\Web\itextsharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Market, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\HTML5 Shared Files\Module Files\Market\htmlbin\Market.dll</HintPath>
-    </Reference>
-    <Reference Include="MarketSvc, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\HTML5 Shared Files\Module Files\Market\htmlbin\MarketSvc.dll</HintPath>
+      <HintPath>DLL\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -134,7 +126,7 @@
       <HintPath>DLL\Mono.Security.dll</HintPath>
     </Reference>
     <Reference Include="MySql.Data">
-      <HintPath>E:\Dll\Web\MySql.Data.dll</HintPath>
+      <HintPath>DLL\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -144,7 +136,7 @@
       <HintPath>DLL\Npgsql.dll</HintPath>
     </Reference>
     <Reference Include="NPOI">
-      <HintPath>E:\Dll\Web\NPOI.dll</HintPath>
+      <HintPath>DLL\NPOI.dll</HintPath>
     </Reference>
     <Reference Include="Oracle.ManagedDataAccess, Version=4.122.19.1, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
       <HintPath>..\packages\Oracle.ManagedDataAccess.19.7.0\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>
