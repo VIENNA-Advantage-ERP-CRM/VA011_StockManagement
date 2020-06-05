@@ -898,3 +898,7 @@ margin-top: -55px;*/
 .VA011-Left-Bar .vis-apanel-lb-toggle {
     margin-bottom: 10px;
 }
+.vis-input-wrap .VA011-searchDiv select:focus ~ label,
+.vis-input-wrap .VA011-searchDiv input:focus ~ label {
+    top: -7px;
+}
