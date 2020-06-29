@@ -37,16 +37,16 @@
         var $searchProdBtn = null;
         var $btnCreateProd = null;
         var $divReplenish = $('<div style="display:none; " class="vis-forms-container"></div>'); //layout
-        var $divReplenishRuleAll = $('<div class="112233" style="display:block; height:86%"></div>'); //layout
+        var $divReplenishRuleAll = $('<div class="112233" style="display:block; height:100%"></div>'); //layout
         var $divRepRuleAllTop = $('<div  style="width:auto; margin-bottom:10px;"></div>');
-        var $divRepAllPop = $('<div class="11223344" style="overflow-y:auto;margin-right:-2px;margin-bottom:15px; height:100%"></div>');
+        var $divRepAllPop = $('<div class="11223344" style="overflow-y:auto; height:calc(100% - 40px)"></div>');
         var $cmbRepAllWarehouse = $('<select class="vis-statusbar-combo" style="width:200px;"></select>');
         var chldDlgRepAll = null;
         var $divImgAdd = null;
         var $divImgSaveAll = null;
         var repProducts = [];
 
-        var $div = $('<div style="overflow-y:auto;margin-right:-2px;"></div>');
+        var $div = $('<div style="overflow-y:auto; padding-top: 5px;"></div>');
         var ch = null;
         var $divUom = null;
         var $divUomGroup = null;
@@ -524,16 +524,16 @@
 
         function createPanels() {
 
-            $td0leftbar = $("<td class='VA011-Left-Bar'>");
+            $td0leftbar = $("<td class='VA011-Left-Bar vis-leftsidebarouterwrap'>");
             $lb = $("<div class='vis-apanel-lb' style='overflow:auto'>");
 
             $btnlbToggle = $("<div class='vis-apanel-lb-toggle' ><i class='vis-apanel-lb-img fa fa-bars'></i></div>");
             $ulLefttoolbar = $("<ul>");
-            $divlbMain = $('<div class="vis-apanel-lb-main VA011-div-left-main">');
+            $divlbMain = $('<div class="vis-apanel-lb-main VA011-div-left-main vis-leftsidebarouterwrap">');
 
-            $divsearchouter = $('<div class="input-group vis-input-wrap"></div>');
-            $divSearch = $('<div class="VA011-searchDiv vis-control-wrap"></div>');
-            $inputSearchProd = $('<input placeholder="' + VIS.Msg.getMsg("Search") + '"><label>' + VIS.Msg.getMsg("Search") + '</label>');
+            $divsearchouter = $('<div class="VA011-searchDiv input-group vis-input-wrap"></div>');
+            $divSearch = $('<div class="vis-control-wrap"></div>');
+            $inputSearchProd = $('<input placeholder="' + VIS.Msg.getMsg("Search") + '"  data-hasbtn=" "><label>' + VIS.Msg.getMsg("Search") + '</label>');
             $inputSearchBtnProd = $('<div class="input-group-append"><button class=" vis-group-pointer vis-group-search-icon input-group-text" title=' + VIS.Msg.getMsg("VA011_Search") + '><i class="vis vis-search"></i></button></div>');
             $divSearch.append($inputSearchProd);
             $divsearchouter.append($divSearch).append($inputSearchBtnProd);
@@ -541,7 +541,13 @@
 
             // Append Org TextBox
             $divCheckBoxOrg = $('<div class="VA011-checkboxlist">');
-            $divOrg = $('<div class="input-group vis-input-wrap"><div class="VA011-searchDiv vis-control-wrap"><input class="VA011-inputLeftSearch" placeholder="' + VIS.Msg.getMsg("Organization") + '" ><label>' + VIS.Msg.getMsg("Organization") + '</label><i class="VA011-imgCombo fa fa-caret-down"></i></div>');
+            var $divOrgOuter = $('<div class="VA011-searchDiv">');
+            var $divOrgInn = $('<div class="input-group vis-input-wrap">');
+            var $divOrgInnCtrl = $('<div class="vis-control-wrap">');
+            $divOrg = $('<input class="VA011-inputLeftSearch" placeholder="' + VIS.Msg.getMsg("Organization") + '"  ><i class="VA011-imgCombo fa fa-caret-down"></i>');
+            $divOrgOuter.append($divOrgInn);
+            $divOrgInn.append($divOrgInnCtrl);
+            $divOrgInnCtrl.append($divOrg);
             $divOrg.autocomplete({
                 minLength: 0,
                 source: function (request, response) {
@@ -572,13 +578,20 @@
                     bindProductGrid(false);
                 }
             });
-            $divlbMain.append($divOrg);
-            $divlbMain.append($divCheckBoxOrg);
+            $divlbMain.append($divOrgOuter);
+            $divOrgOuter.append($divCheckBoxOrg);
             // Append Org TextBox
 
             // Append Warehosue TextBox
             $divCheckBoxWarehouse = $('<div class="VA011-checkboxlist">');
-            $divWarehouse = $('<div class="input-group vis-input-wrap"><div class="VA011-searchDiv vis-control-wrap"><input class="VA011-inputLeftSearch" placeholder="' + VIS.Msg.getMsg("Warehouse") + '" ><label>' + VIS.Msg.getMsg("Warehouse") + '</label><i class="VA011-imgCombo fa fa-caret-down"></i></div></div>');
+            var $divWarehouseOuter = $('<div class="VA011-searchDiv">');
+            var $divWarehouseInn = $('<div class="input-group vis-input-wrap">');
+            var $divWarehouseInnCtrl = $('<div class="vis-control-wrap">');
+            $divWarehouse = $('<input class="VA011-inputLeftSearch" placeholder="' + VIS.Msg.getMsg("Warehouse") + '"  ><i class="VA011-imgCombo fa fa-caret-down"></i>');
+            $divWarehouseOuter.append($divWarehouseInn);
+            $divWarehouseInn.append($divWarehouseInnCtrl);
+            $divWarehouseInnCtrl.append($divWarehouse);
+
             $divWarehouse.autocomplete({
                 minLength: 0,
                 source: function (request, response) {
@@ -607,13 +620,20 @@
                     bindProductGrid(false);
                 }
             });
-            $divlbMain.append($divWarehouse);
-            $divlbMain.append($divCheckBoxWarehouse);
+            $divlbMain.append($divWarehouseOuter);
+            $divWarehouseOuter.append($divCheckBoxWarehouse);
             // Append Warehosue TextBox
 
             // Append PriceListVersion TextBox
             $divCheckBoxPLV = $('<div class="VA011-checkboxlist">');
-            $divPLV = $('<div class="input-group vis-input-wrap"><div class="VA011-searchDiv vis-control-wrap"><input class="VA011-inputLeftSearch" placeholder="' + VIS.Msg.getMsg("PriceListVersion") + '" ><label>' + VIS.Msg.getMsg("PriceListVersion") + '</label><i class="VA011-imgCombo fa fa-caret-down" ></i></div></div>');
+            var $divPLVOuter = $('<div class="VA011-searchDiv">');
+            var $divPLVInn = $('<div class="input-group vis-input-wrap">');
+            var $divPLVInnCtrl = $('<div class="vis-control-wrap">');
+            $divPLV = $('<input class="VA011-inputLeftSearch" placeholder="' + VIS.Msg.getMsg("PriceListVersion") + '" ><i class="VA011-imgCombo fa fa-caret-down" ></i>');
+            $divPLVOuter.append($divPLVInn);
+            $divPLVInn.append($divPLVInnCtrl);
+            $divPLVInnCtrl.append($divPLV);
+
             $divPLV.autocomplete({
                 minLength: 0,
                 source: function (request, response) {
@@ -642,13 +662,20 @@
                     bindProductGrid(false);
                 }
             });
-            $divlbMain.append($divPLV);
-            $divlbMain.append($divCheckBoxPLV);
+            $divlbMain.append($divPLVOuter);
+            $divPLVOuter.append($divCheckBoxPLV);
             // Append PriceListVersion TextBox
 
             // Append Supplier TextBox
             $divCheckBoxSupplier = $('<div class="VA011-checkboxlist">');
-            $divSupplier = $('<div class="input-group vis-input-wrap"><div class="VA011-searchDiv vis-control-wrap"><input class="VA011-inputLeftSearch" placeholder="' + VIS.Msg.getMsg("VA011_Supplier") + '" ><label>' + VIS.Msg.getMsg("VA011_Supplier") + '</label><i class="VA011-imgCombo fa fa-caret-down"></i></div></div>');
+            var $divSupplierOuter = $('<div class="VA011-searchDiv">');
+            var $divSupplierInn = $('<div class="input-group vis-input-wrap">');
+            var $divSupplierInnCtrl = $('<div class="vis-control-wrap">');
+            $divSupplier = $('<input class="VA011-inputLeftSearch" placeholder="' + VIS.Msg.getMsg("VA011_Supplier") + '"  ><i class="VA011-imgCombo fa fa-caret-down"></i>');
+            $divSupplierOuter.append($divSupplierInn);
+            $divSupplierInn.append($divSupplierInnCtrl);
+            $divSupplierInnCtrl.append($divSupplier);
+
             $divSupplier.autocomplete({
                 minLength: 0,
                 source: function (request, response) {
@@ -678,13 +705,20 @@
                 }
             });
 
-            $divlbMain.append($divSupplier);
-            $divlbMain.append($divCheckBoxSupplier);
+            $divlbMain.append($divSupplierOuter);
+            $divSupplierOuter.append($divCheckBoxSupplier);
             // Append Supplier TextBox
 
             // Append Categories TextBox
             $divCheckBoxCategories = $('<div class="VA011-checkboxlist">');
-            $divProductCategories = $('<div class="input-group vis-input-wrap"><div class="VA011-searchDiv vis-control-wrap"><input class="VA011-inputLeftSearch" placeholder="' + VIS.Msg.getMsg("VA011_ProductCategory") + '" ><label>' + VIS.Msg.getMsg("VA011_ProductCategory") + '</label><i class="VA011-imgCombo fa fa-caret-down"></i></div></div>');
+            var $divProdCatOuter = $('<div class="VA011-searchDiv">');
+            var $divProdCatInn = $('<div class="input-group vis-input-wrap">');
+            var $divProdCatInnCtrl = $('<div class="vis-control-wrap">');
+            $divProductCategories = $('<input class="VA011-inputLeftSearch" placeholder="' + VIS.Msg.getMsg("VA011_ProductCategory") + '" ><i class="VA011-imgCombo fa fa-caret-down"></i>');
+            $divProdCatOuter.append($divProdCatInn);
+            $divProdCatInn.append($divProdCatInnCtrl);
+            $divProdCatInnCtrl.append($divProductCategories);
+
             $divProductCategories.autocomplete({
 
                 minLength: 0,
@@ -716,8 +750,8 @@
                 }
             });
 
-            $divlbMain.append($divProductCategories);
-            $divlbMain.append($divCheckBoxCategories);
+            $divlbMain.append($divProdCatOuter);
+            $divProdCatOuter.append($divCheckBoxCategories);
             // Append Categories TextBox
 
             //$divlbMain.append('<div class="VA011-left-cat-panel"> <h4>' + VIS.Msg.getMsg("VA011_Categories") + '</h4></div>');
@@ -795,7 +829,7 @@
 
             $divImgDet = $('<div class="VA011_form-top" class="VA011-RightPanel-Scroll" >'
                 + '<div class="VA011_form-top-fields" style="float:left; width:60%">'
-                + '<div id="VA011_ProdDetZoomName' + $self.windowNo + '" style= "display:none"><h4 id="VA011_prodName_' + $self.windowNo + '" style="float:left; word-wrap: break-word;"></h4><span id="VA011_ZoomProduct" title=' + VIS.Msg.getMsg("VA011_ZoomToProduct") + ' class="VA011-icons VA011-icons-font vis vis-edit" style="margin-top:5px"></span></div>'
+                + '<div id="VA011_ProdDetZoomName' + $self.windowNo + '" style= "display:none"><h4 id="VA011_prodName_' + $self.windowNo + '" style="float:left; margin-top: 0;"></h4><span id="VA011_ZoomProduct" title=' + VIS.Msg.getMsg("VA011_ZoomToProduct") + ' class="VA011-icons VA011-icons-font vis vis-edit" style="margin-top:5px"></span></div>'
                 + '<div style="float:left; width:100%" class="VA011_data-wrap" id="VA011_UPC' + $self.windowNo + '">' // UPC Numbers to be shown in this DIV
                 + '<p>' + VIS.Msg.getMsg("VA011_UPC") + '</p>'
                 + '</div>'
@@ -845,11 +879,11 @@
             bindKitsGrid();
             $rightmain.append($divKitsGrid);
 
-            $rightmain.append('<div id="VA011_divCart_' + $self.windowNo + '" class="VA011-right-head"><div class="VA011-conversion-data"><label>' + VIS.Msg.getMsg("VA011_Cart") +
-            '</label></div><div class="VA011-conversion-data"><span class="VA011-cart-update" style="display:none;"></span></div>' +
-            '<div id="VA011_divCartList_' + $self.windowNo + '" class="VA011-conv-data"><div class="VA011-conversion-data"><select id="VA011_cmbCart_' + $self.windowNo + '"></select></div>' +
-            '<div style="float:left;margin-top: 5px;"><span class="VA011-icons vis vis-plus VA011-icons-font" title="' + VIS.Msg.getMsg("VA011_AddNewCart") + '"></span>' +
-            '<span class="VA011-icons vis vis-edit VA011-icons-font" title="' + VIS.Msg.getMsg("Edit") + '"></span><span class="VA011-icons vis vis-refresh VA011-icons-font" title="' + VIS.Msg.getMsg("VA011_Refresh") + '"></span></div></div>' +
+            $rightmain.append('<div id="VA011_divCart_' + $self.windowNo + '" class="VA011-right-head">' +
+            '<div id="VA011_divCartList_' + $self.windowNo + '" class="VA011-conv-data"><div class="VA011-conversion-data"><div class="input-group vis-input-wrap"><div class="vis-control-wrap"><select id="VA011_cmbCart_' + $self.windowNo + '"></select><label>' + VIS.Msg.getMsg("VA011_Cart") +
+            '</label></div></div></div>' +
+            '<div style="margin-top: 10px;"><span class="VA011-icons vis vis-plus VA011-icons-font" title="' + VIS.Msg.getMsg("VA011_AddNewCart") + '"></span>' +
+            '<span class="VA011-icons vis vis-edit VA011-icons-font" title="' + VIS.Msg.getMsg("Edit") + '"></span><span class="VA011-icons vis vis-refresh VA011-icons-font" title="' + VIS.Msg.getMsg("VA011_Refresh") + '"></span><span class="VA011-cart-update" style="display:none;"></span></div></div>' +
             //<input class="vis-group-add-btn vis-group-pointer vis-group-addLeft vis-group-ass-btns" type="button"></div></div>' +
             '<div id="VA011_divNewCart_' + $self.windowNo + '" class="VA011-conv-data"><div class="VA011-conversion-data"><input id="VA011_scanName_' + $self.windowNo + '"></div>' +
             '<div style="float:left;margin-top: 5px;"><span id="VA011_SaveScanName_' + $self.windowNo + '" class="VA011-icons vis vis-save VA011-icons-font" tabindex="0" title="' + VIS.Msg.getMsg("Save") + '">' +
@@ -4245,7 +4279,7 @@
             }
 
             if (data.Table[0] != null) {
-                divZoomProdName.css("display", "block");
+                divZoomProdName.css("display", "flex");
                 $("#VA011_prodName_" + $self.windowNo).text(data.Table[0].NAME);
                 $("#VA011_inputWeight_" + $self.windowNo).val(data.Table[0].WEIGHT);
                 $("#VA011_inputVolume_" + $self.windowNo).val(data.Table[0].VOLUME);
@@ -4698,12 +4732,12 @@
 
         function replenishPanel() {
             $divReplenish.append($div);
-            $div.append('<div class="VA011-product-data"><label>' + VIS.Msg.getMsg("VA011_Warehouse") + '</label><select class="vis-gc-vpanel-table-mandatory" id="VA011_cmbWarehouse_' + $self.windowNo + '"></select></div>'
-                      + '<div class="VA011-product-data"><label>' + VIS.Msg.getMsg("VA011_ReplenishmentCreate") + '</label><select class="vis-gc-vpanel-table-mandatory" id="VA011_cmbCat_' + $self.windowNo + '"></select></div>'
-                      + '<div class="VA011-product-data"><label>' + VIS.Msg.getMsg("VA011_DocumentType") + '</label><select id="VA011_cmbType_' + $self.windowNo + '" ></select></div>'
-                      + '<div class="VA011-product-data"><label>' + VIS.Msg.getMsg("VA011_Vendor") + '</label><select id="VA011_cmbVendor_' + $self.windowNo + '"></select></div>'
-                      + '<div class="VA011-product-data"><label>' + VIS.Msg.getMsg("VA011_DocStatus") + '</label><select class="vis-gc-vpanel-table-mandatory" id="VA011_cmbDocStatus_' + $self.windowNo + '" ></select></div>'
-                      + '<div class="VA011-product-data"><input id="VA011_ConsiderOrderPack' + $self.windowNo + '" type="checkbox"><span>' + VIS.Msg.getMsg("VA011_ConsiderOrderPack") + '</span></div>');
+            $div.append('<div class="VA011-product-data input-group vis-input-wrap"><div class="vis-control-wrap"><select class="vis-ev-col-mandatory" id="VA011_cmbWarehouse_' + $self.windowNo + '"></select><label>' + VIS.Msg.getMsg("VA011_Warehouse") + '</label></div></div>'
+                      + '<div class="VA011-product-data input-group vis-input-wrap"><div class="vis-control-wrap"><select class="vis-ev-col-mandatory" id="VA011_cmbCat_' + $self.windowNo + '"></select><label>' + VIS.Msg.getMsg("VA011_ReplenishmentCreate") + '</label></div></div>'
+                      + '<div class="VA011-product-data input-group vis-input-wrap"><div class="vis-control-wrap"><select id="VA011_cmbType_' + $self.windowNo + '" ></select><label>' + VIS.Msg.getMsg("VA011_DocumentType") + '</label></div></div>'
+                      + '<div class="VA011-product-data input-group vis-input-wrap"><div class="vis-control-wrap"><select id="VA011_cmbVendor_' + $self.windowNo + '"></select><label>' + VIS.Msg.getMsg("VA011_Vendor") + '</label></div></div>'
+                      + '<div class="VA011-product-data input-group vis-input-wrap"><div class="vis-control-wrap"><select class="vis-ev-col-mandatory" id="VA011_cmbDocStatus_' + $self.windowNo + '" ></select><label>' + VIS.Msg.getMsg("VA011_DocStatus") + '</label></div></div>'
+                      + '<div class="VA011-product-data input-group vis-input-wrap"><div class="vis-control-wrap"><label class="vis-ec-col-lblchkbox"><input id="VA011_ConsiderOrderPack' + $self.windowNo + '" type="checkbox">' + VIS.Msg.getMsg("VA011_ConsiderOrderPack") + '</label></div></div>');
 
             cmbCreate = $div.find("#VA011_cmbCat_" + $self.windowNo);
             cmbDocType = $div.find("#VA011_cmbType_" + $self.windowNo);
@@ -5248,7 +5282,7 @@
                     ch = new VIS.ChildDialog();
                     ch.setContent($divReplenish);
                     $divReplenish.show();
-                    ch.setHeight(500);
+                    //ch.setHeight(500);
                     ch.setWidth(320);
                     ch.setTitle(VIS.Msg.getMsg("VA011_Replenishments"));
                     ch.setModal(true);

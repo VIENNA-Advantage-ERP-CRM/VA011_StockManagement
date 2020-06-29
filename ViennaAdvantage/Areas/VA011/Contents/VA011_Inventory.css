@@ -172,8 +172,9 @@ body {
     max-height: 220px;
     overflow: auto;
     /* color: #fff; */
-    margin-top: -10px;
-    display: none;
+    /*margin-top: -10px;*/
+    /*display: none;*/
+    margin-bottom: 10px;
 }
 .VA011-tab-control {
     display: inline-block;
@@ -558,25 +559,25 @@ ul.VA011-tabs > li {
 }
 
 .VA011-product-data {
-    margin-bottom: 10px;
+    /*margin-bottom: 10px;*/
     width: 100%;
     float: left;
 }
-.VA011-product-data > label {
+.VA011-product-data label {
     /* color: #666; */
     /* font-size: 14px; */
-    font-weight: normal;
+    /*font-weight: normal;
     width: 100%;
     float: left;
-    margin-bottom: 0;
+    margin-bottom: 0;*/
 }
-.VA011-product-data > input:not([type=checkbox]), .VA011-product-data > select {
-    width: 100%;
-    float: left;
+.VA011-product-data input:not([type=checkbox]), .VA011-product-data select {
+    /*width: 100%;
+    float: left;*/
     /* border: 1px solid #ccc; */
     /* outline: none; */
     /* border-radius: 0; */
-    height: 31px;
+    /*height: 31px;*/
     /* padding: 5px; */
 }
 
@@ -589,13 +590,13 @@ ul.VA011-tabs > li {
     border-radius: 5px;
 }
 
-    .VA011-popup > input {
+    .VA011-popup input {
         width: 100px;
         height: 25px;
         margin: 2px 0px 2px 2px;
     }
 
-    .VA011-popup > span {
+    .VA011-popup span {
         margin: 2px;
         cursor: pointer;
     }
@@ -861,6 +862,7 @@ margin-top: -55px;*/
 .VA011-searchDiv .VA011-imgCombo {
     position: absolute;
     right: 10px;
+    top: 10px;
 }
 .VA011-clsDIV i {
     background: rgba(var(--v-c-on-secondary), 1);
@@ -875,7 +877,7 @@ margin-top: -55px;*/
     vertical-align: middle;
 }
 .VA011-clsDIV {
-    padding-bottom: 10px;
+    /*padding-bottom: 10px;*/
 }
 .VA005-gridicon {
     font-size: 1rem;
@@ -893,7 +895,7 @@ margin-top: -55px;*/
 .vis-input-wrap .VA011-searchDiv label,
 .vis-input-wrap .VA011-searchDiv select:focus ~ label,
 .vis-input-wrap .VA011-searchDiv input:focus ~ label {
-    background: linear-gradient(rgba(var(--v-c-secondary), 1) 50%, transparent 50%);
+    /*background: linear-gradient(rgba(var(--v-c-secondary), 1) 50%, transparent 50%);*/
 }
 .VA011-Left-Bar .vis-apanel-lb-toggle {
     margin-bottom: 10px;
@@ -901,4 +903,10 @@ margin-top: -55px;*/
 .vis-input-wrap .VA011-searchDiv select:focus ~ label,
 .vis-input-wrap .VA011-searchDiv input:focus ~ label {
     top: -7px;
+}
+.VA011-conversion-data .vis-input-wrap {
+    margin-bottom: 0;
+}
+.VA011-searchDiv .vis-input-wrap {
+    margin-bottom: 5px;
 }
