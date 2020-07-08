@@ -37,16 +37,16 @@
         var $searchProdBtn = null;
         var $btnCreateProd = null;
         var $divReplenish = $('<div style="display:none; " class="vis-forms-container"></div>'); //layout
-        var $divReplenishRuleAll = $('<div class="112233" style="display:block; height:86%"></div>'); //layout
+        var $divReplenishRuleAll = $('<div class="112233" style="display:block; height:100%"></div>'); //layout
         var $divRepRuleAllTop = $('<div  style="width:auto; margin-bottom:10px;"></div>');
-        var $divRepAllPop = $('<div class="11223344" style="overflow-y:auto;margin-right:-2px;margin-bottom:15px; height:100%"></div>');
+        var $divRepAllPop = $('<div class="11223344" style="overflow-y:auto; height:calc(100% - 40px)"></div>');
         var $cmbRepAllWarehouse = $('<select class="vis-statusbar-combo" style="width:200px;"></select>');
         var chldDlgRepAll = null;
         var $divImgAdd = null;
         var $divImgSaveAll = null;
         var repProducts = [];
 
-        var $div = $('<div style="overflow-y:auto;margin-right:-2px;"></div>');
+        var $div = $('<div style="overflow-y:auto; padding-top: 5px;"></div>');
         var ch = null;
         var $divUom = null;
         var $divUomGroup = null;
@@ -275,7 +275,7 @@
             initLoad = false;
             _countBGT01 = VIS.Utility.Util.getValueOfInt(VIS.DB.executeScalar("SELECT COUNT(*) FROM AD_MODULEINFO WHERE PREFIX='BGT01_' "));
             window.setTimeout(function () {
-                imgUsrImage = $('<img style="max-height: 100%; max-width: 100%;" src=' + VIS.Application.contextUrl + 'Areas/VA011/Images/img-defult.png>');
+                imgUsrImage = $('<i class="vis vis-image"></i>');
                 $(".VA011_image-wrap").append(imgUsrImage);
                 btnZoomProduct = $("#VA011_ZoomProduct");
 
@@ -524,22 +524,30 @@
 
         function createPanels() {
 
-            $td0leftbar = $("<td class='VA011-Left-Bar'>");
+            $td0leftbar = $("<td class='VA011-Left-Bar vis-leftsidebarouterwrap'>");
             $lb = $("<div class='vis-apanel-lb' style='overflow:auto'>");
 
-            $btnlbToggle = $("<div class='vis-apanel-lb-toggle' ><img class='vis-apanel-lb-img' src='" + VIS.Application.contextUrl + "Areas/VIS/Images/base/mt24.png'></div>");
+            $btnlbToggle = $("<div class='vis-apanel-lb-toggle' ><i class='vis-apanel-lb-img fa fa-bars'></i></div>");
             $ulLefttoolbar = $("<ul>");
-            $divlbMain = $('<div class="vis-apanel-lb-main VA011-div-left-main">');
+            $divlbMain = $('<div class="vis-apanel-lb-main VA011-div-left-main vis-leftsidebarouterwrap">');
 
-            $divSearch = $('<div class="VA011-searchDiv"></div>');
-            $inputSearchProd = $('<input style="width:138px; margin:5px; float:left" placeholder="' + VIS.Msg.getMsg("Search") + '">');
-            $inputSearchBtnProd = $('<input class=" vis-group-pointer vis-group-ass-btns vis-group-search-icon" title=' + VIS.Msg.getMsg("VA011_Search") + ' style="float:left; border-radius: 5px; margin-top: 5px;" type="button">');
-            $divSearch.append($inputSearchProd).append($inputSearchBtnProd);
-            $divlbMain.append($divSearch);
+            $divsearchouter = $('<div class="VA011-searchDiv input-group vis-input-wrap"></div>');
+            $divSearch = $('<div class="vis-control-wrap"></div>');
+            $inputSearchProd = $('<input placeholder="' + VIS.Msg.getMsg("Search") + '"  data-hasbtn=" "><label>' + VIS.Msg.getMsg("Search") + '</label>');
+            $inputSearchBtnProd = $('<div class="input-group-append"><button class=" vis-group-pointer vis-group-search-icon input-group-text" title=' + VIS.Msg.getMsg("VA011_Search") + '><i class="vis vis-search"></i></button></div>');
+            $divSearch.append($inputSearchProd);
+            $divsearchouter.append($divSearch).append($inputSearchBtnProd);
+            $divlbMain.append($divsearchouter);
 
             // Append Org TextBox
-            $divCheckBoxOrg = $('<div class="VA011-checkboxlist" style="color:#fff;" >');
-            $divOrg = $('<input class="VA011-inputLeftSearch" placeholder="' + VIS.Msg.getMsg("Organization") + '" ><img class="VA011-imgCombo" style="display:inline;margin-top:-3px;margin-left:-15px;cursor:pointer" src=' + VIS.Application.contextUrl + 'Areas/VA011/Images/open-arrow.png>');
+            $divCheckBoxOrg = $('<div class="VA011-checkboxlist">');
+            var $divOrgOuter = $('<div class="VA011-searchDiv">');
+            var $divOrgInn = $('<div class="input-group vis-input-wrap">');
+            var $divOrgInnCtrl = $('<div class="vis-control-wrap">');
+            $divOrg = $('<input class="VA011-inputLeftSearch" placeholder="' + VIS.Msg.getMsg("Organization") + '"  ><i class="VA011-imgCombo fa fa-caret-down"></i>');
+            $divOrgOuter.append($divOrgInn);
+            $divOrgInn.append($divOrgInnCtrl);
+            $divOrgInnCtrl.append($divOrg);
             $divOrg.autocomplete({
                 minLength: 0,
                 source: function (request, response) {
@@ -563,20 +571,27 @@
                         selOrgs = selOrgs.splice();
                     }
                     //$divCheckBoxOrg.append('<div class="VA011-clsDIV"><input type="checkbox" id=VA011_chkOrg' + counter + ' checked value="' + ui.item.ids + '"><span id=VA011_spnOrg' + counter + '>' + ui.item.value + '</span></br></div>');
-                    $divCheckBoxOrg.append('<div class="VA011-clsDIV"><img id=VA011_chkOrg' + counter + ' style="display:inline;margin-top:-3px;margin-left:5px;cursor:pointer" value="' + ui.item.ids + '" src=' + VIS.Application.contextUrl + 'Areas/VA011/Images/cross.png><span style="margin-left:5px" id=VA011_spnOrg' + counter + '>' + ui.item.value + '</span></br></div>');
+                    $divCheckBoxOrg.append('<div class="VA011-clsDIV"><i id=VA011_chkOrg' + counter + 'value="' + ui.item.ids + '" class="vis vis-mark"></i><span id=VA011_spnOrg' + counter + '>' + ui.item.value + '</span></br></div>');
                     counter++;
                     pgNo = 1;
                     ReLoadWarehouses();
                     bindProductGrid(false);
                 }
             });
-            $divlbMain.append($divOrg);
-            $divlbMain.append($divCheckBoxOrg);
+            $divlbMain.append($divOrgOuter);
+            $divOrgOuter.append($divCheckBoxOrg);
             // Append Org TextBox
 
             // Append Warehosue TextBox
-            $divCheckBoxWarehouse = $('<div class="VA011-checkboxlist" style="color:#fff;" >');
-            $divWarehouse = $('<input class="VA011-inputLeftSearch" placeholder="' + VIS.Msg.getMsg("Warehouse") + '" ><img class="VA011-imgCombo" style="display:inline;margin-top:-3px;margin-left:-15px;cursor:pointer" src=' + VIS.Application.contextUrl + 'Areas/VA011/Images/open-arrow.png>');
+            $divCheckBoxWarehouse = $('<div class="VA011-checkboxlist">');
+            var $divWarehouseOuter = $('<div class="VA011-searchDiv">');
+            var $divWarehouseInn = $('<div class="input-group vis-input-wrap">');
+            var $divWarehouseInnCtrl = $('<div class="vis-control-wrap">');
+            $divWarehouse = $('<input class="VA011-inputLeftSearch" placeholder="' + VIS.Msg.getMsg("Warehouse") + '"  ><i class="VA011-imgCombo fa fa-caret-down"></i>');
+            $divWarehouseOuter.append($divWarehouseInn);
+            $divWarehouseInn.append($divWarehouseInnCtrl);
+            $divWarehouseInnCtrl.append($divWarehouse);
+
             $divWarehouse.autocomplete({
                 minLength: 0,
                 source: function (request, response) {
@@ -599,19 +614,26 @@
                         selWh = selWh.splice();
                     }
                     //$divCheckBoxWarehouse.append('<div class="VA011-clsDIV"><input type="checkbox" id=VA011_chkWh' + counter + ' checked value="' + ui.item.ids + '"><span id=VA011_spnWh' + counter + '>' + ui.item.value + '</span></br></div>');
-                    $divCheckBoxWarehouse.append('<div class="VA011-clsDIV"><img id=VA011_chkWh' + counter + ' style="display:inline;margin-top:-3px;margin-left:5px;cursor:pointer" value="' + ui.item.ids + '" src=' + VIS.Application.contextUrl + 'Areas/VA011/Images/cross.png><span style="margin-left:5px" id=VA011_spnWh' + counter + '>' + ui.item.value + '</span></br></div>');
+                    $divCheckBoxWarehouse.append('<div class="VA011-clsDIV"><i id=VA011_chkWh' + counter + ' value="' + ui.item.ids + '" class="vis vis-mark"></i><span style="margin-left:5px" id=VA011_spnWh' + counter + '>' + ui.item.value + '</span></br></div>');
                     counter++;
                     pgNo = 1;
                     bindProductGrid(false);
                 }
             });
-            $divlbMain.append($divWarehouse);
-            $divlbMain.append($divCheckBoxWarehouse);
+            $divlbMain.append($divWarehouseOuter);
+            $divWarehouseOuter.append($divCheckBoxWarehouse);
             // Append Warehosue TextBox
 
             // Append PriceListVersion TextBox
-            $divCheckBoxPLV = $('<div class="VA011-checkboxlist" style="color:#fff;" >');
-            $divPLV = $('<input class="VA011-inputLeftSearch" placeholder="' + VIS.Msg.getMsg("PriceListVersion") + '" ><img class="VA011-imgCombo" style="display:inline;margin-top:-3px;margin-left:-15px;cursor:pointer"  src=' + VIS.Application.contextUrl + 'Areas/VA011/Images/open-arrow.png>');
+            $divCheckBoxPLV = $('<div class="VA011-checkboxlist">');
+            var $divPLVOuter = $('<div class="VA011-searchDiv">');
+            var $divPLVInn = $('<div class="input-group vis-input-wrap">');
+            var $divPLVInnCtrl = $('<div class="vis-control-wrap">');
+            $divPLV = $('<input class="VA011-inputLeftSearch" placeholder="' + VIS.Msg.getMsg("PriceListVersion") + '" ><i class="VA011-imgCombo fa fa-caret-down" ></i>');
+            $divPLVOuter.append($divPLVInn);
+            $divPLVInn.append($divPLVInnCtrl);
+            $divPLVInnCtrl.append($divPLV);
+
             $divPLV.autocomplete({
                 minLength: 0,
                 source: function (request, response) {
@@ -634,19 +656,26 @@
                         selPLV = selPLV.splice();
                     }
                     //$divCheckBoxPLV.append('<div class="VA011-clsDIV"><input type="checkbox" id=VA011_chkPLV' + counter + ' checked value="' + ui.item.ids + '"><span id=VA011_spnPLV' + counter + '>' + ui.item.value + '</span></br></div>');
-                    $divCheckBoxPLV.append('<div class="VA011-clsDIV"><img id=VA011_chkPLV' + counter + ' style="display:inline;margin-top:-3px;margin-left:5px;cursor:pointer" value="' + ui.item.ids + '" src=' + VIS.Application.contextUrl + 'Areas/VA011/Images/cross.png><span style="margin-left:5px" id=VA011_spnPLV' + counter + '>' + ui.item.value + '</span></br></div>');
+                    $divCheckBoxPLV.append('<div class="VA011-clsDIV"><i id=VA011_chkPLV' + counter + '  value="' + ui.item.ids + '" class="vis vis-mark"></i><span id=VA011_spnPLV' + counter + '>' + ui.item.value + '</span></br></div>');
                     counter++;
                     pgNo = 1;
                     bindProductGrid(false);
                 }
             });
-            $divlbMain.append($divPLV);
-            $divlbMain.append($divCheckBoxPLV);
+            $divlbMain.append($divPLVOuter);
+            $divPLVOuter.append($divCheckBoxPLV);
             // Append PriceListVersion TextBox
 
             // Append Supplier TextBox
-            $divCheckBoxSupplier = $('<div class="VA011-checkboxlist" style="color:#fff;" >');
-            $divSupplier = $('<input class="VA011-inputLeftSearch" placeholder="' + VIS.Msg.getMsg("VA011_Supplier") + '" ><img class="VA011-imgCombo" style="display:inline;margin-top:-3px;margin-left:-15px;cursor:pointer" src=' + VIS.Application.contextUrl + 'Areas/VA011/Images/open-arrow.png>');
+            $divCheckBoxSupplier = $('<div class="VA011-checkboxlist">');
+            var $divSupplierOuter = $('<div class="VA011-searchDiv">');
+            var $divSupplierInn = $('<div class="input-group vis-input-wrap">');
+            var $divSupplierInnCtrl = $('<div class="vis-control-wrap">');
+            $divSupplier = $('<input class="VA011-inputLeftSearch" placeholder="' + VIS.Msg.getMsg("VA011_Supplier") + '"  ><i class="VA011-imgCombo fa fa-caret-down"></i>');
+            $divSupplierOuter.append($divSupplierInn);
+            $divSupplierInn.append($divSupplierInnCtrl);
+            $divSupplierInnCtrl.append($divSupplier);
+
             $divSupplier.autocomplete({
                 minLength: 0,
                 source: function (request, response) {
@@ -669,20 +698,27 @@
                         selSupp = selSupp.splice();
                     }
                     //$divCheckBoxSupplier.append('<div class="VA011-clsDIV"><input type="checkbox" id=VA011_chkSupplier' + counter + ' checked value="' + ui.item.ids + '"><span id=VA011_spnSupplier' + counter + '>' + ui.item.value + '</span></br></div>');
-                    $divCheckBoxSupplier.append('<div class="VA011-clsDIV"><img id=VA011_chkSupplier' + counter + ' style="display:inline;margin-top:-3px;margin-left:5px;cursor:pointer" value="' + ui.item.ids + '" src=' + VIS.Application.contextUrl + 'Areas/VA011/Images/cross.png><span style="margin-left:5px" id=VA011_spnSupplier' + counter + '>' + ui.item.value + '</span></br></div>');
+                    $divCheckBoxSupplier.append('<div class="VA011-clsDIV"><i id=VA011_chkSupplier' + counter + ' value="' + ui.item.ids + '" class="vis vis-mark"></i><span id=VA011_spnSupplier' + counter + '>' + ui.item.value + '</span></br></div>');
                     counter++;
                     pgNo = 1;
                     bindProductGrid(false);
                 }
             });
 
-            $divlbMain.append($divSupplier);
-            $divlbMain.append($divCheckBoxSupplier);
+            $divlbMain.append($divSupplierOuter);
+            $divSupplierOuter.append($divCheckBoxSupplier);
             // Append Supplier TextBox
 
             // Append Categories TextBox
-            $divCheckBoxCategories = $('<div class="VA011-checkboxlist" style="color:#fff;" >');
-            $divProductCategories = $('<input class="VA011-inputLeftSearch" placeholder="' + VIS.Msg.getMsg("VA011_ProductCategory") + '" ><img class="VA011-imgCombo" style="display:inline;margin-top:-3px;margin-left:-15px;cursor:pointer"  src=' + VIS.Application.contextUrl + 'Areas/VA011/Images/open-arrow.png>');
+            $divCheckBoxCategories = $('<div class="VA011-checkboxlist">');
+            var $divProdCatOuter = $('<div class="VA011-searchDiv">');
+            var $divProdCatInn = $('<div class="input-group vis-input-wrap">');
+            var $divProdCatInnCtrl = $('<div class="vis-control-wrap">');
+            $divProductCategories = $('<input class="VA011-inputLeftSearch" placeholder="' + VIS.Msg.getMsg("VA011_ProductCategory") + '" ><i class="VA011-imgCombo fa fa-caret-down"></i>');
+            $divProdCatOuter.append($divProdCatInn);
+            $divProdCatInn.append($divProdCatInnCtrl);
+            $divProdCatInnCtrl.append($divProductCategories);
+
             $divProductCategories.autocomplete({
 
                 minLength: 0,
@@ -707,15 +743,15 @@
                         selCat = selCat.splice();
                     }
                     //$divCheckBoxCategories.append('<div class="VA011-clsDIV"><input type="checkbox" id=VA011_chkCategories' + counter + ' checked value="' + ui.item.ids + '"><span id=VA011_spnCategories' + counter + '>' + ui.item.value + '</span></br></div>');
-                    $divCheckBoxCategories.append('<div class="VA011-clsDIV"><img id=VA011_chkCategories' + counter + ' style="display:inline;margin-top:-3px;margin-left:5px;cursor:pointer" value="' + ui.item.ids + '" src=' + VIS.Application.contextUrl + 'Areas/VA011/Images/cross.png><span style="margin-left:5px" id=VA011_spnCategories' + counter + '>' + ui.item.value + '</span></br></div>');
+                    $divCheckBoxCategories.append('<div class="VA011-clsDIV"><i id=VA011_chkCategories' + counter + '  value="' + ui.item.ids + '" class="vis vis-mark"><span id=VA011_spnCategories' + counter + '>' + ui.item.value + '</span></br></div>');
                     counter++;
                     pgNo = 1;
                     bindProductGrid(false);
                 }
             });
 
-            $divlbMain.append($divProductCategories);
-            $divlbMain.append($divCheckBoxCategories);
+            $divlbMain.append($divProdCatOuter);
+            $divProdCatOuter.append($divCheckBoxCategories);
             // Append Categories TextBox
 
             //$divlbMain.append('<div class="VA011-left-cat-panel"> <h4>' + VIS.Msg.getMsg("VA011_Categories") + '</h4></div>');
@@ -739,14 +775,14 @@
 
                 + '</ul></div>'
                 // Div Cart Label
-                + '<div class="VA011_CartLabel"><span id="VA011_CartLabel' + $self.windowNo + '" style=" margin-top: 10px; height: 74px; font-weight: bolder; color:grey; font-size: larger;"></span></div>'
+                + '<div class="VA011_CartLabel"><span id="VA011_CartLabel' + $self.windowNo + '"></span></div>'
                 // Div Icons Replenishment
-                + '<div style="float:right; margin-top: 5px;">'
-                + '<li id="VA011_generateReplenishLI' + $self.windowNo + '" style="margin: 0 0px 0 2px;float:right;background:none; margin-left: 15px; display:none"><div><img style="cursor:pointer" title=' + VIS.Msg.getMsg("VA011_GenerateReplenishment") + ' id="VA011_btnGenerateReplenish_' + $self.windowNo + '" style="opacity: 1; display:none;" src="' + VIS.Application.contextUrl + 'Areas/VA011/Images/genrat--replenishment.png"></div></li>'
-                + '<li id="VA011_calculateReplenishLI' + $self.windowNo + '" style="margin: 0 0px 0 2px;float:right;background:none; margin-left: 15px; display:none;"><div><img style="cursor:pointer" title=' + VIS.Msg.getMsg("VA011_CalculateReplenishment") + ' id="VA011_btnReplenish_' + $self.windowNo + '" style="opacity: 1;" src="' + VIS.Application.contextUrl + 'Areas/VA011/Images/calculate.png"></div></li>'
-                + '<li id="VA011_addtoCartLI' + $self.windowNo + '" style="margin: 0 0px 0 2px;float:right;background:none; margin-left: 15px; display:none;"><div><img style="cursor:pointer" title=' + VIS.Msg.getMsg("VA011_AddToCart") + ' id="VA011_btnAddToCart_' + $self.windowNo + '" style="opacity: 1;" src="' + VIS.Application.contextUrl + 'Areas/VA011/Images/cart1.png"></div></li>'
-                + '<li id="VA011_DisplayReplenishRuleLI_' + $self.windowNo + '" style="margin: 0 0px 0 2px;float:right;background:none; margin-left: 15px; display:none;"><div><img style="cursor:pointer" title=' + VIS.Msg.getMsg("VA011_ReplenishmentRules") + ' id="VA011_DisplayReplenishRule_' + $self.windowNo + '" style="opacity: 1;" src="' + VIS.Application.contextUrl + 'Areas/VA011/Images/edt.png"></div></li>'
-                + ' </div>');
+                + '<ul class="VA011-toprighticons">'
+                + '<li id="VA011_DisplayReplenishRuleLI_' + $self.windowNo + '" style="display:none;"><i class="vis vis-pencil" style="cursor:pointer" title=' + VIS.Msg.getMsg("VA011_ReplenishmentRules") + ' id="VA011_DisplayReplenishRule_' + $self.windowNo + '"></i></li>'
+                + '<li id="VA011_addtoCartLI' + $self.windowNo + '" style="display:none;"><i class="fa fa-shopping-cart" style="cursor:pointer" title=' + VIS.Msg.getMsg("VA011_AddToCart") + ' id="VA011_btnAddToCart_' + $self.windowNo + '"></i></li>'
+                + '<li id="VA011_calculateReplenishLI' + $self.windowNo + '" style="display:none;"><i class="vis vis-calculator" style="cursor:pointer" title=' + VIS.Msg.getMsg("VA011_CalculateReplenishment") + ' id="VA011_btnReplenish_' + $self.windowNo + '"></i></li>'
+                + '<li id="VA011_generateReplenishLI' + $self.windowNo + '" style="display:none"><img style="cursor:pointer" title=' + VIS.Msg.getMsg("VA011_GenerateReplenishment") + ' id="VA011_btnGenerateReplenish_' + $self.windowNo + '" style="opacity: 1; display:none;" src="' + VIS.Application.contextUrl + 'Areas/VA011/Images/genrat--replenishment.png"></li>'
+                + ' </ul>');
 
             var $divTopMiddle = $('<div id="111" style="width:100%; height:50%; float:left; padding-bottom:10px "></div>');
 
@@ -793,7 +829,7 @@
 
             $divImgDet = $('<div class="VA011_form-top" class="VA011-RightPanel-Scroll" >'
                 + '<div class="VA011_form-top-fields" style="float:left; width:60%">'
-                + '<div id="VA011_ProdDetZoomName' + $self.windowNo + '" style= "display:none"><h4 id="VA011_prodName_' + $self.windowNo + '" style="float:left; word-wrap: break-word;"></h4><span id="VA011_ZoomProduct" title=' + VIS.Msg.getMsg("VA011_ZoomToProduct") + ' class="VA011-icons VA011-icons-font glyphicon glyphicon-edit" style="margin-top:5px"></span></div>'
+                + '<div id="VA011_ProdDetZoomName' + $self.windowNo + '" style= "display:none"><h4 id="VA011_prodName_' + $self.windowNo + '" style="float:left; margin-top: 0;"></h4><span id="VA011_ZoomProduct" title=' + VIS.Msg.getMsg("VA011_ZoomToProduct") + ' class="VA011-icons VA011-icons-font vis vis-edit" style="margin-top:5px"></span></div>'
                 + '<div style="float:left; width:100%" class="VA011_data-wrap" id="VA011_UPC' + $self.windowNo + '">' // UPC Numbers to be shown in this DIV
                 + '<p>' + VIS.Msg.getMsg("VA011_UPC") + '</p>'
                 + '</div>'
@@ -843,15 +879,15 @@
             bindKitsGrid();
             $rightmain.append($divKitsGrid);
 
-            $rightmain.append('<div id="VA011_divCart_' + $self.windowNo + '" class="VA011-right-head"><div class="VA011-conversion-data"><label>' + VIS.Msg.getMsg("VA011_Cart") +
-            '</label></div><div class="VA011-conversion-data"><span class="VA011-cart-update" style="display:none;"></span></div>' +
-            '<div id="VA011_divCartList_' + $self.windowNo + '" class="VA011-conv-data"><div class="VA011-conversion-data"><select id="VA011_cmbCart_' + $self.windowNo + '"></select></div>' +
-            '<div style="float:left;margin-top: 5px;"><span class="VA011-icons glyphicon glyphicon-plus VA011-icons-font" title="' + VIS.Msg.getMsg("VA011_AddNewCart") + '"></span>' +
-            '<span class="VA011-icons glyphicon glyphicon-edit VA011-icons-font" title="' + VIS.Msg.getMsg("Edit") + '"></span><span class="VA011-icons glyphicon glyphicon-refresh VA011-icons-font" title="' + VIS.Msg.getMsg("VA011_Refresh") + '"></span></div></div>' +
+            $rightmain.append('<div id="VA011_divCart_' + $self.windowNo + '" class="VA011-right-head">' +
+            '<div id="VA011_divCartList_' + $self.windowNo + '" class="VA011-conv-data"><div class="VA011-conversion-data"><div class="input-group vis-input-wrap"><div class="vis-control-wrap"><select id="VA011_cmbCart_' + $self.windowNo + '"></select><label>' + VIS.Msg.getMsg("VA011_Cart") +
+            '</label></div></div></div>' +
+            '<div style="margin-top: 10px;"><span class="VA011-icons vis vis-plus VA011-icons-font" title="' + VIS.Msg.getMsg("VA011_AddNewCart") + '"></span>' +
+            '<span class="VA011-icons vis vis-edit VA011-icons-font" title="' + VIS.Msg.getMsg("Edit") + '"></span><span class="VA011-icons vis vis-refresh VA011-icons-font" title="' + VIS.Msg.getMsg("VA011_Refresh") + '"></span><span class="VA011-cart-update" style="display:none;"></span></div></div>' +
             //<input class="vis-group-add-btn vis-group-pointer vis-group-addLeft vis-group-ass-btns" type="button"></div></div>' +
             '<div id="VA011_divNewCart_' + $self.windowNo + '" class="VA011-conv-data"><div class="VA011-conversion-data"><input id="VA011_scanName_' + $self.windowNo + '"></div>' +
-            '<div style="float:left;margin-top: 5px;"><span id="VA011_SaveScanName_' + $self.windowNo + '" class="VA011-icons glyphicon glyphicon-floppy-disk VA011-icons-font" tabindex="0" title="' + VIS.Msg.getMsg("Save") + '">' +
-            '</span><span id="VA011_btnCancelScan_' + $self.windowNo + '" class="VA011-icons glyphicon glyphicon-remove-circle VA011-icons-font" tabindex="0" title="' + VIS.Msg.getMsg("Cancel") + '"></span></div></div></div>');
+            '<div style="float:left;margin-top: 5px;"><span id="VA011_SaveScanName_' + $self.windowNo + '" class="VA011-icons vis vis-save VA011-icons-font" tabindex="0" title="' + VIS.Msg.getMsg("Save") + '">' +
+            '</span><span id="VA011_btnCancelScan_' + $self.windowNo + '" class="VA011-icons vis vis-mark VA011-icons-font" tabindex="0" title="' + VIS.Msg.getMsg("Cancel") + '"></span></div></div></div>');
             $divCartdata = $('<div class="VA011-rightPanelCartGridCls" >');
             //$divCartdata.append($divCart);
             $rightmain.append($divCartdata);
@@ -861,9 +897,9 @@
             divCart.hide();
             divNewCart.hide();
             $divCartdata.hide();
-            btnNewCart = divCart.find(".glyphicon-plus");
-            btnEditCart = divCart.find(".glyphicon-edit");
-            btnRefreshCart = divCart.find(".glyphicon-refresh");
+            btnNewCart = divCart.find(".vis-plus");
+            btnEditCart = divCart.find(".vis-edit");
+            btnRefreshCart = divCart.find(".vis-refresh");
             cmbCart = divCart.find("#VA011_cmbCart_" + $self.windowNo);
             txtScan = $rightmain.find("#VA011_scanName_" + $self.windowNo);
             btnSaveScan = $rightmain.find("#VA011_SaveScanName_" + $self.windowNo);
@@ -886,13 +922,13 @@
             $root.append($table);
 
             //$divCheckBoxOrg.append('<div class="VA011-clsDIV"><input type="checkbox" id=VA011_chkOrg' + counter + ' checked value="' + VIS.context.getContext("#AD_Org_ID") + '"><span id=VA011_spnOrg' + counter + '> ' + VIS.context.getContext("#AD_Org_Name") + ' </span></br></div>');
-            $divCheckBoxOrg.append('<div class="VA011-clsDIV"><img id=VA011_chkOrg' + counter + ' style="display:inline;margin-top:-3px;margin-left:5px;cursor:pointer" value="' + VIS.context.getContext("#AD_Org_ID") + '" src=' + VIS.Application.contextUrl + 'Areas/VA011/Images/cross.png><span style="margin-left:5px" id=VA011_spnOrg' + counter + '>' + VIS.context.getContext("#AD_Org_Name") + '</span></br></div>');
+            $divCheckBoxOrg.append('<div class="VA011-clsDIV"><i id=VA011_chkOrg' + counter + ' value="' + VIS.context.getContext("#AD_Org_ID") + '" class="vis vis-mark"></i><span id=VA011_spnOrg' + counter + '>' + VIS.context.getContext("#AD_Org_Name") + '</span></br></div>');
             selOrgs.push(VIS.Utility.Util.getValueOfInt(VIS.context.getContext("#AD_Org_ID")));
             counter++;
 
             if (VIS.Utility.Util.getValueOfInt(VIS.context.getContext("#M_Warehouse_ID")) > 0) {
                 //$divCheckBoxWarehouse.append('<div class="VA011-clsDIV"><input type="checkbox" id=VA011_chkWh' + counter + ' checked value="' + VIS.context.getContext("#M_Warehouse_ID") + '"><span id=VA011_spnWh' + counter + '>' + VIS.context.getContext("#M_Warehouse_Name") + '</span></br></div>');
-                $divCheckBoxWarehouse.append('<div class="VA011-clsDIV"><img id=VA011_chkWh' + counter + ' style="display:inline;margin-top:-3px;margin-left:5px;cursor:pointer" value="' + VIS.context.getContext("#M_Warehouse_ID") + '" src=' + VIS.Application.contextUrl + 'Areas/VA011/Images/cross.png><span style="margin-left:5px" id=VA011_spnWh' + counter + '>' + VIS.context.getContext("#M_Warehouse_Name") + '</span></br></div>');
+                $divCheckBoxWarehouse.append('<div class="VA011-clsDIV"><i id=VA011_chkWh' + counter + '  value="' + VIS.context.getContext("#M_Warehouse_ID") + '" class="vis vis-mark"><span id=VA011_spnWh' + counter + '>' + VIS.context.getContext("#M_Warehouse_Name") + '</span></br></div>');
                 selWh.push(VIS.Utility.Util.getValueOfInt(VIS.context.getContext("#M_Warehouse_ID")));
                 counter++;
             }
@@ -909,26 +945,26 @@
             /////////////////////////////////////  Stauts Bar Paging for Product Grid    ///////////////////////////////////////////////
 
             // Product Status Bar Div
-            $statusProdDiv = $('<div style="width:100%;background-color:lightgray; float:left;"></div>');
+            $statusProdDiv = $('<div class="VA011-gridstatusbar"></div>');
             $ulStatusProdDiv = $('<ul class="vis-statusbar-ul" style="float:right"></ul>');
 
             // For showing Result li
             // + '<li><span class="vis-statusbar-statusDB"></span></li>'
 
-            $liFirst = $('<li  style="opacity: 0.6; float:left"><div><img style="opacity: 1;" action="first" title="First Page" alt="First Page" src=' + VIS.Application.contextUrl + 'Areas/VIS/Images/base/PageFirst16.png></div></li>');
+            $liFirst = $('<li  style="opacity: 0.6; float:left"><div><i class="vis vis-shiftleft" style="opacity: 1;" action="first" title="First Page"></i></div></li>');
             $ulStatusProdDiv.append($liFirst);
 
-            $liPrev = $('<li style="opacity: 0.6;  float:left"><div><img style="opacity: 1;" action="prev" title="Page Up" alt="Page Up" src=' + VIS.Application.contextUrl + 'Areas/VIS/Images/base/PageUp16.png></div></li>');
+            $liPrev = $('<li style="opacity: 0.6;  float:left"><div><i class="vis vis-pageup" style="opacity: 1;" action="prev" title="Page Up"></i></div></li>');
             $ulStatusProdDiv.append($liPrev);
 
             var $li = $('<li style="float:left"></li>');
             $li.append($cmbPageNo);
             $ulStatusProdDiv.append($li);
 
-            $liNext = ('<li style="opacity: 1;  float:left"><div><img style="opacity: 1;" action="next" title="Page Down" alt="Page Down" src=' + VIS.Application.contextUrl + 'Areas/VIS/Images/base/PageDown16.png></div></li>');
+            $liNext = ('<li style="opacity: 1;  float:left"><div><i class="vis vis-pagedown" style="opacity: 1;" action="next" title="Page Down"></i></div></li>');
             $ulStatusProdDiv.append($liNext);
 
-            $liLast = ('<li style="opacity: 1;  float:left"><div><img style="opacity: 1;" action="last" title="Last Page" alt="Last Page" src=' + VIS.Application.contextUrl + 'Areas/VIS/Images/base/PageLast16.png></div></li>');
+            $liLast = ('<li style="opacity: 1;  float:left"><div><i class="vis vis-shiftright" style="opacity: 1;" action="last" title="Last Page"></i></div></li>');
             $ulStatusProdDiv.append($liLast);
 
             $statusProdDiv.append($ulStatusProdDiv);
@@ -1013,10 +1049,10 @@
                 records: [],
                 columns: [
                     { field: "product_ID", caption: "product_ID", sortable: false, size: '80px', display: false },
-                    { field: "Product", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.translate(VIS.Env.getCtx(), "Product") + '</span></div>', sortable: false, size: '35%', hidden: false },
-                    { field: "Qty", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getElement(VIS.Env.getCtx(), "Quantity") + '</span></div>', sortable: false, size: '15%', hidden: false, editable: { type: 'float' }, render: 'number:1' },
+                    { field: "Product", caption: '<div><span>' + VIS.Msg.translate(VIS.Env.getCtx(), "Product") + '</span></div>', sortable: false, size: '35%', hidden: false },
+                    { field: "Qty", caption: '<div><span>' + VIS.Msg.getElement(VIS.Env.getCtx(), "Quantity") + '</span></div>', sortable: false, size: '15%', hidden: false, editable: { type: 'float' }, render: 'number:1' },
                     {
-                        field: "C_Uom_ID", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getElement(VIS.Env.getCtx(), "C_UOM_ID") + '</span></div>', sortable: false, size: '15%', hidden: false, editable: { type: 'select', items: uomArray, showAll: true },
+                        field: "C_Uom_ID", caption: '<div><span>' + VIS.Msg.getElement(VIS.Env.getCtx(), "C_UOM_ID") + '</span></div>', sortable: false, size: '15%', hidden: false, editable: { type: 'select', items: uomArray, showAll: true },
                         render: function (record, index, col_index) {
                             var html = '';
                             for (var p in uomArray) {
@@ -1027,9 +1063,9 @@
                     },
                     { field: "attribute_ID", caption: VIS.Msg.getElement(VIS.Env.getCtx(), "M_AttributeSetInstance_ID"), sortable: false, size: '80px', display: false },
                     {
-                        field: "Attribute", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.translate(VIS.Env.getCtx(), "Attribute") + '</span></div>', sortable: false, size: '35%', hidden: false,
+                        field: "Attribute", caption: '<div><span>' + VIS.Msg.translate(VIS.Env.getCtx(), "Attribute") + '</span></div>', sortable: false, size: '35%', hidden: false,
                         render: function () {
-                            return '<div><input type=text readonly="readonly" style= "width:85%; border:none" ></input><img src="' + VIS.Application.contextUrl + 'Areas/VIS/Images/base/MultiX16.png" alt="Attribute Set Instance" title="Attribute Set Instance" style="opacity:1;float:right;"></div>';
+                            return '<div><input type=text readonly="readonly" style= "width:85%; border:none" ><i class="fa fa-list-alt VA005-gridicon" title="Attribute Set Instance"></i></div>';
                         }
                     },
                     { field: "UPC", caption: VIS.Msg.getElement(VIS.Env.getCtx(), "UPC"), sortable: false, size: '80px', editable: { type: 'text' } },
@@ -1205,7 +1241,7 @@
                 var qry = "SELECT M_AttributeSet_ID FROM M_Product WHERE M_Product_ID = " + multiValues[k].product_ID;
                 if (VIS.Utility.Util.getValueOfInt(VIS.DB.executeScalar(qry)) <= 0) {
                     $("#grid_gridcart_" + $self.windowNo + "_rec_" + cartGrid.records[k].recid).find("input:not([type='checkbox'])").hide();
-                    $("#grid_gridcart_" + $self.windowNo + "_rec_" + cartGrid.records[k].recid).find("img").hide();
+                    $("#grid_gridcart_" + $self.windowNo + "_rec_" + cartGrid.records[k].recid).find("i").hide();
                 }
             }
             multiValues = [];
@@ -1235,10 +1271,10 @@
 
                 columns: [
                     { field: "Product", caption: VIS.Msg.getMsg("VA011_Product"), sortable: false, size: '36%' },
-                    { field: "QtyOnHand", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_OnHand") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:1' },
+                    { field: "QtyOnHand", caption: '<div><span>' + VIS.Msg.getMsg("VA011_OnHand") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:1' },
                     { field: "UOM", caption: VIS.Msg.getMsg("VA011_UOM"), sortable: false, size: '16%' },
-                    { field: "Reserved", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Reserved") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:1' },
-                    { field: "ATP", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_ATP") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:1' },
+                    { field: "Reserved", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Reserved") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:1' },
+                    { field: "ATP", caption: '<div><span>' + VIS.Msg.getMsg("VA011_ATP") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:1' },
                     { field: "M_Product_ID", caption: "M_Product_ID", sortable: false, size: '80px', display: false }
                 ],
                 records: [
@@ -1391,10 +1427,10 @@
 
                 columns: [
                     { field: "Product", caption: VIS.Msg.getMsg("VA011_Product"), sortable: false, size: '36%' },
-                    { field: "QtyOnHand", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_OnHand") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:1' },
+                    { field: "QtyOnHand", caption: '<div><span>' + VIS.Msg.getMsg("VA011_OnHand") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:1' },
                     { field: "UOM", caption: VIS.Msg.getMsg("VA011_UOM"), sortable: false, size: '16%' },
-                    { field: "Reserved", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Reserved") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:1' },
-                    { field: "ATP", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_ATP") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:1' },
+                    { field: "Reserved", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Reserved") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:1' },
+                    { field: "ATP", caption: '<div><span>' + VIS.Msg.getMsg("VA011_ATP") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:1' },
                     { field: "M_Product_ID", caption: "M_Product_ID", sortable: false, size: '80px', display: false }
                 ],
                 records: [
@@ -1546,10 +1582,10 @@
 
                 columns: [
                     { field: "Supplier", caption: VIS.Msg.getMsg("VA011_Supplier"), sortable: false, size: '36%' },
-                    { field: "QtyOrderPack", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_QtyOrderPack") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:1' },
+                    { field: "QtyOrderPack", caption: '<div><span>' + VIS.Msg.getMsg("VA011_QtyOrderPack") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:1' },
                     { field: "UOM", caption: VIS.Msg.getMsg("VA011_UOM"), sortable: false, size: '16%' },
-                    { field: "MinOrder", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_MinOrder") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:1' },
-                    { field: "DeliveryTime", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_DeliveryTime") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:1' },
+                    { field: "MinOrder", caption: '<div><span>' + VIS.Msg.getMsg("VA011_MinOrder") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:1' },
+                    { field: "DeliveryTime", caption: '<div><span>' + VIS.Msg.getMsg("VA011_DeliveryTime") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:1' },
                     { field: "M_Product_ID", caption: "M_Product_ID", sortable: false, size: '80px', display: false }
                 ],
                 records: [
@@ -1686,10 +1722,10 @@
 
                 columns: [
                     { field: "Product", caption: VIS.Msg.getMsg("VA011_Product"), sortable: false, size: '36%' },
-                    { field: "Factor", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Factor") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:1' },
+                    { field: "Factor", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Factor") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:1' },
                     { field: "UOM", caption: VIS.Msg.getMsg("VA011_UOM"), sortable: false, size: '16%' },
-                    { field: "QtyOnHand", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_OnHand") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:1' },
-                    { field: "ATP", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_ATP") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:1' },
+                    { field: "QtyOnHand", caption: '<div><span>' + VIS.Msg.getMsg("VA011_OnHand") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:1' },
+                    { field: "ATP", caption: '<div><span>' + VIS.Msg.getMsg("VA011_ATP") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:1' },
                     { field: "M_Product_ID", caption: "M_Product_ID", sortable: false, size: '80px', display: false }
                 ],
                 records: [
@@ -1849,7 +1885,7 @@
                     //    }
                     //},
                     { field: "Attribute", caption: VIS.Msg.getMsg("VA011_Attribute"), sortable: false, size: '29%' },
-                    { field: "QtyOnHand", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_OnHand") + '</span></div>', sortable: false, size: '11%', hidden: false, render: 'number:1' },
+                    { field: "QtyOnHand", caption: '<div><span>' + VIS.Msg.getMsg("VA011_OnHand") + '</span></div>', sortable: false, size: '11%', hidden: false, render: 'number:1' },
                     { field: "UOM", caption: VIS.Msg.getMsg("VA011_UOM"), sortable: false, size: '11%' },
                     //{
                     //    field: "C_UOM_ID", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("C_UOM_ID") + '</span></div>', sortable: false, size: '10%', hidden: false, editable: { type: 'select', items: uomArray, showAll: true },
@@ -2076,8 +2112,8 @@
                     { field: "Warehouse", caption: VIS.Msg.getMsg("VA011_Warehouse"), sortable: false, size: '15%' },
                     { field: "Locator", caption: VIS.Msg.getMsg("VA011_Locator"), sortable: false, size: '15%' },
                     { field: "Attribute", caption: VIS.Msg.getMsg("VA011_Attribute"), sortable: false, size: '20%' },
-                    { field: "Quantity", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Quantity") + '</span></div>', sortable: false, size: '15%', hidden: false, render: 'number:1' },
-                    { field: "Unconfirmed", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Unconfirmed") + '</span></div>', sortable: false, size: '15%', hidden: false, render: 'number:1' },
+                    { field: "Quantity", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Quantity") + '</span></div>', sortable: false, size: '15%', hidden: false, render: 'number:1' },
+                    { field: "Unconfirmed", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Unconfirmed") + '</span></div>', sortable: false, size: '15%', hidden: false, render: 'number:1' },
                     { field: "LastReceipt", caption: VIS.Msg.getMsg("VA011_LastReceipt"), sortable: false, size: '15%' },
                     { field: "M_Product_ID", caption: "M_Product_ID", sortable: false, size: '80px', display: false }
                 ],
@@ -2252,10 +2288,10 @@
 
                 columns: [
                     { field: "DatePromised", caption: VIS.Msg.getMsg("VA011_DatePromised"), sortable: false, size: '20%' },
-                    { field: "Quantity", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Quantity") + '</span></div>', sortable: false, size: '20%', hidden: false, render: 'number:1' },
+                    { field: "Quantity", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Quantity") + '</span></div>', sortable: false, size: '20%', hidden: false, render: 'number:1' },
                     { field: "DateOrdered", caption: VIS.Msg.getMsg("VA011_DateOrdered"), sortable: false, size: '20%' },
                     { field: "Supplier", caption: VIS.Msg.getMsg("VA011_Supplier"), sortable: false, size: '20%' },
-                    { field: "QtyReserved", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_QtyReserved") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:1' },
+                    { field: "QtyReserved", caption: '<div><span>' + VIS.Msg.getMsg("VA011_QtyReserved") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:1' },
                     //  { field: "DeliveryTime", caption: VIS.Msg.getMsg("VA011_DeliveryTime"), sortable: false, size: '18%' },
                     { field: "M_Product_ID", caption: "M_Product_ID", sortable: false, size: '80px', display: false }
                 ],
@@ -2413,9 +2449,9 @@
                 columns: [
                     { field: "RequisitionNo", caption: VIS.Msg.getMsg("VA011_RequisitionNo"), sortable: false, size: '20%' },
                     { field: "Date", caption: VIS.Msg.getMsg("VA011_Date"), sortable: false, size: '20%' },
-                    { field: "QtyDemanded", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_QtyDemanded") + '</span></div>', sortable: false, size: '20%', hidden: false, render: 'number:1' },
-                    { field: "QtyReceived", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_QtyReceived") + '</span></div>', sortable: false, size: '20%', hidden: false, render: 'number:1' },
-                    { field: "QtyPending", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_QtyPending") + '</span></div>', sortable: false, size: '20%', hidden: false, render: 'number:1' },
+                    { field: "QtyDemanded", caption: '<div><span>' + VIS.Msg.getMsg("VA011_QtyDemanded") + '</span></div>', sortable: false, size: '20%', hidden: false, render: 'number:1' },
+                    { field: "QtyReceived", caption: '<div><span>' + VIS.Msg.getMsg("VA011_QtyReceived") + '</span></div>', sortable: false, size: '20%', hidden: false, render: 'number:1' },
+                    { field: "QtyPending", caption: '<div><span>' + VIS.Msg.getMsg("VA011_QtyPending") + '</span></div>', sortable: false, size: '20%', hidden: false, render: 'number:1' },
                     { field: "M_Product_ID", caption: "M_Product_ID", sortable: false, size: '80px', display: false }
                 ],
                 records: [
@@ -2628,7 +2664,7 @@
                 columns: [
                     { field: "DocumentType", caption: VIS.Msg.getMsg("VA011_DocumentType"), sortable: false, size: '16%' },
                     { field: "DocumentNo", caption: VIS.Msg.getMsg("VA011_DocumentNo"), sortable: false, size: '16%' },
-                    { field: "Quantity", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Quantity") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:1' },
+                    { field: "Quantity", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Quantity") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:1' },
                     { field: "DatePromised", caption: VIS.Msg.getMsg("VA011_DatePromised"), sortable: false, size: '16%' },
                     { field: "DemandedBy", caption: VIS.Msg.getMsg("VA011_DemandedBy"), sortable: false, size: '18%' },
                     { field: "AvailabilityStatus", caption: VIS.Msg.getMsg("VA011_AvailabilityStatus"), sortable: false, size: '18%', display: false },
@@ -2827,8 +2863,8 @@
                     { field: "DocumentNo", caption: VIS.Msg.getMsg("VA011_DocumentNo"), sortable: false, size: '12%' },
                     { field: "Locator", caption: VIS.Msg.getMsg("VA011_Locator"), sortable: false, size: '12%' },
                     { field: "Date", caption: VIS.Msg.getMsg("VA011_Date"), sortable: false, size: '12%' },
-                    { field: "InventoryIn", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_InventoryIn") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:1' },
-                    { field: "InventoryOut", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_InventoryOut") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:1' },
+                    { field: "InventoryIn", caption: '<div><span>' + VIS.Msg.getMsg("VA011_InventoryIn") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:1' },
+                    { field: "InventoryOut", caption: '<div><span>' + VIS.Msg.getMsg("VA011_InventoryOut") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:1' },
                     { field: "Attribute", caption: VIS.Msg.getMsg("VA011_Attribute"), sortable: false, size: '20%' },
                     //{ field: "attribute_ID", caption: "", sortable: false, size: '80px', display: false },
                     //{
@@ -2837,7 +2873,7 @@
                     //        return '<div><input type=text readonly="readonly" style= "width:85%; border:none" ></input><img src="' + VIS.Application.contextUrl + 'Areas/VIS/Images/base/MultiX16.png" alt="Attribute Set Instance" title="Attribute Set Instance" style="opacity:1;float:right;"></div>';
                     //    }
                     //},
-                    { field: "Balance", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Balance") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:1' },
+                    { field: "Balance", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Balance") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:1' },
                     //{
                     //    field: "C_UOM_ID", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("C_UOM_ID") + '</span></div>', sortable: false, size: '12%', hidden: false, editable: { type: 'select', items: uomArray, showAll: true },
                     //    render: function (record, index, col_index) {
@@ -3051,7 +3087,7 @@
                     //    }
                     //},
                     {
-                        field: "Type", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Type") + '</span></div>', sortable: false, size: '20%', hidden: false, editable: { type: 'select', items: repTypeArray, showAll: true },
+                        field: "Type", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Type") + '</span></div>', sortable: false, size: '20%', hidden: false, editable: { type: 'select', items: repTypeArray, showAll: true },
                         render: function (record, index, col_index) {
                             var html = '';
                             for (var p in repTypeArray) {
@@ -4243,7 +4279,7 @@
             }
 
             if (data.Table[0] != null) {
-                divZoomProdName.css("display", "block");
+                divZoomProdName.css("display", "flex");
                 $("#VA011_prodName_" + $self.windowNo).text(data.Table[0].NAME);
                 $("#VA011_inputWeight_" + $self.windowNo).val(data.Table[0].WEIGHT);
                 $("#VA011_inputVolume_" + $self.windowNo).val(data.Table[0].VOLUME);
@@ -4676,10 +4712,10 @@
 
         // Create busy Indicator
         function createBusyIndicator() {
-            $bsyDiv = $("<div class='vis-apanel-busy'>");
-            $bsyDiv.css({
-                "position": "absolute", "width": "98%", "height": "97%", 'text-align': 'center', 'z-index': '999'
-            });
+            $bsyDiv = $('<div class="vis-busyindicatorouterwrap"><div class="vis-busyindicatorinnerwrap"><i class="vis-busyindicatordiv"></i></div></div>');
+            //$bsyDiv.css({
+            //    "position": "absolute", "width": "98%", "height": "97%", 'text-align': 'center', 'z-index': '999'
+            //});
             $bsyDiv[0].style.visibility = "visible";
             $root.append($bsyDiv);
         };
@@ -4696,12 +4732,12 @@
 
         function replenishPanel() {
             $divReplenish.append($div);
-            $div.append('<div class="VA011-product-data"><label>' + VIS.Msg.getMsg("VA011_Warehouse") + '</label><select class="vis-gc-vpanel-table-mandatory" id="VA011_cmbWarehouse_' + $self.windowNo + '"></select></div>'
-                      + '<div class="VA011-product-data"><label>' + VIS.Msg.getMsg("VA011_ReplenishmentCreate") + '</label><select class="vis-gc-vpanel-table-mandatory" id="VA011_cmbCat_' + $self.windowNo + '"></select></div>'
-                      + '<div class="VA011-product-data"><label>' + VIS.Msg.getMsg("VA011_DocumentType") + '</label><select id="VA011_cmbType_' + $self.windowNo + '" ></select></div>'
-                      + '<div class="VA011-product-data"><label>' + VIS.Msg.getMsg("VA011_Vendor") + '</label><select id="VA011_cmbVendor_' + $self.windowNo + '"></select></div>'
-                      + '<div class="VA011-product-data"><label>' + VIS.Msg.getMsg("VA011_DocStatus") + '</label><select class="vis-gc-vpanel-table-mandatory" id="VA011_cmbDocStatus_' + $self.windowNo + '" ></select></div>'
-                      + '<div class="VA011-product-data"><input id="VA011_ConsiderOrderPack' + $self.windowNo + '" type="checkbox"><span>' + VIS.Msg.getMsg("VA011_ConsiderOrderPack") + '</span></div>');
+            $div.append('<div class="VA011-product-data input-group vis-input-wrap"><div class="vis-control-wrap"><select class="vis-ev-col-mandatory" id="VA011_cmbWarehouse_' + $self.windowNo + '"></select><label>' + VIS.Msg.getMsg("VA011_Warehouse") + '</label></div></div>'
+                      + '<div class="VA011-product-data input-group vis-input-wrap"><div class="vis-control-wrap"><select class="vis-ev-col-mandatory" id="VA011_cmbCat_' + $self.windowNo + '"></select><label>' + VIS.Msg.getMsg("VA011_ReplenishmentCreate") + '</label></div></div>'
+                      + '<div class="VA011-product-data input-group vis-input-wrap"><div class="vis-control-wrap"><select id="VA011_cmbType_' + $self.windowNo + '" ></select><label>' + VIS.Msg.getMsg("VA011_DocumentType") + '</label></div></div>'
+                      + '<div class="VA011-product-data input-group vis-input-wrap"><div class="vis-control-wrap"><select id="VA011_cmbVendor_' + $self.windowNo + '"></select><label>' + VIS.Msg.getMsg("VA011_Vendor") + '</label></div></div>'
+                      + '<div class="VA011-product-data input-group vis-input-wrap"><div class="vis-control-wrap"><select class="vis-ev-col-mandatory" id="VA011_cmbDocStatus_' + $self.windowNo + '" ></select><label>' + VIS.Msg.getMsg("VA011_DocStatus") + '</label></div></div>'
+                      + '<div class="VA011-product-data input-group vis-input-wrap"><div class="vis-control-wrap"><label class="vis-ec-col-lblchkbox"><input id="VA011_ConsiderOrderPack' + $self.windowNo + '" type="checkbox">' + VIS.Msg.getMsg("VA011_ConsiderOrderPack") + '</label></div></div>');
 
             cmbCreate = $div.find("#VA011_cmbCat_" + $self.windowNo);
             cmbDocType = $div.find("#VA011_cmbType_" + $self.windowNo);
@@ -5246,7 +5282,7 @@
                     ch = new VIS.ChildDialog();
                     ch.setContent($divReplenish);
                     $divReplenish.show();
-                    ch.setHeight(500);
+                    //ch.setHeight(500);
                     ch.setWidth(320);
                     ch.setTitle(VIS.Msg.getMsg("VA011_Replenishments"));
                     ch.setModal(true);
