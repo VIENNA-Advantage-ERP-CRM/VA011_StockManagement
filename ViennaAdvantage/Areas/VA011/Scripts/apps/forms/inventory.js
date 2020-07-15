@@ -1132,10 +1132,10 @@
             cartGrid.hideColumn('updated');
             LoadCart();
         };
-
+        // Added by Shifali on 06 July 2020 to check data comes in dropdown for same tenant
         var LoadCart = function () {
             cmbCart.empty();
-            var qry = "SELECT VAICNT_InventoryCount_ID,VAICNT_ScanName FROM VAICNT_InventoryCount WHERE IsActive = 'Y' AND VAICNT_TransactionType = 'OT' ORDER BY VAICNT_ScanName";
+            var qry = "SELECT VAICNT_InventoryCount_ID,VAICNT_ScanName FROM VAICNT_InventoryCount WHERE IsActive = 'Y' AND VAICNT_TransactionType = 'OT' AND AD_Client_ID = " + VIS.context.getContext("#AD_Client_ID") + " ORDER BY VAICNT_ScanName";
             VIS.DB.executeReader(qry, null, LoadcartCallBack);
         }
 
