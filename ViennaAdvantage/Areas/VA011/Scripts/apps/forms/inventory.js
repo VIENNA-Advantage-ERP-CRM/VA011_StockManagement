@@ -4016,7 +4016,10 @@
 
                 columns: [
                     { field: "M_Product_ID", caption: "M_Product_ID", sortable: false, size: '80px', display: false },
+                    // JID_1296 Added Searchkey and UPC in Grid
+                    { field: "SearchKey", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("SearchKey") + '</span></div>', sortable: false, size: '80px', hidden: false },
                     { field: "Product", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("Product") + '</span></div>', sortable: false, size: '80px', hidden: false },
+                    { field: "UPC", caption: '<div style="text-align: center;" ><span>UPC/EAN</span></div>', sortable: false, size: '80px', hidden: false },
                     { field: "QtyOnHand", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_OnHand") + '</span></div>', sortable: false, size: '80px', hidden: false, render: 'number:1' },
                     { field: "UOM", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_UOM") + '</span></div>', sortable: false, size: '50px', hidden: false },
                     //{
@@ -4562,7 +4565,10 @@
                 {
                     recid: Recid,
                     M_Product_ID: data[i].M_Product_ID,
+                     // JID_1296 Added Searchkey and UPC in Grid
+                    SearchKey: data[i].Value,
                     Product: data[i].Name,
+                    UPC: data[i].UPC,
                     QtyOnHand: data[i].QtyOnHand,
                     UOM: data[i].UOM,
                     C_UOM_ID: data[i].C_UOM_ID,

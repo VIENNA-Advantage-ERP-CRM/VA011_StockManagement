@@ -27,5 +27,6 @@ namespace VA011.Models
         public Decimal? QtyToReplenish { get; set; }
         public Decimal? MinLevel { get; set; }
         public string Value { get; set; }
+         public string UPC { get; set; }
     }
 }

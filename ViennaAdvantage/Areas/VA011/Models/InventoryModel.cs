@@ -380,7 +380,7 @@ namespace VA011.Models
                 minLevelSQL = "(SELECT NVL(SUM(LEVEL_MIN),0) FROM  M_Replenish WHERE M_Product_ID = prd.M_Product_ID) as MinLevel ";
             }
 
-            StringBuilder sbSql = new StringBuilder(@"SELECT M_Product_ID,C_UOM_ID, 0 AS QtyAvailable, UOM, Value, Name, 0 AS QTYENTERED, 0 AS QtyOnHand,  "
+            StringBuilder sbSql = new StringBuilder(@"SELECT M_Product_ID,UPC,C_UOM_ID, 0 AS QtyAvailable, UOM, Value, Name, 0 AS QTYENTERED, 0 AS QtyOnHand,  "
           + " 0 AS QtyReserved,0 AS QtyOrdered,"
           + " (SELECT NVL(SUM(lc.TargetQty),0) FROM M_InOutLineConfirm lc"
           + " INNER JOIN M_InOutConfirm ioc ON (ioc.M_InOutConfirm_ID = lc.M_InOutConfirm_ID) INNER JOIN M_InOutLine iol"
@@ -390,7 +390,7 @@ namespace VA011.Models
           + " AND io.IsSOTrx = 'N' AND iol.M_Locator_ID  IN  (SELECT loc.M_Locator_ID FROM M_Locator loc WHERE loc.M_Warehouse_ID = "
           + " w1.M_Warehouse_ID )) AS QtyUnconfirmed,");
             sbSql.Append(sqlDmd.ToString()).Append(minLevelSQL);
-            sbSql.Append(" FROM (SELECT DISTINCT p.M_Product_ID, p.C_UOM_ID, 0 AS QtyAvailable, "
+            sbSql.Append(" FROM (SELECT DISTINCT p.M_Product_ID, p.C_UOM_ID, p.UPC, 0 AS QtyAvailable, "
           + " um.Name as UOM, p.Value, p.Name, 0 AS QTYENTERED, "
                 // + " bomPriceListUom(p.M_Product_ID, pr.M_PriceList_Version_ID,pr.M_AttriButeSetInstance_ID,pr.C_UOM_ID) AS PriceList, "
                 // + " bomPriceStdUom(p.M_Product_ID, pr.M_PriceList_Version_ID,pr.M_AttriButeSetInstance_ID,pr.C_UOM_ID) AS PriceStd,"
@@ -417,7 +417,7 @@ namespace VA011.Models
                 //+ " LEFT OUTER JOIN M_Replenish rep ON (rep.M_Product_ID = )"
             + " ON s.M_Locator_ID=l.M_Locator_ID  LEFT OUTER JOIN M_Warehouse w ON l.M_Warehouse_ID = w.M_Warehouse_ID WHERE p.AD_Client_ID = " + ct.GetAD_Client_ID() + " AND p.IsActive='Y' AND p.IsSummary ='N' ");
 
-            StringBuilder sbGroup = new StringBuilder("GROUP BY M_Product_ID,C_UOM_ID, UOM, Value, Name");
+            StringBuilder sbGroup = new StringBuilder("GROUP BY M_Product_ID,C_UOM_ID, UOM, Value, Name,UPC");
             StringBuilder sbWhere = new StringBuilder();
             if (org_IDs.Length > 0)
             {
@@ -450,7 +450,8 @@ namespace VA011.Models
             }
             if (searchText.Length > 0)
             {
-                sbWhere.Append(" AND UPPER(p.Name) LIKE UPPER('%" + searchText + "%') ");
+                // JID_1296 Should be able search product by using Searchkey and UPC And Name
+                sbWhere.Append(" AND UPPER(p.Name) LIKE UPPER('%" + searchText + "%') OR UPPER(p.Value) LIKE UPPER('%" + searchText + "%') OR UPPER(p.UPC) LIKE UPPER('%" + searchText + "%')");
             }
 
             sbSql.Append(sbWhere.ToString());
@@ -496,7 +497,9 @@ namespace VA011.Models
                                 {
                                     Products _prod = new Products();
                                     _prod.M_Product_ID = Util.GetValueOfInt(dsPro.Tables[0].Rows[i]["M_Product_ID"]);
+                                    _prod.Value = Util.GetValueOfString(dsPro.Tables[0].Rows[i]["Value"]);
                                     _prod.Name = Util.GetValueOfString(dsPro.Tables[0].Rows[i]["Name"]);
+                                    _prod.UPC = Util.GetValueOfString(dsPro.Tables[0].Rows[i]["UPC"]);
                                     _prod.QtyOnHand = Util.GetValueOfDecimal(dsQty.Tables[0].Rows[0]["QtyOnHand"]);
                                     _prod.C_UOM_ID = Util.GetValueOfInt(dsPro.Tables[0].Rows[i]["C_UOM_ID"]);
                                     _prod.UOM = Util.GetValueOfString(dsPro.Tables[0].Rows[i]["UOM"]);
