@@ -188,6 +188,7 @@ ul.VA011-tabs {
     width: 100%;
     padding: 0;
     float: left;
+    display: flex;
 }
 ul.VA011-tabs > li {
     background: rgba(var(--v-c-on-secondary), 1);
@@ -909,4 +910,8 @@ margin-top: -55px;*/
 }
 .VA011-searchDiv .vis-input-wrap {
     margin-bottom: 5px;
+}
+ul.VA011-tabs > li:last-child {
+    margin-right: 0;
+    margin-left: auto;
 }
