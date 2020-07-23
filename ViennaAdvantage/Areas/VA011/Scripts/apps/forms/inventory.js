@@ -571,7 +571,7 @@
                         selOrgs = selOrgs.splice();
                     }
                     //$divCheckBoxOrg.append('<div class="VA011-clsDIV"><input type="checkbox" id=VA011_chkOrg' + counter + ' checked value="' + ui.item.ids + '"><span id=VA011_spnOrg' + counter + '>' + ui.item.value + '</span></br></div>');
-                    $divCheckBoxOrg.append('<div class="VA011-clsDIV"><i id=VA011_chkOrg' + counter + 'value="' + ui.item.ids + '" class="vis vis-mark"></i><span id=VA011_spnOrg' + counter + '>' + ui.item.value + '</span></br></div>');
+                    $divCheckBoxOrg.append('<div class="VA011-clsDIV"><i id="VA011_chkOrg' + counter + '" value="' + ui.item.ids + '" class="vis vis-mark"></i><span id=VA011_spnOrg' + counter + '>' + ui.item.value + '</span></br></div>');
                     counter++;
                     pgNo = 1;
                     ReLoadWarehouses();
@@ -5719,6 +5719,12 @@
                     dLocatorGrid.resize();
                     dTransactionsGrid.resize();
                     dReplenishmentBGrid.resize();
+                    dSubstituteGrid.resize();
+                    dRelatedGrid.resize();
+                    dSuppliersRightGrid.resize();
+                    dKitsGrid.resize();
+                    cartGrid.resize();
+
                 });
             });
 
