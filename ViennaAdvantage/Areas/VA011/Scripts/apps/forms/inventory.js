@@ -275,7 +275,7 @@
             initLoad = false;
             _countBGT01 = VIS.Utility.Util.getValueOfInt(VIS.DB.executeScalar("SELECT COUNT(*) FROM AD_MODULEINFO WHERE PREFIX='BGT01_' "));
             window.setTimeout(function () {
-                imgUsrImage = $('<i class="vis vis-image"></i>');
+                imgUsrImage = $('<img>');
                 $(".VA011_image-wrap").append(imgUsrImage);
                 btnZoomProduct = $("#VA011_ZoomProduct");
 
@@ -743,7 +743,7 @@
                         selCat = selCat.splice();
                     }
                     //$divCheckBoxCategories.append('<div class="VA011-clsDIV"><input type="checkbox" id=VA011_chkCategories' + counter + ' checked value="' + ui.item.ids + '"><span id=VA011_spnCategories' + counter + '>' + ui.item.value + '</span></br></div>');
-                    $divCheckBoxCategories.append('<div class="VA011-clsDIV"><i id=VA011_chkCategories' + counter + '  value="' + ui.item.ids + '" class="vis vis-mark"><span id=VA011_spnCategories' + counter + '>' + ui.item.value + '</span></br></div>');
+                    $divCheckBoxCategories.append('<div class="VA011-clsDIV"><i id=VA011_chkCategories' + counter + '  value="' + ui.item.ids + '" class="vis vis-mark"></i><span id=VA011_spnCategories' + counter + '>' + ui.item.value + '</span></br></div>');
                     counter++;
                     pgNo = 1;
                     bindProductGrid(false);
@@ -928,7 +928,7 @@
 
             if (VIS.Utility.Util.getValueOfInt(VIS.context.getContext("#M_Warehouse_ID")) > 0) {
                 //$divCheckBoxWarehouse.append('<div class="VA011-clsDIV"><input type="checkbox" id=VA011_chkWh' + counter + ' checked value="' + VIS.context.getContext("#M_Warehouse_ID") + '"><span id=VA011_spnWh' + counter + '>' + VIS.context.getContext("#M_Warehouse_Name") + '</span></br></div>');
-                $divCheckBoxWarehouse.append('<div class="VA011-clsDIV"><i id=VA011_chkWh' + counter + '  value="' + VIS.context.getContext("#M_Warehouse_ID") + '" class="vis vis-mark"><span id=VA011_spnWh' + counter + '>' + VIS.context.getContext("#M_Warehouse_Name") + '</span></br></div>');
+                $divCheckBoxWarehouse.append('<div class="VA011-clsDIV"><i id=VA011_chkWh' + counter + '  value="' + VIS.context.getContext("#M_Warehouse_ID") + '" class="vis vis-mark"></i><span id=VA011_spnWh' + counter + '>' + VIS.context.getContext("#M_Warehouse_Name") + '</span></br></div>');
                 selWh.push(VIS.Utility.Util.getValueOfInt(VIS.context.getContext("#M_Warehouse_ID")));
                 counter++;
             }
