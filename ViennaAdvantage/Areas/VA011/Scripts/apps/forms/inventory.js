@@ -3191,20 +3191,20 @@
 
                             if (prod_ID == null || prod_ID == "") {
                                 //alert(VIS.Msg.getMsg("VA011_ProductMandatory"));
-                                VIS.ADialog.error(VIS.Msg.getMsg("VA011_ProductMandatory"));
+                                VIS.ADialog.error("VA011_ProductMandatory");
                                 $bsyDiv[0].style.visibility = "hidden";
                                 return;
                             }
                             if (warehoue_ID == null || warehoue_ID == "") {
                                 //alert(VIS.Msg.getMsg("VA011_WarehouseMandatory"));
-                                VIS.ADialog.error(VIS.Msg.getMsg("VA011_WarehouseMandatory"));
+                                VIS.ADialog.error("VA011_WarehouseMandatory");
                                 $bsyDiv[0].style.visibility = "hidden";
                                 return;
                             }
 
                             if (type == null || type == "") {
                                 //alert(VIS.Msg.getMsg("VA011_ReplenishTypeMandatory"));
-                                VIS.ADialog.error("", true, VIS.Msg.getMsg("VA011_ReplenishTypeMandatory"));
+                                VIS.ADialog.error("VA011_ReplenishTypeMandatory");
                                 $bsyDiv[0].style.visibility = "hidden";
                                 return;
                             }
@@ -5120,7 +5120,7 @@
             else {
                 //alert(VIS.Msg.getMsg("VA011_PleaseSelectaRecord"));
                 // JID_1408 Message getting from Vienna Message box
-                VIS.ADialog.error("", true, VIS.Msg.getMsg("VA011_PleaseSelectaRecord"));
+                VIS.ADialog.error("VA011_PleaseSelectaRecord");
                 $bsyDiv[0].style.visibility = "hidden";
             }
         };
@@ -5134,7 +5134,7 @@
             if (data != null) {
                 if (data != "") {
                     //alert(data);
-                    VIS.ADialog.error("", true, data);
+                    VIS.ADialog.error(data);
                 }
             }
             bindProductGrid(false);
@@ -5243,7 +5243,7 @@
                     var result = VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/GetModuleInfo", { "_prefix": 'VAICNT_' });
                     if (result == false) {
                         //alert(VIS.Msg.getMsg("VA011_PleaseinsallVAICNT"));
-                        VIS.ADialog.error("", true, VIS.Msg.getMsg("VA011_PleaseinsallVAICNT"));
+                        VIS.ADialog.error("VA011_PleaseinsallVAICNT");
                     }
                     else {
                         $divHeadDetails.find(".VA011-tabs").children().removeClass("VA011-selectedTab");
@@ -5316,13 +5316,13 @@
                     var result = VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/GetModuleInfo", { "_prefix": 'VAICNT_' });
                     if (result == false) {
                         //alert(VIS.Msg.getMsg("VA011_PleaseinsallVAICNT"));
-                        VIS.ADialog.error("", true, VIS.Msg.getMsg("VA011_PleaseinsallVAICNT"));
+                        VIS.ADialog.error("VA011_PleaseinsallVAICNT");
                     }
                     else {
                         if (parseFloat(cart) > 0) {
                             if (dProdGrid.getSelection() <= 0) {
                                 //alert(VIS.Msg.getMsg("VA011_PleaseSelectaRecord"));
-                                VIS.ADialog.error("", true, VIS.Msg.getMsg("VA011_PleaseSelectaRecord"));
+                                VIS.ADialog.error("VA011_PleaseSelectaRecord");
                             }
                             else {
                                 cartSelectionValues = [];
@@ -5348,7 +5348,7 @@
                         }
                         else {
                             //alert(VIS.Msg.getMsg("VA011_CartNotSelected"));
-                            VIS.ADialog.error("", true, VIS.Msg.getMsg("VA011_CartNotSelected"));
+                            VIS.ADialog.error("VA011_CartNotSelected");
                         }
                         //alert("Add to Cart");
                     }
@@ -5358,7 +5358,7 @@
 
                     if (dProdGrid.getSelection().length <= 0) {
                         //alert(VIS.Msg.getMsg("VA011_PleaseSelectaRecord"));
-                        VIS.ADialog.error("", true, VIS.Msg.getMsg("VA011_PleaseSelectaRecord"));
+                        VIS.ADialog.error("VA011_PleaseSelectaRecord");
                         $bsyDiv[0].style.visibility = "hidden";
                         return;
                     }
@@ -5503,7 +5503,7 @@
                         var orderPack = dReplenishmentPopGrid.records[j].OrderPack;
                         if (type == "" || type == null) {
                             //alert(VIS.Msg.getMsg("VA011_ReplenishTypeNotSetFor") + " : " + dReplenishmentPopGrid.records[j].Product);
-                            VIS.ADialog.error("", true, VIS.Msg.getMsg("VA011_ReplenishTypeNotSetFor") + " : " + dReplenishmentPopGrid.records[j].Product);
+                            VIS.ADialog.error("VA011_ReplenishTypeNotSetFor" + " : " + dReplenishmentPopGrid.records[j].Product);
                             $bsyDiv[0].style.visibility = "hidden";
                             return false;
                         }
@@ -6033,7 +6033,7 @@
                     console.log(textStatus);
                     $bsyDiv[0].style.visibility = "hidden";
                     //alert(errorThrown);
-                    VIS.ADialog.error("", true, errorThrown);
+                    VIS.ADialog.error(errorThrown);
                     return;
                 }
             });
