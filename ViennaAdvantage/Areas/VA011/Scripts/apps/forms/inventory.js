@@ -5503,7 +5503,7 @@
                         var orderPack = dReplenishmentPopGrid.records[j].OrderPack;
                         if (type == "" || type == null) {
                             //alert(VIS.Msg.getMsg("VA011_ReplenishTypeNotSetFor") + " : " + dReplenishmentPopGrid.records[j].Product);
-                            VIS.ADialog.error("VA011_ReplenishTypeNotSetFor" + " : " + dReplenishmentPopGrid.records[j].Product);
+                            VIS.ADialog.error("VA011_ReplenishTypeNotSetFor",true,+ " : " + dReplenishmentPopGrid.records[j].Product);
                             $bsyDiv[0].style.visibility = "hidden";
                             return false;
                         }
