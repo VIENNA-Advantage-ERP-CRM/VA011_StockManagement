@@ -1050,7 +1050,7 @@
                 columns: [
                     { field: "product_ID", caption: "product_ID", sortable: false, size: '80px', display: false },
                     { field: "Product", caption: '<div><span>' + VIS.Msg.translate(VIS.Env.getCtx(), "Product") + '</span></div>', sortable: false, size: '35%', hidden: false },
-                    { field: "Qty", caption: '<div><span>' + VIS.Msg.getElement(VIS.Env.getCtx(), "Quantity") + '</span></div>', sortable: false, size: '15%', hidden: false, editable: { type: 'float' }, render: 'number:1' },
+                    { field: "Qty", caption: '<div><span>' + VIS.Msg.getElement(VIS.Env.getCtx(), "Quantity") + '</span></div>', sortable: false, size: '15%', hidden: false, editable: { type: 'float' }, render: 'number:2' },
                     {
                         field: "C_Uom_ID", caption: '<div><span>' + VIS.Msg.getElement(VIS.Env.getCtx(), "C_UOM_ID") + '</span></div>', sortable: false, size: '15%', hidden: false, editable: { type: 'select', items: uomArray, showAll: true },
                         render: function (record, index, col_index) {
@@ -1271,10 +1271,10 @@
 
                 columns: [
                     { field: "Product", caption: VIS.Msg.getMsg("VA011_Product"), sortable: false, size: '36%' },
-                    { field: "QtyOnHand", caption: '<div><span>' + VIS.Msg.getMsg("VA011_OnHand") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:1' },
+                    { field: "QtyOnHand", caption: '<div><span>' + VIS.Msg.getMsg("VA011_OnHand") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:2' },
                     { field: "UOM", caption: VIS.Msg.getMsg("VA011_UOM"), sortable: false, size: '16%' },
-                    { field: "Reserved", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Reserved") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:1' },
-                    { field: "ATP", caption: '<div><span>' + VIS.Msg.getMsg("VA011_ATP") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:1' },
+                    { field: "Reserved", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Reserved") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:2' },
+                    { field: "ATP", caption: '<div><span>' + VIS.Msg.getMsg("VA011_ATP") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:2' },
                     { field: "M_Product_ID", caption: "M_Product_ID", sortable: false, size: '80px', display: false }
                 ],
                 records: [
@@ -1384,10 +1384,10 @@
                     {
                         recid: Recid,
                         Product: ds.tables[0].rows[i].cells.product,
-                        QtyOnHand: ds.tables[0].rows[i].cells.qtyonhand,
+                        QtyOnHand: (ds.tables[0].rows[i].cells.qtyonhand).toLocaleString(),
                         UOM: ds.tables[0].rows[i].cells.uom,
-                        Reserved: ds.tables[0].rows[i].cells.qtyreserved,
-                        ATP: ds.tables[0].rows[i].cells.qtyavailable,
+                        Reserved: (ds.tables[0].rows[i].cells.qtyreserved).toLocaleString(),
+                        ATP: (ds.tables[0].rows[i].cells.qtyavailable).toLocaleString(),
                         M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
                     });
                 }
@@ -1427,10 +1427,10 @@
 
                 columns: [
                     { field: "Product", caption: VIS.Msg.getMsg("VA011_Product"), sortable: false, size: '36%' },
-                    { field: "QtyOnHand", caption: '<div><span>' + VIS.Msg.getMsg("VA011_OnHand") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:1' },
+                    { field: "QtyOnHand", caption: '<div><span>' + VIS.Msg.getMsg("VA011_OnHand") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:2' },
                     { field: "UOM", caption: VIS.Msg.getMsg("VA011_UOM"), sortable: false, size: '16%' },
-                    { field: "Reserved", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Reserved") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:1' },
-                    { field: "ATP", caption: '<div><span>' + VIS.Msg.getMsg("VA011_ATP") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:1' },
+                    { field: "Reserved", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Reserved") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:2' },
+                    { field: "ATP", caption: '<div><span>' + VIS.Msg.getMsg("VA011_ATP") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:2' },
                     { field: "M_Product_ID", caption: "M_Product_ID", sortable: false, size: '80px', display: false }
                 ],
                 records: [
@@ -1539,10 +1539,10 @@
                     {
                         recid: Recid,
                         Product: ds.tables[0].rows[i].cells.product,
-                        QtyOnHand: ds.tables[0].rows[i].cells.qtyonhand,
+                        QtyOnHand: (ds.tables[0].rows[i].cells.qtyonhand).toLocaleString(),
                         UOM: ds.tables[0].rows[i].cells.uom,
-                        Reserved: ds.tables[0].rows[i].cells.qtyreserved,
-                        ATP: ds.tables[0].rows[i].cells.qtyavailable,
+                        Reserved: (ds.tables[0].rows[i].cells.qtyreserved).toLocaleString(),
+                        ATP: (ds.tables[0].rows[i].cells.qtyavailable).toLocaleString(),
                         M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
                     });
                 }
@@ -1582,10 +1582,10 @@
 
                 columns: [
                     { field: "Supplier", caption: VIS.Msg.getMsg("VA011_Supplier"), sortable: false, size: '36%' },
-                    { field: "QtyOrderPack", caption: '<div><span>' + VIS.Msg.getMsg("VA011_QtyOrderPack") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:1' },
+                    { field: "QtyOrderPack", caption: '<div><span>' + VIS.Msg.getMsg("VA011_QtyOrderPack") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:2' },
                     { field: "UOM", caption: VIS.Msg.getMsg("VA011_UOM"), sortable: false, size: '16%' },
-                    { field: "MinOrder", caption: '<div><span>' + VIS.Msg.getMsg("VA011_MinOrder") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:1' },
-                    { field: "DeliveryTime", caption: '<div><span>' + VIS.Msg.getMsg("VA011_DeliveryTime") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:1' },
+                    { field: "MinOrder", caption: '<div><span>' + VIS.Msg.getMsg("VA011_MinOrder") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:2' },
+                    { field: "DeliveryTime", caption: '<div><span>' + VIS.Msg.getMsg("VA011_DeliveryTime") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:2' },
                     { field: "M_Product_ID", caption: "M_Product_ID", sortable: false, size: '80px', display: false }
                 ],
                 records: [
@@ -1722,10 +1722,10 @@
 
                 columns: [
                     { field: "Product", caption: VIS.Msg.getMsg("VA011_Product"), sortable: false, size: '36%' },
-                    { field: "Factor", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Factor") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:1' },
+                    { field: "Factor", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Factor") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:2' },
                     { field: "UOM", caption: VIS.Msg.getMsg("VA011_UOM"), sortable: false, size: '16%' },
-                    { field: "QtyOnHand", caption: '<div><span>' + VIS.Msg.getMsg("VA011_OnHand") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:1' },
-                    { field: "ATP", caption: '<div><span>' + VIS.Msg.getMsg("VA011_ATP") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:1' },
+                    { field: "QtyOnHand", caption: '<div><span>' + VIS.Msg.getMsg("VA011_OnHand") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:2' },
+                    { field: "ATP", caption: '<div><span>' + VIS.Msg.getMsg("VA011_ATP") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:2' },
                     { field: "M_Product_ID", caption: "M_Product_ID", sortable: false, size: '80px', display: false }
                 ],
                 records: [
@@ -1836,8 +1836,8 @@
                         Product: ds.tables[0].rows[i].cells.product,
                         Factor: ds.tables[0].rows[i].cells.factor,
                         UOM: ds.tables[0].rows[i].cells.uom,
-                        QtyOnHand: ds.tables[0].rows[i].cells.qtyonhand,
-                        ATP: ds.tables[0].rows[i].cells.qtyavailable,
+                        QtyOnHand: (ds.tables[0].rows[i].cells.qtyonhand).toLocaleString(),
+                        ATP: (ds.tables[0].rows[i].cells.qtyavailable).toLocaleString(),
                         M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
                     });
                 }
@@ -1885,7 +1885,7 @@
                     //    }
                     //},
                     { field: "Attribute", caption: VIS.Msg.getMsg("VA011_Attribute"), sortable: false, size: '29%' },
-                    { field: "QtyOnHand", caption: '<div><span>' + VIS.Msg.getMsg("VA011_OnHand") + '</span></div>', sortable: false, size: '11%', hidden: false, render: 'number:1' },
+                    { field: "QtyOnHand", caption: '<div><span>' + VIS.Msg.getMsg("VA011_OnHand") + '</span></div>', sortable: false, size: '11%', hidden: false, render: 'number:2' },
                     { field: "UOM", caption: VIS.Msg.getMsg("VA011_UOM"), sortable: false, size: '11%' },
                     //{
                     //    field: "C_UOM_ID", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("C_UOM_ID") + '</span></div>', sortable: false, size: '10%', hidden: false, editable: { type: 'select', items: uomArray, showAll: true },
@@ -2037,12 +2037,12 @@
                     {
                         recid: Recid,
                         Attribute: ds.tables[0].rows[i].cells.description,
-                        QtyOnHand: ds.tables[0].rows[i].cells.qtyonhand,
+                        QtyOnHand: (ds.tables[0].rows[i].cells.qtyonhand).toLocaleString(),
                         UOM: ds.tables[0].rows[i].cells.uom,
                         //UPC: ds.tables[0].rows[i].cells.upc,
                         SerialNo: ds.tables[0].rows[i].cells.serno,
                         LotNo: ds.tables[0].rows[i].cells.lot,
-                        ExpDate: expDate,
+                        ExpDate: expDate.toLocaleDateString(),
                         M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
                     });
                 }
@@ -2112,8 +2112,8 @@
                     { field: "Warehouse", caption: VIS.Msg.getMsg("VA011_Warehouse"), sortable: false, size: '15%' },
                     { field: "Locator", caption: VIS.Msg.getMsg("VA011_Locator"), sortable: false, size: '15%' },
                     { field: "Attribute", caption: VIS.Msg.getMsg("VA011_Attribute"), sortable: false, size: '20%' },
-                    { field: "Quantity", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Quantity") + '</span></div>', sortable: false, size: '15%', hidden: false, render: 'number:1' },
-                    { field: "Unconfirmed", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Unconfirmed") + '</span></div>', sortable: false, size: '15%', hidden: false, render: 'number:1' },
+                    { field: "Quantity", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Quantity") + '</span></div>', sortable: false, size: '15%', hidden: false, render: 'number:2' },
+                    { field: "Unconfirmed", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Unconfirmed") + '</span></div>', sortable: false, size: '15%', hidden: false, render: 'number:2' },
                     { field: "LastReceipt", caption: VIS.Msg.getMsg("VA011_LastReceipt"), sortable: false, size: '15%' },
                     { field: "M_Product_ID", caption: "M_Product_ID", sortable: false, size: '80px', display: false }
                 ],
@@ -2245,8 +2245,8 @@
                         recid: Recid,
                         Warehouse: ds.tables[0].rows[i].cells.warehouse,
                         Locator: ds.tables[0].rows[i].cells.locator,
-                        Quantity: ds.tables[0].rows[i].cells.qtyonhand,
-                        Unconfirmed: ds.tables[0].rows[i].cells.qtyunconfirmed,
+                        Quantity: (ds.tables[0].rows[i].cells.qtyonhand).toLocaleString(),
+                        Unconfirmed: (ds.tables[0].rows[i].cells.qtyunconfirmed).toLocaleString(),
                         Attribute: ds.tables[0].rows[i].cells.description,
                         LastReceipt: lastReceipt,
                         M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
@@ -2288,10 +2288,10 @@
 
                 columns: [
                     { field: "DatePromised", caption: VIS.Msg.getMsg("VA011_DatePromised"), sortable: false, size: '20%' },
-                    { field: "Quantity", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Quantity") + '</span></div>', sortable: false, size: '20%', hidden: false, render: 'number:1' },
+                    { field: "Quantity", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Quantity") + '</span></div>', sortable: false, size: '20%', hidden: false, render: 'number:2' },
                     { field: "DateOrdered", caption: VIS.Msg.getMsg("VA011_DateOrdered"), sortable: false, size: '20%' },
                     { field: "Supplier", caption: VIS.Msg.getMsg("VA011_Supplier"), sortable: false, size: '20%' },
-                    { field: "QtyReserved", caption: '<div><span>' + VIS.Msg.getMsg("VA011_QtyReserved") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:1' },
+                    { field: "QtyReserved", caption: '<div><span>' + VIS.Msg.getMsg("VA011_QtyReserved") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:2' },
                     //  { field: "DeliveryTime", caption: VIS.Msg.getMsg("VA011_DeliveryTime"), sortable: false, size: '18%' },
                     { field: "M_Product_ID", caption: "M_Product_ID", sortable: false, size: '80px', display: false }
                 ],
@@ -2407,8 +2407,8 @@
                 {
                     recid: Recid,
                     DatePromised: datePromised,
-                    Quantity: ds.tables[0].rows[i].cells.qtyordered,
-                    DateOrdered: dateOrdered,
+                    Quantity: (ds.tables[0].rows[i].cells.qtyordered).toLocaleString(),
+                    DateOrdered: dateOrdered.toLocaleDateString(),
                     Supplier: ds.tables[0].rows[i].cells.supplier,
                     QtyReserved: ds.tables[0].rows[i].cells.qtyreserved,
                     M_Product_ID: 0,
@@ -2449,9 +2449,9 @@
                 columns: [
                     { field: "RequisitionNo", caption: VIS.Msg.getMsg("VA011_RequisitionNo"), sortable: false, size: '20%' },
                     { field: "Date", caption: VIS.Msg.getMsg("VA011_Date"), sortable: false, size: '20%' },
-                    { field: "QtyDemanded", caption: '<div><span>' + VIS.Msg.getMsg("VA011_QtyDemanded") + '</span></div>', sortable: false, size: '20%', hidden: false, render: 'number:1' },
-                    { field: "QtyReceived", caption: '<div><span>' + VIS.Msg.getMsg("VA011_QtyReceived") + '</span></div>', sortable: false, size: '20%', hidden: false, render: 'number:1' },
-                    { field: "QtyPending", caption: '<div><span>' + VIS.Msg.getMsg("VA011_QtyPending") + '</span></div>', sortable: false, size: '20%', hidden: false, render: 'number:1' },
+                    { field: "QtyDemanded", caption: '<div><span>' + VIS.Msg.getMsg("VA011_QtyDemanded") + '</span></div>', sortable: false, size: '20%', hidden: false, render: 'number:2' },
+                    { field: "QtyReceived", caption: '<div><span>' + VIS.Msg.getMsg("VA011_QtyReceived") + '</span></div>', sortable: false, size: '20%', hidden: false, render: 'number:2' },
+                    { field: "QtyPending", caption: '<div><span>' + VIS.Msg.getMsg("VA011_QtyPending") + '</span></div>', sortable: false, size: '20%', hidden: false, render: 'number:2' },
                     { field: "M_Product_ID", caption: "M_Product_ID", sortable: false, size: '80px', display: false }
                 ],
                 records: [
@@ -2540,10 +2540,10 @@
                                 {
                                     recid: Recid,
                                     RequisitionNo: dsRep.tables[0].rows[i].cells.documentno,
-                                    Date: date,
-                                    QtyDemanded: dsRep.tables[0].rows[i].cells.qty,
-                                    QtyReceived: dsRep.tables[0].rows[i].cells.dtd001_deliveredqty,
-                                    QtyPending: dsRep.tables[0].rows[i].cells.qtypending,
+                                    Date: date.toLocaleDateString(),
+                                    QtyDemanded: (dsRep.tables[0].rows[i].cells.qty).toLocaleString(),
+                                    QtyReceived: (dsRep.tables[0].rows[i].cells.dtd001_deliveredqty).toLocaleString(),
+                                    QtyPending: (dsRep.tables[0].rows[i].cells.qtypending).toLocaleString(),
                                     // LastReceipt: dsRep.tables[0].rows[i].cells.lastreceipt,
                                     M_Product_ID: dsRep.tables[0].rows[i].cells.m_product_id,
                                 });
@@ -2664,7 +2664,7 @@
                 columns: [
                     { field: "DocumentType", caption: VIS.Msg.getMsg("VA011_DocumentType"), sortable: false, size: '16%' },
                     { field: "DocumentNo", caption: VIS.Msg.getMsg("VA011_DocumentNo"), sortable: false, size: '16%' },
-                    { field: "Quantity", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Quantity") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:1' },
+                    { field: "Quantity", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Quantity") + '</span></div>', sortable: false, size: '16%', hidden: false, render: 'number:2' },
                     { field: "DatePromised", caption: VIS.Msg.getMsg("VA011_DatePromised"), sortable: false, size: '16%' },
                     { field: "DemandedBy", caption: VIS.Msg.getMsg("VA011_DemandedBy"), sortable: false, size: '18%' },
                     { field: "AvailabilityStatus", caption: VIS.Msg.getMsg("VA011_AvailabilityStatus"), sortable: false, size: '18%', display: false },
@@ -2818,8 +2818,8 @@
                             recid: Recid,
                             DocumentType: ds.tables[0].rows[i].cells.doctype,
                             DocumentNo: ds.tables[0].rows[i].cells.documentno,
-                            Quantity: ds.tables[0].rows[i].cells.qtyentered,
-                            DatePromised: datePromised,
+                            Quantity: (ds.tables[0].rows[i].cells.qtyentered).toLocaleString(),
+                            DatePromised: datePromised.toLocaleDateString(),
                             DemandedBy: ds.tables[0].rows[i].cells.demandedby,
                             AvailabilityStatus: "",
                             M_Product_ID: 0,
@@ -2863,8 +2863,8 @@
                     { field: "DocumentNo", caption: VIS.Msg.getMsg("VA011_DocumentNo"), sortable: false, size: '12%' },
                     { field: "Locator", caption: VIS.Msg.getMsg("VA011_Locator"), sortable: false, size: '12%' },
                     { field: "Date", caption: VIS.Msg.getMsg("VA011_Date"), sortable: false, size: '12%' },
-                    { field: "InventoryIn", caption: '<div><span>' + VIS.Msg.getMsg("VA011_InventoryIn") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:1' },
-                    { field: "InventoryOut", caption: '<div><span>' + VIS.Msg.getMsg("VA011_InventoryOut") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:1' },
+                    { field: "InventoryIn", caption: '<div><span>' + VIS.Msg.getMsg("VA011_InventoryIn") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:2' },
+                    { field: "InventoryOut", caption: '<div><span>' + VIS.Msg.getMsg("VA011_InventoryOut") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:2' },
                     { field: "Attribute", caption: VIS.Msg.getMsg("VA011_Attribute"), sortable: false, size: '20%' },
                     //{ field: "attribute_ID", caption: "", sortable: false, size: '80px', display: false },
                     //{
@@ -2873,7 +2873,7 @@
                     //        return '<div><input type=text readonly="readonly" style= "width:85%; border:none" ></input><img src="' + VIS.Application.contextUrl + 'Areas/VIS/Images/base/MultiX16.png" alt="Attribute Set Instance" title="Attribute Set Instance" style="opacity:1;float:right;"></div>';
                     //    }
                     //},
-                    { field: "Balance", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Balance") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:1' },
+                    { field: "Balance", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Balance") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:2' },
                     //{
                     //    field: "C_UOM_ID", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("C_UOM_ID") + '</span></div>', sortable: false, size: '12%', hidden: false, editable: { type: 'select', items: uomArray, showAll: true },
                     //    render: function (record, index, col_index) {
@@ -3019,7 +3019,7 @@
                     DocumentType: ds.tables[0].rows[i].cells.doctype,
                     DocumentNo: ds.tables[0].rows[i].cells.documentno,
                     Locator: ds.tables[0].rows[i].cells.locator,
-                    Date: date,
+                    Date: date.toLocaleDateString(),
                     InventoryIn: invIn,
                     InventoryOut: InvOut,
                     // attribute_ID: "",
@@ -3096,10 +3096,10 @@
                             return html;
                         }
                     },
-                    { field: "Min", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Min") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:1', editable: { type: 'float' } },
-                    { field: "Max", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Max") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:1', editable: { type: 'float' } },
-                    { field: "Qty", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_MinOrderQuantity") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:1', editable: { type: 'float' } },
-                    { field: "OrderPack", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_OrderPack") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:1', editable: { type: 'float' } },
+                    { field: "Min", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Min") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:2', editable: { type: 'float' } },
+                    { field: "Max", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Max") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:2', editable: { type: 'float' } },
+                    { field: "Qty", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_MinOrderQuantity") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:2', editable: { type: 'float' } },
+                    { field: "OrderPack", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_OrderPack") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:2', editable: { type: 'float' } },
                     //{ field: "SourceWarehouse", caption: VIS.Msg.getMsg("VA011_SourceWarehouse"), sortable: false, size: '20%' },
                     {
                         field: "SourceWarehouse", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_SourceWarehouse") + '</span></div>', sortable: false, size: '20%', hidden: false, editable: { type: 'select', items: listSrcWarehouses, showAll: true },
@@ -3190,18 +3190,21 @@
                             var SourceWarehouse = dReplenishmentPopGrid.records[event.recid - 1].SourceWarehouse;
 
                             if (prod_ID == null || prod_ID == "") {
-                                alert(VIS.Msg.getMsg("VA011_ProductMandatory"));
+                                //alert(VIS.Msg.getMsg("VA011_ProductMandatory"));
+                                VIS.ADialog.error("VA011_ProductMandatory");
                                 $bsyDiv[0].style.visibility = "hidden";
                                 return;
                             }
                             if (warehoue_ID == null || warehoue_ID == "") {
-                                alert(VIS.Msg.getMsg("VA011_WarehouseMandatory"));
+                                //alert(VIS.Msg.getMsg("VA011_WarehouseMandatory"));
+                                VIS.ADialog.error("VA011_WarehouseMandatory");
                                 $bsyDiv[0].style.visibility = "hidden";
                                 return;
                             }
 
                             if (type == null || type == "") {
-                                alert(VIS.Msg.getMsg("VA011_ReplenishTypeMandatory"));
+                                //alert(VIS.Msg.getMsg("VA011_ReplenishTypeMandatory"));
+                                VIS.ADialog.error("VA011_ReplenishTypeMandatory");
                                 $bsyDiv[0].style.visibility = "hidden";
                                 return;
                             }
@@ -3382,7 +3385,7 @@
                     Type: ds.tables[0].rows[i].cells.rtype,
                     Min: ds.tables[0].rows[i].cells.mini,
                     Max: ds.tables[0].rows[i].cells.maxi,
-                    Qty: ds.tables[0].rows[i].cells.qty,
+                    Qty: (ds.tables[0].rows[i].cells.qty).toLocaleString(),
                     OrderPack: ds.tables[0].rows[i].cells.orderpack,
                     SourceWarehouse: ds.tables[0].rows[i].cells.sourcewarehouse,
                     // M_Warehouse_ID: ds.tables[0].rows[i].cells.m_warehouse_id,
@@ -3535,10 +3538,10 @@
                             return html;
                         }
                     },
-                    { field: "Min", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Min") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:1', editable: { type: 'float' } },
-                    { field: "Max", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Max") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:1', editable: { type: 'float' } },
-                    { field: "Qty", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_MinOrderQuantity") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:1', editable: { type: 'float' } },
-                    { field: "OrderPack", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_OrderPack") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:1', editable: { type: 'float' } },
+                    { field: "Min", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Min") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:2', editable: { type: 'float' } },
+                    { field: "Max", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Max") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:2', editable: { type: 'float' } },
+                    { field: "Qty", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_MinOrderQuantity") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:2', editable: { type: 'float' } },
+                    { field: "OrderPack", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_OrderPack") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:2', editable: { type: 'float' } },
                     //{ field: "SourceWarehouse", caption: VIS.Msg.getMsg("VA011_SourceWarehouse"), sortable: false, size: '20%' },
                     {
                         field: "SourceWarehouse", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_SourceWarehouse") + '</span></div>', sortable: false, size: '20%', hidden: false, editable: { type: 'select', items: listSrcWarehouses, showAll: true },
@@ -3815,13 +3818,13 @@
                     { field: "Warehouse", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Warehouse") + '</span></div>', sortable: false, size: '12%', hidden: false },
                     { field: "SourceWarehouse", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_SourceWarehouse") + '</span></div>', sortable: false, size: '12%', hidden: false },
                     { field: "ReplenishmentType", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_ReplenishmentType") + '</span></div>', sortable: false, size: '9%', hidden: false },
-                    { field: "Max", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Max") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:1' },
-                    { field: "Min", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Min") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:1' },
-                    { field: "QtyOnHand", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_OnHand") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:1' },
-                    { field: "Ordered", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Ordered") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:1' },
-                    { field: "ReqReserved", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_ReqReserved") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:1' },
-                    { field: "Reserved", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Reserved") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:1' },
-                    { field: "QtyToOrder", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_QtyToOrder") + '</span></div>', sortable: false, size: '9%', hidden: false, editable: { type: 'float' }, render: 'number:1' },
+                    { field: "Max", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Max") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:2' },
+                    { field: "Min", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Min") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:2' },
+                    { field: "QtyOnHand", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_OnHand") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:2' },
+                    { field: "Ordered", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Ordered") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:2' },
+                    { field: "ReqReserved", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_ReqReserved") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:2' },
+                    { field: "Reserved", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Reserved") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:2' },
+                    { field: "QtyToOrder", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_QtyToOrder") + '</span></div>', sortable: false, size: '9%', hidden: false, editable: { type: 'float' }, render: 'number:2' },
                 ],
                 records: [
 
@@ -4020,7 +4023,7 @@
                     { field: "SearchKey", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("SearchKey") + '</span></div>', sortable: false, size: '80px', hidden: false },
                     { field: "Product", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("Product") + '</span></div>', sortable: false, size: '80px', hidden: false },
                     { field: "UPC", caption: '<div style="text-align: center;" ><span>UPC/EAN</span></div>', sortable: false, size: '80px', hidden: false },
-                    { field: "QtyOnHand", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_OnHand") + '</span></div>', sortable: false, size: '80px', hidden: false, render: 'number:1' },
+                    { field: "QtyOnHand", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_OnHand") + '</span></div>', sortable: false, size: '80px', hidden: false, render: 'number:2' },
                     { field: "UOM", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_UOM") + '</span></div>', sortable: false, size: '50px', hidden: false },
                     //{
                     //    field: "C_UOM_ID", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("C_UOM_ID") + '</span></div>', sortable: false, size: '15%', hidden: false, editable: { type: 'select', items: uomArray, showAll: true },
@@ -4032,13 +4035,13 @@
                     //        return html;
                     //    }
                     //},
-                    { field: "Reserved", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Reserved") + '</span></div>', sortable: false, size: '70px', hidden: false, render: 'number:1' },
-                    { field: "QtyAvailable", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_ATP") + '</span></div>', sortable: false, size: '45px', hidden: false, render: 'number:1' },
-                    { field: "UnConfirmed", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Unconfirmed") + '</span></div>', sortable: false, size: '82px', hidden: false, render: 'number:1' },
-                    { field: "Ordered", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Ordered") + '</span></div>', sortable: false, size: '70px', hidden: false, render: 'number:1' },
-                    { field: "Demanded", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Demanded") + '</span></div>', sortable: false, size: '75px', hidden: false, render: 'number:1' },
-                    { field: "TillReorder", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_TillReorder") + '</span></div>', sortable: false, size: '80px', hidden: false, render: 'number:1' },
-                    { field: "QtyToReplenish", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_QtyToReplenish") + '</span></div>', sortable: false, size: '110px', hidden: false, render: 'number:1' },
+                    { field: "Reserved", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Reserved") + '</span></div>', sortable: false, size: '70px', hidden: false, render: 'number:2' },
+                    { field: "QtyAvailable", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_ATP") + '</span></div>', sortable: false, size: '45px', hidden: false, render: 'number:2' },
+                    { field: "UnConfirmed", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Unconfirmed") + '</span></div>', sortable: false, size: '82px', hidden: false, render: 'number:2' },
+                    { field: "Ordered", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Ordered") + '</span></div>', sortable: false, size: '70px', hidden: false, render: 'number:2' },
+                    { field: "Demanded", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Demanded") + '</span></div>', sortable: false, size: '75px', hidden: false, render: 'number:2' },
+                    { field: "TillReorder", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_TillReorder") + '</span></div>', sortable: false, size: '80px', hidden: false, render: 'number:2' },
+                    { field: "QtyToReplenish", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_QtyToReplenish") + '</span></div>', sortable: false, size: '110px', hidden: false, render: 'number:2' },
                     {
                         field: "Status", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Status") + '</span></div>', sortable: false, size: '80px', hidden: false,
                         render: function () {
@@ -4047,7 +4050,7 @@
                         }
                     },
                     { field: "C_UOM_ID", caption: "C_UOM_ID", sortable: false, size: '80px', display: false },
-                    { field: "MinLevel", caption: "MinLevel", sortable: false, size: '13%', hidden: false, render: 'number:1' },
+                    { field: "MinLevel", caption: "MinLevel", sortable: false, size: '13%', hidden: false, render: 'number:2' },
                    // { field: "UPC", caption: VIS.Msg.getElement(VIS.Env.getCtx(), "UPC"), sortable: false, size: '80px' },
                    // { field: "LineID", caption: VIS.Msg.getElement(VIS.Env.getCtx(), "VAICNT_InventoryCountLine_ID"), sortable: false, size: '80px', display: false },
                    //{ field: "Updated", caption: VIS.Msg.getElement(VIS.Env.getCtx(), "Updated"), sortable: false, size: '80px', display: false }
@@ -4569,16 +4572,16 @@
                     SearchKey: data[i].Value,
                     Product: data[i].Name,
                     UPC: data[i].UPC,
-                    QtyOnHand: data[i].QtyOnHand,
+                    QtyOnHand: (data[i].QtyOnHand).toLocaleString(),
                     UOM: data[i].UOM,
                     C_UOM_ID: data[i].C_UOM_ID,
-                    Reserved: data[i].Reserved,
-                    QtyAvailable: data[i].QtyAvailable,
-                    UnConfirmed: data[i].UnConfirmed,
+                    Reserved: (data[i].Reserved).toLocaleString(),
+                    QtyAvailable: (data[i].QtyAvailable).toLocaleString(),
+                    UnConfirmed: (data[i].UnConfirmed).toLocaleString(),
                     Ordered: data[i].Ordered,
                     Demanded: data[i].Demanded,
                     TillReorder: data[i].TillReorder,
-                    QtyToReplenish: data[i].QtyToReplenish,
+                    QtyToReplenish: (data[i].QtyToReplenish).toLocaleString(),
                     MinLevel: data[i].MinLevel,
                     Status: ""
                 });
@@ -5115,7 +5118,9 @@
                 VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/GenerateReps", { "Reps": records }, callbackReps);
             }
             else {
-                alert(VIS.Msg.getMsg("VA011_PleaseSelectaRecord"));
+                //alert(VIS.Msg.getMsg("VA011_PleaseSelectaRecord"));
+                // JID_1408 Message getting from Vienna Message box
+                VIS.ADialog.error("VA011_PleaseSelectaRecord");
                 $bsyDiv[0].style.visibility = "hidden";
             }
         };
@@ -5128,7 +5133,8 @@
             $divRepTopGrid.css("display", "none");
             if (data != null) {
                 if (data != "") {
-                    alert(data);
+                    //alert(data);
+                    VIS.ADialog.error(data);
                 }
             }
             bindProductGrid(false);
@@ -5236,7 +5242,8 @@
                 else if (btn.indexOf("VA011_btnCart_") >= 0) {
                     var result = VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/GetModuleInfo", { "_prefix": 'VAICNT_' });
                     if (result == false) {
-                        alert(VIS.Msg.getMsg("VA011_PleaseinsallVAICNT"));
+                        //alert(VIS.Msg.getMsg("VA011_PleaseinsallVAICNT"));
+                        VIS.ADialog.error("VA011_PleaseinsallVAICNT");
                     }
                     else {
                         $divHeadDetails.find(".VA011-tabs").children().removeClass("VA011-selectedTab");
@@ -5308,12 +5315,14 @@
                 else if (btn.indexOf("VA011_btnAddToCart_") >= 0) {
                     var result = VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/GetModuleInfo", { "_prefix": 'VAICNT_' });
                     if (result == false) {
-                        alert(VIS.Msg.getMsg("VA011_PleaseinsallVAICNT"));
+                        //alert(VIS.Msg.getMsg("VA011_PleaseinsallVAICNT"));
+                        VIS.ADialog.error("VA011_PleaseinsallVAICNT");
                     }
                     else {
                         if (parseFloat(cart) > 0) {
                             if (dProdGrid.getSelection() <= 0) {
-                                alert(VIS.Msg.getMsg("VA011_PleaseSelectaRecord"));
+                                //alert(VIS.Msg.getMsg("VA011_PleaseSelectaRecord"));
+                                VIS.ADialog.error("VA011_PleaseSelectaRecord");
                             }
                             else {
                                 cartSelectionValues = [];
@@ -5338,7 +5347,8 @@
                             }
                         }
                         else {
-                            alert(VIS.Msg.getMsg("VA011_CartNotSelected"));
+                            //alert(VIS.Msg.getMsg("VA011_CartNotSelected"));
+                            VIS.ADialog.error("VA011_CartNotSelected");
                         }
                         //alert("Add to Cart");
                     }
@@ -5347,7 +5357,8 @@
                     debugger;
 
                     if (dProdGrid.getSelection().length <= 0) {
-                        alert(VIS.Msg.getMsg("VA011_PleaseSelectaRecord"));
+                        //alert(VIS.Msg.getMsg("VA011_PleaseSelectaRecord"));
+                        VIS.ADialog.error("VA011_PleaseSelectaRecord");
                         $bsyDiv[0].style.visibility = "hidden";
                         return;
                     }
@@ -5491,7 +5502,8 @@
                         var SourceWarehouse = dReplenishmentPopGrid.records[j].SourceWarehouse;
                         var orderPack = dReplenishmentPopGrid.records[j].OrderPack;
                         if (type == "" || type == null) {
-                            alert(VIS.Msg.getMsg("VA011_ReplenishTypeNotSetFor") + " : " + dReplenishmentPopGrid.records[j].Product);
+                            //alert(VIS.Msg.getMsg("VA011_ReplenishTypeNotSetFor") + " : " + dReplenishmentPopGrid.records[j].Product);
+                            VIS.ADialog.error("VA011_ReplenishTypeNotSetFor",true,+ " : " + dReplenishmentPopGrid.records[j].Product);
                             $bsyDiv[0].style.visibility = "hidden";
                             return false;
                         }
@@ -6026,7 +6038,8 @@
                     //
                     console.log(textStatus);
                     $bsyDiv[0].style.visibility = "hidden";
-                    alert(errorThrown);
+                    //alert(errorThrown);
+                    VIS.ADialog.error(errorThrown);
                     return;
                 }
             });
@@ -6065,7 +6078,8 @@
                         //
                         console.log(textStatus);
                         $bsyDiv[0].style.visibility = "hidden";
-                        alert("RecordNotSaved");
+                        //alert("RecordNotSaved");
+                        VIS.ADialog.error("RecordNotSaved");
                         return;
                     }
                 });
@@ -6103,7 +6117,8 @@
                     //
                     console.log(textStatus);
                     $bsyDiv[0].style.visibility = "hidden";
-                    alert("DeleteError");
+                    //alert("DeleteError");
+                    VIS.ADialog.error("DeleteError");
                     return;
                 }
             });
