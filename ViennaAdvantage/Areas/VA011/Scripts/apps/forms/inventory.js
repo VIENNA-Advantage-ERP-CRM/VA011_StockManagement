@@ -2042,7 +2042,7 @@
                         //UPC: ds.tables[0].rows[i].cells.upc,
                         SerialNo: ds.tables[0].rows[i].cells.serno,
                         LotNo: ds.tables[0].rows[i].cells.lot,
-                        ExpDate: expDate.toLocaleDateString(),
+                        ExpDate: expDate,
                         M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
                     });
                 }
@@ -2408,7 +2408,7 @@
                     recid: Recid,
                     DatePromised: datePromised,
                     Quantity: (ds.tables[0].rows[i].cells.qtyordered).toLocaleString(),
-                    DateOrdered: dateOrdered.toLocaleDateString(),
+                    DateOrdered: dateOrdered,
                     Supplier: ds.tables[0].rows[i].cells.supplier,
                     QtyReserved: ds.tables[0].rows[i].cells.qtyreserved,
                     M_Product_ID: 0,
@@ -2540,7 +2540,7 @@
                                 {
                                     recid: Recid,
                                     RequisitionNo: dsRep.tables[0].rows[i].cells.documentno,
-                                    Date: date.toLocaleDateString(),
+                                    Date: date,
                                     QtyDemanded: (dsRep.tables[0].rows[i].cells.qty).toLocaleString(),
                                     QtyReceived: (dsRep.tables[0].rows[i].cells.dtd001_deliveredqty).toLocaleString(),
                                     QtyPending: (dsRep.tables[0].rows[i].cells.qtypending).toLocaleString(),
@@ -2819,7 +2819,7 @@
                             DocumentType: ds.tables[0].rows[i].cells.doctype,
                             DocumentNo: ds.tables[0].rows[i].cells.documentno,
                             Quantity: (ds.tables[0].rows[i].cells.qtyentered).toLocaleString(),
-                            DatePromised: datePromised.toLocaleDateString(),
+                            DatePromised: datePromised,
                             DemandedBy: ds.tables[0].rows[i].cells.demandedby,
                             AvailabilityStatus: "",
                             M_Product_ID: 0,
@@ -3019,7 +3019,7 @@
                     DocumentType: ds.tables[0].rows[i].cells.doctype,
                     DocumentNo: ds.tables[0].rows[i].cells.documentno,
                     Locator: ds.tables[0].rows[i].cells.locator,
-                    Date: date.toLocaleDateString(),
+                    Date: date,
                     InventoryIn: invIn,
                     InventoryOut: InvOut,
                     // attribute_ID: "",
@@ -6180,7 +6180,8 @@
             var dateConverted = dateToConvert;
             if (dateConverted != "") {
                 dateConverted = new Date(dateConverted);
-                dateConverted = dateConverted.toDateString();
+                //dateConverted = dateConverted..toDateString();
+                dateConverted = dateConverted.toLocaleDateString();
             }
             return dateConverted;
         }
