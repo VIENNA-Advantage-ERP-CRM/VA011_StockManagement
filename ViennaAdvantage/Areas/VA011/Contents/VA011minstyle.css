@@ -1,4 +1,4 @@
-﻿/*Version 1.0.9.2*/
+﻿/*Version 1.0.10.0*/
 
 .VA011_CartLabel {
     /* width: auto; */
@@ -201,6 +201,7 @@ ul.VA011-tabs {
     width: 100%;
     padding: 0;
     float: left;
+    display: flex;
 }
 
     ul.VA011-tabs > li {
@@ -949,6 +950,11 @@ margin-top: -55px;*/
 
 .VA011-searchDiv .vis-input-wrap {
     margin-bottom: 5px;
+}
+
+ul.VA011-tabs > li:last-child {
+    margin-right: 0;
+    margin-left: auto;
 }
 
 @font-face {
