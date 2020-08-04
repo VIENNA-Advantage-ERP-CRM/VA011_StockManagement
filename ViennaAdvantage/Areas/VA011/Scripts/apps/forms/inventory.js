@@ -792,7 +792,7 @@
             $divRepTopGrid = $('<div id="VA011_ReplenishmentGridTop_' + $self.windowNo + '" class="VA011-gridCls" style="display:none"></div>');
 
             $divHeadVarientProdBottom = $('<div class="VA011-right-head VA011-tab-control" style="padding: 0px; margin-top: 10px"><ul class="VA011-tabs VA011_bottomGridHeaderSec" style="overflow: auto;white-space: nowrap;">' +
-              ' <li class="VA011-selectedTab" id="VA011_btnVariant_' + $self.windowNo + '" style="margin: 0px 0 2px;">' + VIS.Msg.getMsg("VA011_Variants") + '</li>' +
+              ' <li class="VA011-selectedTab" id="VA011_btnVariant_' + $self.windowNo + '" style="margin: 0px 0 0 2px;">' + VIS.Msg.getMsg("VA011_Variants") + '</li>' +
               ' <li id="VA011_btnLocators_' + $self.windowNo + '" style="margin: 0 0px 0 2px;">' + VIS.Msg.getMsg("VA011_Locators") + '</li>' +
               ' <li id="VA011_btnOrdered' + $self.windowNo + '" style="margin: 0 0px 0 2px;">' + VIS.Msg.getMsg("VA011_Ordered") + '</li>' +
               ' <li  id="VA011_btnReplenished_' + $self.windowNo + '" style="margin: 0 0px 0 2px;">' + VIS.Msg.getMsg("VA011_Replenished") + '</li>' +
@@ -817,7 +817,7 @@
 
             $divHeadDetails = $('<div class="VA011_form-tabs" style="padding-bottom:0px">'
                 + '<ul class="VA011-tabs" style="overflow:auto; white-space:nowrap">'
-                + '<li id="VA011_btnDetails_' + $self.windowNo + '" class="VA011-selectedTab" style="margin-bottom:2px">' + VIS.Msg.getMsg("VA011_Details") + '</li>'
+                + '<li id="VA011_btnDetails_' + $self.windowNo + '" class="VA011-selectedTab">' + VIS.Msg.getMsg("VA011_Details") + '</li>'
                 + '<li id="VA011_btnSubsti_' + $self.windowNo + '">' + VIS.Msg.getMsg("VA011_Substitute") + '</li>'
                 + '<li id="VA011_btnRelated_' + $self.windowNo + '">' + VIS.Msg.getMsg("VA011_Related") + '</li>'
                 + '<li id="VA011_btnSuppliers_' + $self.windowNo + '">' + VIS.Msg.getMsg("VA011_Suppliers") + '</li>'
@@ -3578,7 +3578,8 @@
                     {
                         field: "Save", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Save") + '</span></div>', sortable: false, size: '8%', hidden: false,
                         render: function () {
-                            return '<div style="text-align: center;"><img src="' + VIS.Application.contextUrl + 'Areas/VIS/Images/Save22.png" alt="Attribute Set Instance" title="Attribute Set Instance" style="opacity:1;"></div>';
+                            //return '<div style="text-align: center;"><img src="' + VIS.Application.contextUrl + 'Areas/VIS/Images/Save22.png" alt="Attribute Set Instance" title="Attribute Set Instance" style="opacity:1;"></div>';
+                            return '<div style="text-align: center;"><i class="vis vis-save" title="Attribute Set Instance" style="opacity:1;font-size: 1rem;"></i></div>';
                         }
                     },
                     { field: "M_Warehouse_ID", caption: "M_Warehouse_ID", sortable: false, size: '80px', display: false },
