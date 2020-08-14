@@ -139,7 +139,12 @@ namespace VA011.Models
         public List<NameIDClass> GetPLV(Ctx ctx, string value, bool fill)
         {
             List<NameIDClass> pInfo = new List<NameIDClass>();
-            string sql = @"SELECT M_PriceList_Version_ID, Name FROM M_PriceList_Version WHERE AD_Client_ID = " + ctx.GetAD_Client_ID() + " AND IsActive = 'Y'";
+            // Added Isactive check for header
+            string sql = @"SELECT pv.M_PriceList_Version_ID, pv.Name FROM M_PriceList_Version pv INNER JOIN M_PriceList pl
+                            ON pv.M_PriceList_ID=pl.M_PriceList_ID
+                            WHERE pl.isactive   ='Y'
+                            AND pv.isactive     ='Y'
+                            AND pv.AD_Client_ID =" + ctx.GetAD_Client_ID();
             if (value != "")
             {
                 sql += " AND UPPER(Name) LIKE UPPER('%" + value + "%') ";
