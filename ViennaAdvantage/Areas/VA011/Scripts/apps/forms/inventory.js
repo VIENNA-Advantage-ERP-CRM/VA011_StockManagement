@@ -79,7 +79,8 @@
         var btnCancelScan = null;
 
         var btnZoomProduct = null;
-
+        var format = VIS.DisplayType.GetNumberFormat(VIS.DisplayType.Amount);
+        var dotFormatter = VIS.Env.isDecimalPoint();
         // Grids
         // Product
         var $divProdGrid = null;
@@ -3293,6 +3294,56 @@
             //bindReplenishmentPopGrid();
         };
 
+        // function to check comma or dot from given value and return new value
+        function checkcommaordot(event, val) {
+            var foundComma = false;
+            event.value_new = VIS.Utility.Util.getValueOfString(val);
+            if (event.value_new.contains(".")) {
+                foundComma = true;
+                var indices = [];
+                for (var i = 0; i < event.value_new.length; i++) {
+                    if (event.value_new[i] === ".")
+                        indices.push(i);
+                }
+                if (indices.length > 1) {
+                    event.value_new = removeAllButLast(event.value_new, '.');
+                }
+            }
+            if (event.value_new.contains(",")) {
+                if (foundComma) {
+                    event.value_new = removeAllButLast(event.value_new, ',');
+                }
+                else {
+                    var indices = [];
+                    for (var i = 0; i < event.value_new.length; i++) {
+                        if (event.value_new[i] === ",")
+                            indices.push(i);
+                    }
+                    if (indices.length > 1) {
+                        event.value_new = removeAllButLast(event.value_new, ',');
+                    }
+                    else {
+                        event.value_new = event.value_new.replace(",", ".");
+                    }
+                }
+            }
+            if (event.value_new == "") {
+                event.value_new = "0";
+            }
+            return event.value_new;
+        };
+
+        // Remove all seperator but only bring last seperator
+        function removeAllButLast(amt, seprator) {
+            var parts = amt.split(seprator);
+            amt = parts.slice(0, -1).join('') + '.' + parts.slice(-1);
+            if (amt.indexOf('.') == (amt.length - 1)) {
+                amt = amt.replace(".", "");
+            }
+            return amt;
+        };
+
+
         // Bind Replenishment Popup Grid 
         function bindReplenishmentPopGrid() {
 
@@ -3506,7 +3557,7 @@
 
         // Create ReplenishmentB Panel Grid at the Bottom
         function gridReplenishmentBPanel() {
-
+            precision = 2;
             dReplenishmentBGrid = null;
             dReplenishmentBGrid = $divReplenishmentBGrid.w2grid({
                 name: 'VA011_gridReplenishmentB_' + $self.windowNo,
@@ -3538,10 +3589,42 @@
                             return html;
                         }
                     },
-                    { field: "Min", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Min") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:2', editable: { type: 'float' } },
-                    { field: "Max", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Max") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:2', editable: { type: 'float' } },
-                    { field: "Qty", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_MinOrderQuantity") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:2', editable: { type: 'float' } },
-                    { field: "OrderPack", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_OrderPack") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:2', editable: { type: 'float' } },
+                    {
+                        field: "Min", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Min") + '</span></div>', sortable: false, size: '8%', hidden: false, editable: { type: 'number' },
+                        // Added by shifali on 27th Aug 2020 to get Min value acc. to culture
+                        render: function (record, index, col_index) {
+                            var val = record["Min"];
+                            val = checkcommaordot(event, val);
+                            return parseFloat(val).toLocaleString();
+                        }
+                    },
+                    {
+                        field: "Max", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Max") + '</span></div>', sortable: false, size: '8%', hidden: false, editable: { type: 'number' },
+                        // Added by shifali on 27th Aug 2020 to get Max value acc. to culture
+                        render: function (record, index, col_index) {
+                            var val = record["Max"];
+                            val = checkcommaordot(event, val);
+                            return parseFloat(val).toLocaleString();
+                        }
+                    },
+                    {
+                        field: "Qty", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_MinOrderQuantity") + '</span></div>', sortable: false, size: '8%', hidden: false, editable: { type: 'number' },
+                        // Added by shifali on 27th Aug 2020 to get Qty value acc. to culture
+                        render: function (record, index, col_index) {
+                            var val = record["Qty"];
+                            val = checkcommaordot(event, val);
+                            return parseFloat(val).toLocaleString();
+                        }
+                    },
+                    {
+                        field: "OrderPack", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_OrderPack") + '</span></div>', sortable: false, size: '8%', hidden: false, editable: { type: 'number' },
+                        // Added by shifali on 27th Aug 2020 to get Orderpack value acc. to culture
+                        render: function (record, index, col_index) {
+                            var val = record["OrderPack"];
+                            val = checkcommaordot(event, val);
+                            return parseFloat(val).toLocaleString();
+                        }
+                    },
                     //{ field: "SourceWarehouse", caption: VIS.Msg.getMsg("VA011_SourceWarehouse"), sortable: false, size: '20%' },
                     {
                         field: "SourceWarehouse", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_SourceWarehouse") + '</span></div>', sortable: false, size: '20%', hidden: false, editable: { type: 'select', items: listSrcWarehouses, showAll: true },
@@ -3591,22 +3674,31 @@
                 records: [
 
                 ],
+
                 onChange: function (event) {
                     //w2ui['gridprice_' + $self.windowNo].records[event.index]["updated"] = true;
                     if (event.column == 1) {
                         w2ui['VA011_gridReplenishmentB_' + $self.windowNo].records[event.index]["Type"] = event.value_new;
                     }
                     if (event.column == 2) {
-                        w2ui['VA011_gridReplenishmentB_' + $self.windowNo].records[event.index]["Min"] = event.value_new;
+                        //w2ui['VA011_gridReplenishmentB_' + $self.windowNo].records[event.index]["Min"] = event.value_new;
+                        var _val = format.GetConvertedNumber(event.value_new, dotFormatter);
+                        w2ui['VA011_gridReplenishmentB_' + $self.windowNo].records[event.index]["Min"] = _val.toFixed(precision);
                     }
                     else if (event.column == 3) {
-                        w2ui['VA011_gridReplenishmentB_' + $self.windowNo].records[event.index]["Max"] = event.value_new;
+                        //w2ui['VA011_gridReplenishmentB_' + $self.windowNo].records[event.index]["Max"] = event.value_new;
+                        var _val = format.GetConvertedNumber(event.value_new, dotFormatter);
+                        w2ui['VA011_gridReplenishmentB_' + $self.windowNo].records[event.index]["Max"] = _val.toFixed(precision);
                     }
                     else if (event.column == 4) {
-                        w2ui['VA011_gridReplenishmentB_' + $self.windowNo].records[event.index]["Qty"] = event.value_new;
+                        //w2ui['VA011_gridReplenishmentB_' + $self.windowNo].records[event.index]["Qty"] = event.value_new;
+                        var _val = format.GetConvertedNumber(event.value_new, dotFormatter);
+                        w2ui['VA011_gridReplenishmentB_' + $self.windowNo].records[event.index]["Qty"] = _val.toFixed(precision);
                     }
                     else if (event.column == 5) {
-                        w2ui['VA011_gridReplenishmentB_' + $self.windowNo].records[event.index]["OrderPack"] = event.value_new;
+                        //w2ui['VA011_gridReplenishmentB_' + $self.windowNo].records[event.index]["OrderPack"] = event.value_new;
+                        var _val = format.GetConvertedNumber(event.value_new, dotFormatter);
+                        w2ui['VA011_gridReplenishmentB_' + $self.windowNo].records[event.index]["OrderPack"] = _val.toFixed(precision);
                     }
                     else if (event.column == 6) {
                         w2ui['VA011_gridReplenishmentB_' + $self.windowNo].records[event.index]["SourceWarehouse"] = event.value_new;
@@ -3644,14 +3736,45 @@
                 onDelete: function (event) {
                     event.preventDefault();
                 },
-                onEditField: function (e) {
-                    if (e.column == 6 && dReplenishmentBGrid.records.length > 0) {
-                        var delrec = dReplenishmentBGrid.columns[e.column].editable.items.map(function (item) {
-                            return item.id == dReplenishmentBGrid.records[e.recid - 1].M_Warehouse_ID;
+                onEditField: function (event) {
+                    if (event.column == 6 && dReplenishmentBGrid.records.length > 0) {
+                        var delrec = dReplenishmentBGrid.columns[event.column].editable.items.map(function (item) {
+                            return item.id == dReplenishmentBGrid.records[event.recid - 1].M_Warehouse_ID;
                         }).indexOf(true);
                         if (delrec > -1) {
-                            dReplenishmentBGrid.columns[e.column].editable.items.splice(delrec, 1);
+                            dReplenishmentBGrid.columns[event.column].editable.items.splice(delrec, 1);
                         }
+                    }
+                    // Added by shifali on 27th Aug 2020 to get value acc. to culture while editing grid column
+                    id = event.recid;
+                    if (event.column == 2 || event.column == 3 || event.column == 4 || event.column == 5) {
+                        dReplenishmentBGrid.records[event.index][dReplenishmentBGrid.columns[event.column].field] = checkcommaordot(event, dReplenishmentBGrid.records[event.index][dReplenishmentBGrid.columns[event.column].field]);
+                        var _value = format.GetFormatAmount(dReplenishmentBGrid.records[event.index][dReplenishmentBGrid.columns[event.column].field], "init", dotFormatter);
+                        dReplenishmentBGrid.records[event.index][dReplenishmentBGrid.columns[event.column].field] = format.GetConvertedString(_value, dotFormatter);
+                        $("#grid_VA011_gridReplenishmentB_" + $self.windowNo + "_rec_" + id).keydown(function (event) {
+                            if (!dotFormatter && (event.keyCode == 190 || event.keyCode == 110)) {// , separator
+                                return false;
+                            }
+                            else if (dotFormatter && event.keyCode == 188) { // . separator
+                                return false;
+                            }
+                            if (event.target.value.contains(".") && (event.which == 110 || event.which == 190 || event.which == 188)) {
+                                if (event.target.value.indexOf('.') > -1) {
+                                    event.target.value = event.target.value.replace('.', '');
+                                }
+                            }
+                            if (event.target.value.contains(",") && (event.which == 110 || event.which == 190 || event.which == 188)) {
+                                if (event.target.value.indexOf(',') > -1) {
+                                    event.target.value = event.target.value.replace(',', '');
+                                }
+                            }
+                            if (event.keyCode != 8 && event.keyCode != 9 && (event.keyCode < 37 || event.keyCode > 40) &&
+                                (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105)
+                                && event.keyCode != 109 && event.keyCode != 189 && event.keyCode != 110
+                                && event.keyCode != 144 && event.keyCode != 188 && event.keyCode != 190) {
+                                return false;
+                            }
+                        });
                     }
                 }
             });
