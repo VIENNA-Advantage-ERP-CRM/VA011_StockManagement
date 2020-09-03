@@ -3117,15 +3117,15 @@
             if (ds != null && ds.tables[0].rows.length > 0) {
                 for (var i = 0; i < ds.tables[0].rows.length; i++) {
                     Recid = Recid + 1;
-                    var invIn = "";
-                    var InvOut = "";
+                    var invIn = 0;
+                    var InvOut = 0;
                     var date = null;
                     if (ds.tables[0].rows[i].cells.inventoryin > 0) {
-                        invIn = ds.tables[0].rows[i].cells.inventoryin;
+                        invIn = parseFloat(ds.tables[0].rows[i].cells.inventoryin).toLocaleString();
                     }
 
                     if (ds.tables[0].rows[i].cells.inventoryout < 0) {
-                        InvOut = ds.tables[0].rows[i].cells.inventoryout;
+                        InvOut = parseFloat(ds.tables[0].rows[i].cells.inventoryout).toLocaleString();
                     }
 
 
@@ -3143,8 +3143,8 @@
                     DocumentNo: ds.tables[0].rows[i].cells.documentno,
                     Locator: ds.tables[0].rows[i].cells.locator,
                             Date: date,
-                            InventoryIn: parseFloat(invIn).toLocaleString(),
-                            InventoryOut: parseFloat(InvOut).toLocaleString(),
+                            InventoryIn: invIn,
+                            InventoryOut: InvOut,
                     // attribute_ID: "",
                             Attribute: ds.tables[0].rows[i].cells.description,
                             Balance: parseFloat(ds.tables[0].rows[i].cells.currentqty).toLocaleString(),
@@ -5428,7 +5428,7 @@
             if (data != null) {
                 if (data != "") {
                     //alert(data);
-                    VIS.ADialog.error(data);
+                    VIS.ADialog.info("","",data, "");
                 }
             }
             bindProductGrid(false);
