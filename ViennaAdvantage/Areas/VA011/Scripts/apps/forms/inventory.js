@@ -4164,7 +4164,7 @@
                         render: function (record, index, col_index) {
                             var val = record["ReqReserved"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
-                        }s
+                        }
                     },
                     {
                         field: "Reserved", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Reserved") + '</span></div>', sortable: false, size: '9%', hidden: false,
