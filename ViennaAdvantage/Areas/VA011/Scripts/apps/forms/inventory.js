@@ -3219,10 +3219,38 @@
                             return html;
                         }
                     },
-                    { field: "Min", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Min") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:2', editable: { type: 'float' } },
-                    { field: "Max", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Max") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:2', editable: { type: 'float' } },
-                    { field: "Qty", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_MinOrderQuantity") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:2', editable: { type: 'float' } },
-                    { field: "OrderPack", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_OrderPack") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:2', editable: { type: 'float' } },
+                    {
+                        field: "Min", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Min") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:2', editable: { type: 'number' },
+                        render: function (record, index, col_index) {
+                            var val = record["Min"];
+                            val = checkcommaordot(event, val);
+                            return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
+                        }
+                    },
+                    {
+                        field: "Max", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Max") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:2', editable: { type: 'number' },
+                        render: function (record, index, col_index) {
+                            var val = record["Max"];
+                            val = checkcommaordot(event, val);
+                            return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
+                        }
+                    },
+                    {
+                        field: "Qty", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_MinOrderQuantity") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:2', editable: { type: 'number' },
+                        render: function (record, index, col_index) {
+                            var val = record["Qty"];
+                            val = checkcommaordot(event, val);
+                            return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
+                        }
+                    },
+                    {
+                        field: "OrderPack", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_OrderPack") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:2', editable: { type: 'number' },
+                        render: function (record, index, col_index) {
+                            var val = record["OrderPack"];
+                            val = checkcommaordot(event, val);
+                            return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
+                        }
+                    },
                     //{ field: "SourceWarehouse", caption: VIS.Msg.getMsg("VA011_SourceWarehouse"), sortable: false, size: '20%' },
                     {
                         field: "SourceWarehouse", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_SourceWarehouse") + '</span></div>', sortable: false, size: '20%', hidden: false, editable: { type: 'select', items: listSrcWarehouses, showAll: true },
@@ -3282,16 +3310,24 @@
                         w2ui['VA011_gridReplenishmentPop_' + $self.windowNo].records[event.index]["Type"] = event.value_new;
                     }
                     if (event.column == 2) {
-                        w2ui['VA011_gridReplenishmentPop_' + $self.windowNo].records[event.index]["Min"] = event.value_new;
+                        //w2ui['VA011_gridReplenishmentPop_' + $self.windowNo].records[event.index]["Min"] = event.value_new;
+                        var _val = format.GetConvertedNumber(event.value_new, dotFormatter);
+                        w2ui['VA011_gridReplenishmentPop_' + $self.windowNo].records[event.index]["Min"] = _val.toFixed(precision);
                     }
                     else if (event.column == 3) {
-                        w2ui['VA011_gridReplenishmentPop_' + $self.windowNo].records[event.index]["Max"] = event.value_new;
+                        //w2ui['VA011_gridReplenishmentPop_' + $self.windowNo].records[event.index]["Max"] = event.value_new;
+                        var _val = format.GetConvertedNumber(event.value_new, dotFormatter);
+                        w2ui['VA011_gridReplenishmentPop_' + $self.windowNo].records[event.index]["Max"] = _val.toFixed(precision);
                     }
                     else if (event.column == 4) {
-                        w2ui['VA011_gridReplenishmentPop_' + $self.windowNo].records[event.index]["Qty"] = event.value_new;
+                        //w2ui['VA011_gridReplenishmentPop_' + $self.windowNo].records[event.index]["Qty"] = event.value_new;
+                        var _val = format.GetConvertedNumber(event.value_new, dotFormatter);
+                        w2ui['VA011_gridReplenishmentPop_' + $self.windowNo].records[event.index]["Qty"] = _val.toFixed(precision);
                     }
                     else if (event.column == 5) {
-                        w2ui['VA011_gridReplenishmentPop_' + $self.windowNo].records[event.index]["OrderPack"] = event.value_new;
+                        //w2ui['VA011_gridReplenishmentPop_' + $self.windowNo].records[event.index]["OrderPack"] = event.value_new;
+                        var _val = format.GetConvertedNumber(event.value_new, dotFormatter);
+                        w2ui['VA011_gridReplenishmentPop_' + $self.windowNo].records[event.index]["OrderPack"] = _val.toFixed(precision);
                     }
                     else if (event.column == 6) {
                         w2ui['VA011_gridReplenishmentPop_' + $self.windowNo].records[event.index]["SourceWarehouse"] = event.value_new;
@@ -3359,17 +3395,48 @@
                 },
                 onSubmit: function (event) {
                 },
-                onEditField: function (e) {
-                    if (e.column == 6 && dReplenishmentPopGrid.records.length > 0) {
+                onEditField: function (event) {
+                    if (event.column == 6 && dReplenishmentPopGrid.records.length > 0) {
                         //listSrcWarehouses = jQuery.extend(true, {}, listCopyWarehouses);
                         listSrcWarehouses = listCopyWarehouses.slice();
-                        dReplenishmentPopGrid.columns[e.column].editable.items = listCopyWarehouses.slice();
-                        var delrec = dReplenishmentPopGrid.columns[e.column].editable.items.map(function (item) {
+                        dReplenishmentPopGrid.columns[event.column].editable.items = listCopyWarehouses.slice();
+                        var delrec = dReplenishmentPopGrid.columns[event.column].editable.items.map(function (item) {
                             return item.id == $cmbRepAllWarehouse.val();
                         }).indexOf(true);
                         if (delrec > -1) {
-                            dReplenishmentPopGrid.columns[e.column].editable.items.splice(delrec, 1);
+                            dReplenishmentPopGrid.columns[event.column].editable.items.splice(delrec, 1);
                         }
+                    }
+                    // To get value acc. to culture while editing grid column
+                    id = event.recid;
+                    if (event.column == 2 || event.column == 3 || event.column == 4 || event.column == 5) {
+                        dReplenishmentPopGrid.records[event.index][dReplenishmentPopGrid.columns[event.column].field] = checkcommaordot(event, dReplenishmentPopGrid.records[event.index][dReplenishmentPopGrid.columns[event.column].field]);
+                        var _value = format.GetFormatAmount(dReplenishmentPopGrid.records[event.index][dReplenishmentPopGrid.columns[event.column].field], "init", dotFormatter);
+                        dReplenishmentPopGrid.records[event.index][dReplenishmentPopGrid.columns[event.column].field] = format.GetConvertedString(_value, dotFormatter);
+                        $("#grid_VA011_gridReplenishmentPop_" + $self.windowNo + "_rec_" + id).keydown(function (event) {
+                            if (!dotFormatter && (event.keyCode == 190 || event.keyCode == 110)) {// , separator
+                                return false;
+                            }
+                            else if (dotFormatter && event.keyCode == 188) { // . separator
+                                return false;
+                            }
+                            if (event.target.value.contains(".") && (event.which == 110 || event.which == 190 || event.which == 188)) {
+                                if (event.target.value.indexOf('.') > -1) {
+                                    event.target.value = event.target.value.replace('.', '');
+                                }
+                            }
+                            if (event.target.value.contains(",") && (event.which == 110 || event.which == 190 || event.which == 188)) {
+                                if (event.target.value.indexOf(',') > -1) {
+                                    event.target.value = event.target.value.replace(',', '');
+                                }
+                            }
+                            if (event.keyCode != 8 && event.keyCode != 9 && (event.keyCode < 37 || event.keyCode > 40) &&
+                                (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105)
+                                && event.keyCode != 109 && event.keyCode != 189 && event.keyCode != 110
+                                && event.keyCode != 144 && event.keyCode != 188 && event.keyCode != 190) {
+                                return false;
+                            }
+                        });
                     }
                 }
             });
@@ -4064,8 +4131,20 @@
                     { field: "Warehouse", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Warehouse") + '</span></div>', sortable: false, size: '12%', hidden: false },
                     { field: "SourceWarehouse", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_SourceWarehouse") + '</span></div>', sortable: false, size: '12%', hidden: false },
                     { field: "ReplenishmentType", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_ReplenishmentType") + '</span></div>', sortable: false, size: '9%', hidden: false },
-                    { field: "Max", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Max") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:2' },
-                    { field: "Min", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Min") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:2' },
+                    {
+                        field: "Max", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Max") + '</span></div>', sortable: false, size: '9%', hidden: false,
+                        render: function (record, index, col_index) {
+                            var val = record["Max"];
+                            return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
+                        }
+                    },
+                    {
+                        field: "Min", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Min") + '</span></div>', sortable: false, size: '9%', hidden: false,
+                        render: function (record, index, col_index) {
+                            var val = record["Min"];
+                            return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
+                        }
+                    },
                     {
                         field: "QtyOnHand", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_OnHandQty") + '</span></div>', sortable: false, size: '9%', hidden: false,
                         render: function (record, index, col_index) {
@@ -4073,10 +4152,34 @@
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
                         }
                     },
-                    { field: "Ordered", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Ordered") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:2' },
-                    { field: "ReqReserved", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_ReqReserved") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:2' },
-                    { field: "Reserved", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Reserved") + '</span></div>', sortable: false, size: '9%', hidden: false, render: 'number:2' },
-                    { field: "QtyToOrder", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_QtyToOrder") + '</span></div>', sortable: false, size: '9%', hidden: false, editable: { type: 'float' }, render: 'number:2' },
+                    {
+                        field: "Ordered", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Ordered") + '</span></div>', sortable: false, size: '9%', hidden: false,
+                        render: function (record, index, col_index) {
+                            var val = record["Ordered"];
+                            return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
+                        }
+                    },
+                    {
+                        field: "ReqReserved", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_ReqReserved") + '</span></div>', sortable: false, size: '9%', hidden: false,
+                        render: function (record, index, col_index) {
+                            var val = record["ReqReserved"];
+                            return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
+                        }s
+                    },
+                    {
+                        field: "Reserved", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Reserved") + '</span></div>', sortable: false, size: '9%', hidden: false,
+                        render: function (record, index, col_index) {
+                            var val = record["Reserved"];
+                            return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
+                        }
+                    },
+                    {
+                        field: "QtyToOrder", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_QtyToOrder") + '</span></div>', sortable: false, size: '9%', hidden: false, 
+                        render: function (record, index, col_index) {
+                            var val = record["QtyToOrder"];
+                            return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
+                        }
+                    },
                 ],
                 records: [
 
