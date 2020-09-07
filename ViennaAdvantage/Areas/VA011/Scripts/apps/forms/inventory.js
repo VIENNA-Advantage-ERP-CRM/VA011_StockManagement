@@ -947,7 +947,7 @@
 
             // Product Status Bar Div
             $statusProdDiv = $('<div class="VA011-gridstatusbar"></div>');
-            $ulStatusProdDiv = $('<ul class="vis-statusbar-ul" style="float:right"></ul>');
+            $ulStatusProdDiv = $('<ul class="vis-statusbar-ul"></ul>');
 
             // For showing Result li
             // + '<li><span class="vis-statusbar-statusDB"></span></li>'

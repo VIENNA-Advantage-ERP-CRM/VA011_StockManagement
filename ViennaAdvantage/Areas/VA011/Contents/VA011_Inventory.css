@@ -91,7 +91,10 @@ body {
 }
 .VA011_form-tabs{ float: left; width: 100%; padding-bottom: 10px;}
 .VA011_form-top-fields h4 span{ margin-left: 10px; color: #999; font-size: 15px; cursor: pointer;}
-.VA011_data-wrap{ margin-bottom: 20px;}
+.VA011_data-wrap {
+    margin-bottom: 20px;
+    width: 100%;
+}
 .VA011_data-wrap p{ font-size: 15px; font-weight: 600; margin: 0}
 .VA011_data-wrap span{ display: block;}
 .VA011_image-wrap {
@@ -117,7 +120,10 @@ body {
     margin-top: 35px;
 }
 .VA011_form-fullFields{ float: left; width: 100%; margin-top: 12px;}
-.VA011_form-data{ margin-bottom: 10px;}
+.VA011_form-data {
+    margin-bottom: 10px;
+    display: flex;
+}
 .VA011_form-data > label {
     /* color: #666; */
     font-size: 14px;
@@ -822,13 +828,14 @@ margin-top: -55px;*/
 {
     height:auto;
 }
-.VA011-toprighticons {
+ul.VA011-toprighticons {
     display: flex;
     align-items: center;
     float: right;
-    margin-top: 5px;
+    margin: 5px 0 0;
     font-size: 1rem;
     list-style: none;
+    padding: 0;
 }
 .VA011-toprighticons li{
     margin-left: 10px;
@@ -843,6 +850,7 @@ margin-top: -55px;*/
 .VA011-gridstatusbar .vis-statusbar-ul {
     display: flex;
     align-items: center;
+    float: right;
 }
 .VA011-gridstatusbar .vis-statusbar-ul i {
     color: rgba(var(--v-c-primary), 1);
@@ -911,6 +919,36 @@ margin-top: -55px;*/
     margin-bottom: 5px;
 }
 ul.VA011-tabs > li:last-child {
-    margin-right: 0;
+    /*margin-right: 0;*/
     margin-left: auto;
+}
+.VA011-rightPanelCartGridCls input[readonly] {
+    background: transparent;
+    max-height: 9px;
+    min-height: 9px !important;
+}
+
+/*Rtl CSS*/
+html[dir="rtl"] .VA011-searchDiv .VA011-imgCombo {
+    right: auto;
+    left: 10px;
+}
+html[dir="rtl"] .VA011-clsDIV span,
+html[dir="rtl"] .VA011-icons {
+    margin-left: 0;
+}
+html[dir="rtl"] .VA011-clsDIV span {
+    margin-right: 5px;
+}
+html[dir="rtl"] .VA011-icons,
+html[dir="rtl"] .VA011-conversion-data {
+    margin-right: 10px;
+}
+html[dir="rtl"] .VA011-gridstatusbar .vis-statusbar-ul,
+html[dir="rtl"] ul.VA011-toprighticons {
+    float: left;
+}
+html[dir="rtl"] .VA011-right-head,
+html[dir="rtl"] .VA011_CartLabel {
+    float: right;
 }
