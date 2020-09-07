@@ -850,6 +850,7 @@ ul.VA011-toprighticons {
 .VA011-gridstatusbar .vis-statusbar-ul {
     display: flex;
     align-items: center;
+    float: right;
 }
 .VA011-gridstatusbar .vis-statusbar-ul i {
     color: rgba(var(--v-c-primary), 1);
@@ -942,4 +943,12 @@ html[dir="rtl"] .VA011-clsDIV span {
 html[dir="rtl"] .VA011-icons,
 html[dir="rtl"] .VA011-conversion-data {
     margin-right: 10px;
+}
+html[dir="rtl"] .VA011-gridstatusbar .vis-statusbar-ul,
+html[dir="rtl"] ul.VA011-toprighticons {
+    float: left;
+}
+html[dir="rtl"] .VA011-right-head,
+html[dir="rtl"] .VA011_CartLabel {
+    float: right;
 }
