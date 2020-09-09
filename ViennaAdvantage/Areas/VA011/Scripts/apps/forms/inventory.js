@@ -829,7 +829,7 @@
             $rightmain.append($divHeadDetails);
 
             $divImgDet = $('<div class="VA011_form-top" class="VA011-RightPanel-Scroll" >'
-                + '<div class="VA011_form-top-fields" style="float:left; width:60%">'
+                + '<div class="VA011_form-top-fields">'
                 + '<div id="VA011_ProdDetZoomName' + $self.windowNo + '" style= "display:none"><h4 id="VA011_prodName_' + $self.windowNo + '" style="float:left; margin-top: 0;"></h4><span id="VA011_ZoomProduct" title=' + VIS.Msg.getMsg("VA011_ZoomToProduct") + ' class="VA011-icons VA011-icons-font vis vis-edit" style="margin-top:5px"></span></div>'
                 + '<div style="float:left; width:100%" class="VA011_data-wrap" id="VA011_UPC' + $self.windowNo + '">' // UPC Numbers to be shown in this DIV
                 + '<p>' + VIS.Msg.getMsg("VA011_UPC") + '</p>'

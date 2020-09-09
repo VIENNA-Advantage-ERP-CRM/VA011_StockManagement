@@ -927,7 +927,10 @@ ul.VA011-tabs > li:last-child {
     max-height: 9px;
     min-height: 9px !important;
 }
-
+.VA011_form-top-fields {
+    float: left;
+    width: 60%;
+}
 /*Rtl CSS*/
 html[dir="rtl"] .VA011-searchDiv .VA011-imgCombo {
     right: auto;
@@ -945,10 +948,16 @@ html[dir="rtl"] .VA011-conversion-data {
     margin-right: 10px;
 }
 html[dir="rtl"] .VA011-gridstatusbar .vis-statusbar-ul,
-html[dir="rtl"] ul.VA011-toprighticons {
+html[dir="rtl"] ul.VA011-toprighticons,
+html[dir="rtl"] .VA011_image-wrap {
     float: left;
 }
 html[dir="rtl"] .VA011-right-head,
-html[dir="rtl"] .VA011_CartLabel {
+html[dir="rtl"] .VA011_CartLabel,
+html[dir="rtl"] .VA011_form-top-fields {
     float: right;
+}
+html[dir="rtl"] .VA011_form-data > label {
+    margin-right: 0;
+    margin-left: 20px;
 }
