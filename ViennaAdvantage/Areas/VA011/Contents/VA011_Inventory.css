@@ -297,7 +297,7 @@ ul.VA011-tabs > li {
     /*padding-left: 10px;*/
     /*padding-right: 10px;*/
     padding: 10px;
-    border-right: 1px solid #ccc;
+    border-right: 1px solid rgba(var(--v-c-on-secondary), .2);
 }
 
 .VA011-middle-head {
@@ -956,10 +956,15 @@ html[dir="rtl"] .VA011_image-wrap {
 }
 html[dir="rtl"] .VA011-right-head,
 html[dir="rtl"] .VA011_CartLabel,
-html[dir="rtl"] .VA011_form-top-fields {
+html[dir="rtl"] .VA011_form-top-fields,
+html[dir="rtl"] .VA011-middle-left-main {
     float: right;
 }
 html[dir="rtl"] .VA011_form-data > label {
     margin-right: 0;
     margin-left: 20px;
+}
+html[dir="rtl"] .VA011-middle-left-main {
+    border-right: none;
+    border-left: 1px solid rgba(var(--v-c-on-secondary), .2);
 }
