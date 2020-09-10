@@ -297,7 +297,7 @@ ul.VA011-tabs > li {
     /*padding-left: 10px;*/
     /*padding-right: 10px;*/
     padding: 10px;
-    border-right: 1px solid #ccc;
+    border-right: 1px solid rgba(var(--v-c-on-secondary), .2);
 }
 
 .VA011-middle-head {
@@ -927,28 +927,44 @@ ul.VA011-tabs > li:last-child {
     max-height: 9px;
     min-height: 9px !important;
 }
-
+.VA011_form-top-fields {
+    float: left;
+    width: 60%;
+}
 /*Rtl CSS*/
 html[dir="rtl"] .VA011-searchDiv .VA011-imgCombo {
     right: auto;
     left: 10px;
 }
 html[dir="rtl"] .VA011-clsDIV span,
-html[dir="rtl"] .VA011-icons {
+html[dir="rtl"] .VA011-icons,
+html[dir="rtl"] .VA011-toprighticons li {
     margin-left: 0;
 }
 html[dir="rtl"] .VA011-clsDIV span {
     margin-right: 5px;
 }
 html[dir="rtl"] .VA011-icons,
-html[dir="rtl"] .VA011-conversion-data {
+html[dir="rtl"] .VA011-conversion-data,
+html[dir="rtl"] .VA011-toprighticons li {
     margin-right: 10px;
 }
 html[dir="rtl"] .VA011-gridstatusbar .vis-statusbar-ul,
-html[dir="rtl"] ul.VA011-toprighticons {
+html[dir="rtl"] ul.VA011-toprighticons,
+html[dir="rtl"] .VA011_image-wrap {
     float: left;
 }
 html[dir="rtl"] .VA011-right-head,
-html[dir="rtl"] .VA011_CartLabel {
+html[dir="rtl"] .VA011_CartLabel,
+html[dir="rtl"] .VA011_form-top-fields,
+html[dir="rtl"] .VA011-middle-left-main {
     float: right;
+}
+html[dir="rtl"] .VA011_form-data > label {
+    margin-right: 0;
+    margin-left: 20px;
+}
+html[dir="rtl"] .VA011-middle-left-main {
+    border-right: none;
+    border-left: 1px solid rgba(var(--v-c-on-secondary), .2);
 }
