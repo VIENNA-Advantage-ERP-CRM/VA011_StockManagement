@@ -1052,7 +1052,7 @@
                     { field: "product_ID", caption: "product_ID", sortable: false, size: '80px', display: false },
                     { field: "Product", caption: '<div><span>' + VIS.Msg.translate(VIS.Env.getCtx(), "Product") + '</span></div>', sortable: false, size: '35%', hidden: false },
                     {
-                        field: "Qty", caption: '<div><span>' + VIS.Msg.getElement(VIS.Env.getCtx(), "Quantity") + '</span></div>', sortable: false, size: '15%', hidden: false, editable: { type: 'float' },
+                        field: "Qty", caption: '<div><span>' + VIS.Msg.getElement(VIS.Env.getCtx(), "Quantity") + '</span></div>', sortable: false, size: '15%', hidden: false, style: 'text-align: right', editable: { type: 'float' },
                         // To get qty acc to culture
                         render: function (record, index, col_index) {
                             var val = record["Qty"];
@@ -1280,7 +1280,7 @@
                 columns: [
                     { field: "Product", caption: VIS.Msg.getMsg("VA011_Product"), sortable: false, size: '36%' },
                     {
-                        field: "QtyOnHand", caption: '<div><span>' + VIS.Msg.getMsg("VA011_OnHandQty") + '</span></div>', sortable: false, size: '16%', hidden: false,
+                        field: "QtyOnHand", caption: '<div><span>' + VIS.Msg.getMsg("VA011_OnHandQty") + '</span></div>', sortable: false, size: '16%', hidden: false, style: 'text-align: right',
                         // To get qty acc to culture
                         render: function (record, index, col_index) {
                             var val = record["QtyOnHand"];
@@ -1289,14 +1289,14 @@
                     },
                     { field: "UOM", caption: VIS.Msg.getMsg("VA011_UOM"), sortable: false, size: '16%' },
                     {
-                        field: "Reserved", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Reserved") + '</span></div>', sortable: false, size: '10%', hidden: false,
+                        field: "Reserved", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Reserved") + '</span></div>', sortable: false, size: '10%', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["Reserved"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
                         }
                     },
                     {
-                        field: "ATP", caption: '<div><span>' + VIS.Msg.getMsg("VA011_ATP") + '</span></div>', sortable: false, size: '10%', hidden: false,
+                        field: "ATP", caption: '<div><span>' + VIS.Msg.getMsg("VA011_ATP") + '</span></div>', sortable: false, size: '10%', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["ATP"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
@@ -1455,7 +1455,7 @@
                 columns: [
                     { field: "Product", caption: VIS.Msg.getMsg("VA011_Product"), sortable: false, size: '36%' },
                     {
-                        field: "QtyOnHand", caption: '<div><span>' + VIS.Msg.getMsg("VA011_OnHandQty") + '</span></div>', sortable: false, size: '16%', hidden: false,
+                        field: "QtyOnHand", caption: '<div><span>' + VIS.Msg.getMsg("VA011_OnHandQty") + '</span></div>', sortable: false, size: '16%', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["QtyOnHand"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
@@ -1463,14 +1463,14 @@
                     },
                     { field: "UOM", caption: VIS.Msg.getMsg("VA011_UOM"), sortable: false, size: '16%' },
                     {
-                        field: "Reserved", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Reserved") + '</span></div>', sortable: false, size: '16%', hidden: false,
+                        field: "Reserved", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Reserved") + '</span></div>', sortable: false, size: '16%', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["Reserved"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
                         }
                     },
                     {
-                        field: "ATP", caption: '<div><span>' + VIS.Msg.getMsg("VA011_ATP") + '</span></div>', sortable: false, size: '16%', hidden: false,
+                        field: "ATP", caption: '<div><span>' + VIS.Msg.getMsg("VA011_ATP") + '</span></div>', sortable: false, size: '16%', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["ATP"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
@@ -1628,7 +1628,7 @@
                 columns: [
                     { field: "Supplier", caption: VIS.Msg.getMsg("VA011_Supplier"), sortable: false, size: '36%' },
                     {
-                        field: "QtyOrderPack", caption: '<div><span>' + VIS.Msg.getMsg("VA011_QtyOrderPack") + '</span></div>', sortable: false, size: '16%', hidden: false,
+                        field: "QtyOrderPack", caption: '<div><span>' + VIS.Msg.getMsg("VA011_QtyOrderPack") + '</span></div>', sortable: false, size: '16%', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["QtyOrderPack"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
@@ -1636,7 +1636,7 @@
                     },
                     { field: "UOM", caption: VIS.Msg.getMsg("VA011_UOM"), sortable: false, size: '16%' },
                     {
-                        field: "MinOrder", caption: '<div><span>' + VIS.Msg.getMsg("VA011_MinOrder") + '</span></div>', sortable: false, size: '10%', hidden: false,
+                        field: "MinOrder", caption: '<div><span>' + VIS.Msg.getMsg("VA011_MinOrder") + '</span></div>', sortable: false, size: '10%', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["MinOrder"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
@@ -1782,14 +1782,14 @@
                     { field: "Factor", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Factor") + '</span></div>', sortable: false, size: '10%', hidden: false, render: 'number:2' },
                     { field: "UOM", caption: VIS.Msg.getMsg("VA011_UOM"), sortable: false, size: '16%' },
                     {
-                        field: "QtyOnHand", caption: '<div><span>' + VIS.Msg.getMsg("VA011_OnHandQty") + '</span></div>', sortable: false, size: '16%', hidden: false,
+                        field: "QtyOnHand", caption: '<div><span>' + VIS.Msg.getMsg("VA011_OnHandQty") + '</span></div>', sortable: false, size: '16%', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["QtyOnHand"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
                         }
                     },
                     {
-                        field: "ATP", caption: '<div><span>' + VIS.Msg.getMsg("VA011_ATP") + '</span></div>', sortable: false, size: '10%', hidden: false,
+                        field: "ATP", caption: '<div><span>' + VIS.Msg.getMsg("VA011_ATP") + '</span></div>', sortable: false, size: '10%', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["ATP"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
@@ -1955,7 +1955,7 @@
                     //},
                     { field: "Attribute", caption: VIS.Msg.getMsg("VA011_Attribute"), sortable: false, size: '29%' },
                     {
-                        field: "QtyOnHand", caption: '<div><span>' + VIS.Msg.getMsg("VA011_OnHandQty") + '</span></div>', sortable: false, size: '11%', hidden: false,
+                        field: "QtyOnHand", caption: '<div><span>' + VIS.Msg.getMsg("VA011_OnHandQty") + '</span></div>', sortable: false, size: '11%', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["QtyOnHand"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
@@ -2188,14 +2188,14 @@
                     { field: "Locator", caption: VIS.Msg.getMsg("VA011_Locator"), sortable: false, size: '15%' },
                     { field: "Attribute", caption: VIS.Msg.getMsg("VA011_Attribute"), sortable: false, size: '20%' },
                     {
-                        field: "Quantity", caption: '<div><span>' + VIS.Msg.getMsg("VA011_OnHandQty") + '</span></div>', sortable: false, size: '15%', hidden: false,
+                        field: "Quantity", caption: '<div><span>' + VIS.Msg.getMsg("VA011_OnHandQty") + '</span></div>', sortable: false, size: '15%', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["Quantity"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
                         }
                     },
                     {
-                        field: "Unconfirmed", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Unconfirmed") + '</span></div>', sortable: false, size: '15%', hidden: false,
+                        field: "Unconfirmed", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Unconfirmed") + '</span></div>', sortable: false, size: '15%', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["Unconfirmed"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
@@ -2376,7 +2376,7 @@
                 columns: [
                     { field: "DatePromised", caption: VIS.Msg.getMsg("VA011_DatePromised"), sortable: false, size: '20%' },
                     {
-                        field: "Quantity", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Quantity") + '</span></div>', sortable: false, size: '20%', hidden: false,
+                        field: "Quantity", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Quantity") + '</span></div>', sortable: false, size: '20%', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["Quantity"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
@@ -2385,7 +2385,7 @@
                     { field: "DateOrdered", caption: VIS.Msg.getMsg("VA011_DateOrdered"), sortable: false, size: '20%' },
                     { field: "Supplier", caption: VIS.Msg.getMsg("VA011_Supplier"), sortable: false, size: '20%' },
                     {
-                        field: "QtyReserved", caption: '<div><span>' + VIS.Msg.getMsg("VA011_OnOrder") + '</span></div>', sortable: false, size: '10%', hidden: false,
+                        field: "QtyReserved", caption: '<div><span>' + VIS.Msg.getMsg("VA011_OnOrder") + '</span></div>', sortable: false, size: '10%', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["QtyReserved"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
@@ -2548,9 +2548,9 @@
                 columns: [
                     { field: "RequisitionNo", caption: VIS.Msg.getMsg("VA011_RequisitionNo"), sortable: false, size: '20%' },
                     { field: "Date", caption: VIS.Msg.getMsg("VA011_Date"), sortable: false, size: '20%' },
-                    { field: "QtyDemanded", caption: '<div><span>' + VIS.Msg.getMsg("VA011_QtyDemanded") + '</span></div>', sortable: false, size: '20%', hidden: false, render: 'number:2' },
-                    { field: "QtyReceived", caption: '<div><span>' + VIS.Msg.getMsg("VA011_QtyReceived") + '</span></div>', sortable: false, size: '20%', hidden: false, render: 'number:2' },
-                    { field: "QtyPending", caption: '<div><span>' + VIS.Msg.getMsg("VA011_QtyPending") + '</span></div>', sortable: false, size: '20%', hidden: false, render: 'number:2' },
+                    { field: "QtyDemanded", caption: '<div><span>' + VIS.Msg.getMsg("VA011_QtyDemanded") + '</span></div>', sortable: false, size: '20%', hidden: false, style: 'text-align: right', render: 'number:2' },
+                    { field: "QtyReceived", caption: '<div><span>' + VIS.Msg.getMsg("VA011_QtyReceived") + '</span></div>', sortable: false, size: '20%', hidden: false, style: 'text-align: right', render: 'number:2' },
+                    { field: "QtyPending", caption: '<div><span>' + VIS.Msg.getMsg("VA011_QtyPending") + '</span></div>', sortable: false, size: '20%', hidden: false, style: 'text-align: right', render: 'number:2' },
                     { field: "M_Product_ID", caption: "M_Product_ID", sortable: false, size: '80px', display: false }
                 ],
                 records: [
@@ -2764,7 +2764,7 @@
                     { field: "DocumentType", caption: VIS.Msg.getMsg("VA011_DocumentType"), sortable: false, size: '16%' },
                     { field: "DocumentNo", caption: VIS.Msg.getMsg("VA011_DocumentNo"), sortable: false, size: '16%' },
                     {
-                        field: "Quantity", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Quantity") + '</span></div>', sortable: false, size: '16%', hidden: false,
+                        field: "Quantity", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Quantity") + '</span></div>', sortable: false, size: '16%', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["Quantity"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
@@ -2969,14 +2969,14 @@
                     { field: "Locator", caption: VIS.Msg.getMsg("VA011_Locator"), sortable: false, size: '12%' },
                     { field: "Date", caption: VIS.Msg.getMsg("VA011_Date"), sortable: false, size: '12%' },
                     {
-                        field: "InventoryIn", caption: '<div><span>' + VIS.Msg.getMsg("VA011_InventoryIn") + '</span></div>', sortable: false, size: '9%', hidden: false,
+                        field: "InventoryIn", caption: '<div><span>' + VIS.Msg.getMsg("VA011_InventoryIn") + '</span></div>', sortable: false, size: '9%', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["InventoryIn"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
                         }
                     },
                     {
-                        field: "InventoryOut", caption: '<div><span>' + VIS.Msg.getMsg("VA011_InventoryOut") + '</span></div>', sortable: false, size: '9%', hidden: false,
+                        field: "InventoryOut", caption: '<div><span>' + VIS.Msg.getMsg("VA011_InventoryOut") + '</span></div>', sortable: false, size: '9%', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["InventoryOut"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
@@ -2991,7 +2991,7 @@
                     //    }
                     //},
                     {
-                        field: "Balance", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Balance") + '</span></div>', sortable: false, size: '9%', hidden: false,
+                        field: "Balance", caption: '<div><span>' + VIS.Msg.getMsg("VA011_Balance") + '</span></div>', sortable: false, size: '9%', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["Balance"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
@@ -3220,7 +3220,7 @@
                         }
                     },
                     {
-                        field: "Min", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Min") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:2', editable: { type: 'number' },
+                        field: "Min", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Min") + '</span></div>', sortable: false, size: '8%', hidden: false, style: 'text-align: right', editable: { type: 'number' },
                         render: function (record, index, col_index) {
                             var val = record["Min"];
                             val = checkcommaordot(event, val);
@@ -3228,7 +3228,7 @@
                         }
                     },
                     {
-                        field: "Max", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Max") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:2', editable: { type: 'number' },
+                        field: "Max", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Max") + '</span></div>', sortable: false, size: '8%', hidden: false, style: 'text-align: right', editable: { type: 'number' },
                         render: function (record, index, col_index) {
                             var val = record["Max"];
                             val = checkcommaordot(event, val);
@@ -3236,7 +3236,7 @@
                         }
                     },
                     {
-                        field: "Qty", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_MinOrderQuantity") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:2', editable: { type: 'number' },
+                        field: "Qty", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_MinOrderQuantity") + '</span></div>', sortable: false, size: '8%', hidden: false, style: 'text-align: right', editable: { type: 'number' },
                         render: function (record, index, col_index) {
                             var val = record["Qty"];
                             val = checkcommaordot(event, val);
@@ -3244,7 +3244,7 @@
                         }
                     },
                     {
-                        field: "OrderPack", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_OrderPack") + '</span></div>', sortable: false, size: '8%', hidden: false, render: 'number:2', editable: { type: 'number' },
+                        field: "OrderPack", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_OrderPack") + '</span></div>', sortable: false, size: '8%', hidden: false, style: 'text-align: right', editable: { type: 'number' },
                         render: function (record, index, col_index) {
                             var val = record["OrderPack"];
                             val = checkcommaordot(event, val);
@@ -3779,7 +3779,7 @@
                         }
                     },
                     {
-                        field: "Min", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Min") + '</span></div>', sortable: false, size: '8%', hidden: false, editable: { type: 'number' },
+                        field: "Min", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Min") + '</span></div>', sortable: false, size: '8%', hidden: false, style: 'text-align: right', editable: { type: 'number' },
                         // Added by shifali on 27th Aug 2020 to get Min value acc. to culture
                         render: function (record, index, col_index) {
                             var val = record["Min"];
@@ -3788,7 +3788,7 @@
                         }
                     },
                     {
-                        field: "Max", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Max") + '</span></div>', sortable: false, size: '8%', hidden: false, editable: { type: 'number' },
+                        field: "Max", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Max") + '</span></div>', sortable: false, size: '8%', hidden: false, style: 'text-align: right', editable: { type: 'number' },
                         // Added by shifali on 27th Aug 2020 to get Max value acc. to culture
                         render: function (record, index, col_index) {
                             var val = record["Max"];
@@ -3797,7 +3797,7 @@
                         }
                     },
                     {
-                        field: "Qty", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_MinOrderQuantity") + '</span></div>', sortable: false, size: '8%', hidden: false, editable: { type: 'number' },
+                        field: "Qty", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_MinOrderQuantity") + '</span></div>', sortable: false, size: '8%', hidden: false, style: 'text-align: right', editable: { type: 'number' },
                         // Added by shifali on 27th Aug 2020 to get Qty value acc. to culture
                         render: function (record, index, col_index) {
                             var val = record["Qty"];
@@ -3806,7 +3806,7 @@
                         }
                     },
                     {
-                        field: "OrderPack", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_OrderPack") + '</span></div>', sortable: false, size: '8%', hidden: false, editable: { type: 'number' },
+                        field: "OrderPack", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_OrderPack") + '</span></div>', sortable: false, size: '8%', hidden: false, style: 'text-align: right', editable: { type: 'number' },
                         // Added by shifali on 27th Aug 2020 to get Orderpack value acc. to culture
                         render: function (record, index, col_index) {
                             var val = record["OrderPack"];
@@ -4132,49 +4132,49 @@
                     { field: "SourceWarehouse", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_SourceWarehouse") + '</span></div>', sortable: false, size: '12%', hidden: false },
                     { field: "ReplenishmentType", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_ReplenishmentType") + '</span></div>', sortable: false, size: '9%', hidden: false },
                     {
-                        field: "Max", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Max") + '</span></div>', sortable: false, size: '9%', hidden: false,
+                        field: "Max", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Max") + '</span></div>', sortable: false, size: '9%', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["Max"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
                         }
                     },
                     {
-                        field: "Min", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Min") + '</span></div>', sortable: false, size: '9%', hidden: false,
+                        field: "Min", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Min") + '</span></div>', sortable: false, size: '9%', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["Min"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
                         }
                     },
                     {
-                        field: "QtyOnHand", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_OnHandQty") + '</span></div>', sortable: false, size: '9%', hidden: false,
+                        field: "QtyOnHand", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_OnHandQty") + '</span></div>', sortable: false, size: '9%', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["QtyOnHand"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
                         }
                     },
                     {
-                        field: "Ordered", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Ordered") + '</span></div>', sortable: false, size: '9%', hidden: false,
+                        field: "Ordered", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Ordered") + '</span></div>', sortable: false, size: '9%', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["Ordered"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
                         }
                     },
                     {
-                        field: "ReqReserved", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_ReqReserved") + '</span></div>', sortable: false, size: '9%', hidden: false,
+                        field: "ReqReserved", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_ReqReserved") + '</span></div>', sortable: false, size: '9%', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["ReqReserved"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
                         }
                     },
                     {
-                        field: "Reserved", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Reserved") + '</span></div>', sortable: false, size: '9%', hidden: false,
+                        field: "Reserved", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Reserved") + '</span></div>', sortable: false, size: '9%', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["Reserved"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
                         }
                     },
                     {
-                        field: "QtyToOrder", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_QtyToOrder") + '</span></div>', sortable: false, size: '9%', hidden: false, 
+                        field: "QtyToOrder", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_QtyToOrder") + '</span></div>', sortable: false, size: '9%', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["QtyToOrder"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
@@ -4379,7 +4379,7 @@
                     { field: "Product", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("Product") + '</span></div>', sortable: false, size: '80px', hidden: false },
                     { field: "UPC", caption: '<div style="text-align: center;" ><span>UPC/EAN</span></div>', sortable: false, size: '80px', hidden: false },
                     {
-                        field: "QtyOnHand", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_OnHandQty") + '</span></div>', sortable: false, size: '80px', hidden: false,
+                        field: "QtyOnHand", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_OnHandQty") + '</span></div>', sortable: false, size: '80px', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["QtyOnHand"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
@@ -4397,35 +4397,35 @@
                     //    }
                     //},
                     {
-                        field: "Reserved", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Reserved") + '</span></div>', sortable: false, size: '70px', hidden: false,
+                        field: "Reserved", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Reserved") + '</span></div>', sortable: false, size: '70px', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["Reserved"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
                         }
                     },
                     {
-                        field: "QtyAvailable", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_ATP") + '</span></div>', sortable: false, size: '45px', hidden: false,
+                        field: "QtyAvailable", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_ATP") + '</span></div>', sortable: false, size: '45px', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["QtyAvailable"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
                         }
                     },
                     {
-                        field: "UnConfirmed", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Unconfirmed") + '</span></div>', sortable: false, size: '82px', hidden: false,
+                        field: "UnConfirmed", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Unconfirmed") + '</span></div>', sortable: false, size: '82px', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["UnConfirmed"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
                         }
                     },
                     {
-                        field: "Ordered", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Ordered") + '</span></div>', sortable: false, size: '70px', hidden: false,
+                        field: "Ordered", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Ordered") + '</span></div>', sortable: false, size: '70px', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["Ordered"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
                         }
                     },
                     {
-                        field: "Demanded", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Demanded") + '</span></div>', sortable: false, size: '75px', hidden: false,
+                        field: "Demanded", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Demanded") + '</span></div>', sortable: false, size: '75px', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["Demanded"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
@@ -4433,7 +4433,7 @@
                     },
                     { field: "TillReorder", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_TillReorder") + '</span></div>', sortable: false, size: '80px', hidden: false, render: 'number:2' },
                     {
-                        field: "QtyToReplenish", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_QtyToReplenish") + '</span></div>', sortable: false, size: '110px', hidden: false,
+                        field: "QtyToReplenish", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_QtyToReplenish") + '</span></div>', sortable: false, size: '110px', hidden: false, style: 'text-align: right',
                         render: function (record, index, col_index) {
                             var val = record["QtyToReplenish"];
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
