@@ -79,7 +79,8 @@ namespace VA011.Models
         public List<NameIDClass> GetOrganizations(Ctx ctx, string value, bool fill)
         {
             List<NameIDClass> pInfo = new List<NameIDClass>();
-            string sql = @"SELECT AD_Org_ID, Name FROM AD_Org WHERE AD_Client_ID = " + ctx.GetAD_Client_ID() + " AND IsActive = 'Y' AND IsSummary='N' ";
+            //JID_0549 added IsCostCenter and IsProfitCenter check 
+            string sql = @"SELECT AD_Org_ID, Name FROM AD_Org WHERE AD_Client_ID = " + ctx.GetAD_Client_ID() + " AND IsActive = 'Y' AND IsSummary='N' AND AD_Org_ID != 0 AND IsCostCenter='N' AND IsProfitCenter ='N' ";
             if (value != "")
             {
                 sql += " AND UPPER(Name) LIKE UPPER('%" + value + "%') ";
