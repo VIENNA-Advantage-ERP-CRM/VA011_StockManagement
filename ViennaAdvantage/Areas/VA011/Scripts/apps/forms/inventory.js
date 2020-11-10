@@ -174,7 +174,7 @@
         var $ulStatusProdDiv = null;
         var AD_Column_ID = 0;
         var cmbUOM = null;
-        var $cmbPageNo = $('<select class="vis-statusbar-combo" style="width:50px;"></select>');
+        var $cmbPageNo = $('<select class="vis-statusbar-combo" style="min-width:50px"></select>');
         var $liPrev = null;
         var $liFirst = null;
         var $liNext = null;
