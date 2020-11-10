@@ -495,7 +495,7 @@ namespace VA011.Models
                                 sbSql.Append(" AND w.M_Warehouse_ID IN (" + warehouse_IDs + ")");
                                 //sbGroup.Append(",M_Warehouse_ID");
                             }
-                            sbSql.Append(")");
+                            sbSql.Append(") t");
                              DataSet dsQty = DB.ExecuteDataset(sbSql.ToString());
                             if (dsQty != null)
                             {
