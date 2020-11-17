@@ -2193,7 +2193,7 @@
                 },
 
                 columns: [
-                    { field: "Warehouse", caption: VIS.Msg.getMsg("VA011_Warehouse"), sortable: false, size: '15%', style: 'text-align: right' },
+                    { field: "Warehouse", caption: VIS.Msg.getMsg("VA011_Warehouse"), sortable: false, size: '15%' },
                     { field: "Locator", caption: VIS.Msg.getMsg("VA011_Locator"), sortable: false, size: '15%' },
                     { field: "Attribute", caption: VIS.Msg.getMsg("VA011_Attribute"), sortable: false, size: '20%' },
                     {
