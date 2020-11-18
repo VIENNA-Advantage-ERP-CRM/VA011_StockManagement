@@ -945,7 +945,6 @@ html[dir="rtl"] .VA011-clsDIV span {
     margin-right: 5px;
 }
 html[dir="rtl"] .VA011-icons,
-html[dir="rtl"] .VA011-conversion-data,
 html[dir="rtl"] .VA011-toprighticons li {
     margin-right: 10px;
 }
@@ -957,7 +956,9 @@ html[dir="rtl"] .VA011_image-wrap {
 html[dir="rtl"] .VA011-right-head,
 html[dir="rtl"] .VA011_CartLabel,
 html[dir="rtl"] .VA011_form-top-fields,
-html[dir="rtl"] .VA011-middle-left-main {
+html[dir="rtl"] .VA011-middle-left-main,
+html[dir="rtl"] .VA011-conversion-data, 
+html[dir="rtl"] .VA011-icons {
     float: right;
 }
 html[dir="rtl"] .VA011_form-data > label {
