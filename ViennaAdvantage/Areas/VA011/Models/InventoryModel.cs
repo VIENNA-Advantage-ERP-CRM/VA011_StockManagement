@@ -954,6 +954,13 @@ LEFT OUTER JOIN AD_Image img
 ON p.AD_Image_ID = img.AD_Image_ID
 WHERE M_Product_ID = " + M_Product_ID;
             DataSet dsProd = DB.ExecuteDataset(sql, null, null);
+            if (dsProd != null && dsProd.Tables[0] != null)
+            {
+                foreach (DataColumn column in dsProd.Tables[0].Columns)
+                {
+                    column.ColumnName = column.ColumnName.ToUpper();
+                }
+            }
             return dsProd;
         }
 
