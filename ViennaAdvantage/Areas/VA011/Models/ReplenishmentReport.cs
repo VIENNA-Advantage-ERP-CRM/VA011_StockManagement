@@ -74,8 +74,15 @@ namespace VA011.Models
 
             dsRet = DB.ExecuteDataset("SELECT r.*, p.Name AS Product, w.Name AS Warehouse, sw.Name AS SourceWarehouse FROM T_Replenish r INNER JOIN m_Product p ON (p.M_Product_ID = r.M_Product_ID) INNER JOIN M_Warehouse w ON (w.M_Warehouse_ID = r.M_Warehouse_ID) LEFT OUTER JOIN M_Warehouse sw ON (sw.M_Warehouse_ID  = r.M_WarehouseSource_ID) WHERE AD_PInstance_ID = " + pins.GetAD_PInstance_ID());
 
-            int delCount = DB.ExecuteQuery("DELETE FROM T_Replenish WHERE AD_PInstance_ID = " + pins.GetAD_PInstance_ID());
+            // int delCount = DB.ExecuteQuery("DELETE FROM T_Replenish WHERE AD_PInstance_ID = " + pins.GetAD_PInstance_ID());
 
+            if (dsRet != null && dsRet.Tables[0] != null)
+            {
+                foreach (DataColumn column in dsRet.Tables[0].Columns)
+                {
+                    column.ColumnName = column.ColumnName.ToUpper();
+                }
+            }
             return dsRet;
             //
             if (Create == null)
