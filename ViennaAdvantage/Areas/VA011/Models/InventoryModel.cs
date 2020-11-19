@@ -79,7 +79,8 @@ namespace VA011.Models
         public List<NameIDClass> GetOrganizations(Ctx ctx, string value, bool fill)
         {
             List<NameIDClass> pInfo = new List<NameIDClass>();
-            string sql = @"SELECT AD_Org_ID, Name FROM AD_Org WHERE AD_Client_ID = " + ctx.GetAD_Client_ID() + " AND IsActive = 'Y' AND IsSummary='N' ";
+            //JID_0549 added IsCostCenter and IsProfitCenter check 
+            string sql = @"SELECT AD_Org_ID, Name FROM AD_Org WHERE AD_Client_ID = " + ctx.GetAD_Client_ID() + " AND IsActive = 'Y' AND IsSummary='N' AND AD_Org_ID != 0 AND IsCostCenter='N' AND IsProfitCenter ='N' ";
             if (value != "")
             {
                 sql += " AND UPPER(Name) LIKE UPPER('%" + value + "%') ";
@@ -139,7 +140,12 @@ namespace VA011.Models
         public List<NameIDClass> GetPLV(Ctx ctx, string value, bool fill)
         {
             List<NameIDClass> pInfo = new List<NameIDClass>();
-            string sql = @"SELECT M_PriceList_Version_ID, Name FROM M_PriceList_Version WHERE AD_Client_ID = " + ctx.GetAD_Client_ID() + " AND IsActive = 'Y'";
+            // Added Isactive check for header
+            string sql = @"SELECT pv.M_PriceList_Version_ID, pv.Name FROM M_PriceList_Version pv INNER JOIN M_PriceList pl
+                            ON pv.M_PriceList_ID=pl.M_PriceList_ID
+                            WHERE pl.isactive   ='Y'
+                            AND pv.isactive     ='Y'
+                            AND pv.AD_Client_ID =" + ctx.GetAD_Client_ID();
             if (value != "")
             {
                 sql += " AND UPPER(Name) LIKE UPPER('%" + value + "%') ";
@@ -489,7 +495,7 @@ namespace VA011.Models
                                 sbSql.Append(" AND w.M_Warehouse_ID IN (" + warehouse_IDs + ")");
                                 //sbGroup.Append(",M_Warehouse_ID");
                             }
-                            sbSql.Append(")");
+                            sbSql.Append(") t");
                              DataSet dsQty = DB.ExecuteDataset(sbSql.ToString());
                             if (dsQty != null)
                             {
@@ -948,6 +954,13 @@ LEFT OUTER JOIN AD_Image img
 ON p.AD_Image_ID = img.AD_Image_ID
 WHERE M_Product_ID = " + M_Product_ID;
             DataSet dsProd = DB.ExecuteDataset(sql, null, null);
+            if (dsProd != null && dsProd.Tables[0] != null)
+            {
+                foreach (DataColumn column in dsProd.Tables[0].Columns)
+                {
+                    column.ColumnName = column.ColumnName.ToUpper();
+                }
+            }
             return dsProd;
         }
 

@@ -1,4 +1,4 @@
-﻿/*Version 1.0.10.0*/
+﻿/*Version 1.0.11.0*/
 
 .VA011_CartLabel {
     /* width: auto; */
@@ -80,6 +80,7 @@
 
 .VA011_data-wrap {
     margin-bottom: 20px;
+    width: 100%;
 }
 
     .VA011_data-wrap p {
@@ -125,6 +126,7 @@
 
 .VA011_form-data {
     margin-bottom: 10px;
+    display: flex;
 }
 
     .VA011_form-data > label {
@@ -226,20 +228,21 @@ ul.VA011-tabs {
     width: 100%;
     height: calc(100% - 45px);
     overflow: auto;
-    padding: 10px;
+    padding: 2px 10px 10px;
 }
 
     .VA011-div-left-main > ul {
         list-style: none;
         padding: 0;
+        margin-bottom: 0;
     }
 
         .VA011-div-left-main > ul > li {
             opacity: 0.6;
             cursor: pointer;
-            padding-left: 8px;
-            padding-right: 8px;
-            color: #fff;
+            padding-left: 0;
+            padding-right: 0;
+            /* color: #fff; */
         }
 
             .VA011-div-left-main > ul > li > span {
@@ -307,7 +310,7 @@ ul.VA011-tabs {
     /*padding-left: 10px;*/
     /*padding-right: 10px;*/
     padding: 10px;
-    border-right: 1px solid #ccc;
+    border-right: 1px solid rgba(var(--v-c-on-secondary), .2);
 }
 
 .VA011-middle-head {
@@ -845,18 +848,19 @@ margin-top: -55px;*/
     height: auto;
 }
 
-.VA011-toprighticons {
+ul.VA011-toprighticons {
     display: flex;
     align-items: center;
     float: right;
-    margin-top: 5px;
+    margin: 5px 0 0;
     font-size: 1rem;
     list-style: none;
+    padding: 0;
 }
 
-    .VA011-toprighticons li {
-        margin-left: 10px;
-    }
+.VA011-toprighticons li {
+    margin-left: 10px;
+}
 
 .VA011-gridstatusbar {
     width: 100%;
@@ -868,6 +872,7 @@ margin-top: -55px;*/
     .VA011-gridstatusbar .vis-statusbar-ul {
         display: flex;
         align-items: center;
+        float: right;
     }
 
         .VA011-gridstatusbar .vis-statusbar-ul i {
@@ -953,8 +958,64 @@ margin-top: -55px;*/
 }
 
 ul.VA011-tabs > li:last-child {
-    margin-right: 0;
+    /*margin-right: 0;*/
     margin-left: auto;
+}
+
+.VA011-rightPanelCartGridCls input[readonly] {
+    background: transparent;
+    max-height: 9px;
+    min-height: 9px !important;
+}
+
+.VA011_form-top-fields {
+    float: left;
+    width: 60%;
+}
+/*Rtl CSS*/
+html[dir="rtl"] .VA011-searchDiv .VA011-imgCombo {
+    right: auto;
+    left: 10px;
+}
+
+html[dir="rtl"] .VA011-clsDIV span,
+html[dir="rtl"] .VA011-icons,
+html[dir="rtl"] .VA011-toprighticons li {
+    margin-left: 0;
+}
+
+html[dir="rtl"] .VA011-clsDIV span {
+    margin-right: 5px;
+}
+
+html[dir="rtl"] .VA011-icons,
+html[dir="rtl"] .VA011-toprighticons li {
+    margin-right: 10px;
+}
+
+html[dir="rtl"] .VA011-gridstatusbar .vis-statusbar-ul,
+html[dir="rtl"] ul.VA011-toprighticons,
+html[dir="rtl"] .VA011_image-wrap {
+    float: left;
+}
+
+html[dir="rtl"] .VA011-right-head,
+html[dir="rtl"] .VA011_CartLabel,
+html[dir="rtl"] .VA011_form-top-fields,
+html[dir="rtl"] .VA011-middle-left-main,
+html[dir="rtl"] .VA011-conversion-data,
+html[dir="rtl"] .VA011-icons {
+    float: right;
+}
+
+html[dir="rtl"] .VA011_form-data > label {
+    margin-right: 0;
+    margin-left: 20px;
+}
+
+html[dir="rtl"] .VA011-middle-left-main {
+    border-right: none;
+    border-left: 1px solid rgba(var(--v-c-on-secondary), .2);
 }
 
 @font-face {
