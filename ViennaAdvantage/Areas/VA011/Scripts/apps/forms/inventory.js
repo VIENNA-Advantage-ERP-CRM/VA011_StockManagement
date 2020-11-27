@@ -1061,10 +1061,11 @@
                     { field: "product_ID", caption: "product_ID", sortable: false, size: '80px', display: false },
                     { field: "Product", caption: '<div><span>' + VIS.Msg.translate(VIS.Env.getCtx(), "Product") + '</span></div>', sortable: false, size: '35%', hidden: false },
                     {
-                        field: "Qty", caption: '<div><span>' + VIS.Msg.getElement(VIS.Env.getCtx(), "Quantity") + '</span></div>', sortable: false, size: '15%', hidden: false, style: 'text-align: right', editable: { type: 'float' },
+                        field: "Qty", caption: '<div><span>' + VIS.Msg.getElement(VIS.Env.getCtx(), "Quantity") + '</span></div>', sortable: false, size: '15%', hidden: false, style: 'text-align: right', editable: { type: 'number' },
                         // To get qty acc to culture
                         render: function (record, index, col_index) {
                             var val = record["Qty"];
+                            val = checkcommaordot(event, val);
                             return parseFloat(val).toLocaleString(undefined, { minimumFractionDigits: precision });
                         }
                     },
@@ -1093,8 +1094,12 @@
                 onChange: function (event) {
 
                     cartGrid.records[event.index]["updated"] = true;
-                    if (event.column == 2) {
-                        cartGrid.records[event.index]["Qty"] = event.value_new;
+                    //if (event.column == 2) {
+                    //    cartGrid.records[event.index]["Qty"] = event.value_new;
+                    //}
+                    if (event.column == 2) {                        
+                        var _val = format.GetConvertedNumber(event.value_new, dotFormatter);
+                        cartGrid.records[event.index]["Qty"] = _val.toFixed(precision);
                     }
                     else if (event.column == 3) {
                         cartGrid.records[event.index]["C_Uom_ID"] = event.value_new;
@@ -1141,6 +1146,39 @@
                         BindCartGrid();
                     }
                 },
+                onEditField: function (event) {                    
+                    // To get value acc. to culture while editing grid column
+                    id = event.recid;
+                    if (event.column == 2 ) {
+                        cartGrid.records[event.index][cartGrid.columns[event.column].field] = checkcommaordot(event, cartGrid.records[event.index][cartGrid.columns[event.column].field]);
+                        var _value = format.GetFormatAmount(cartGrid.records[event.index][cartGrid.columns[event.column].field], "init", dotFormatter);
+                        cartGrid.records[event.index][cartGrid.columns[event.column].field] = format.GetConvertedString(_value, dotFormatter);
+                        $("#grid_gridcart_" + $self.windowNo + "_rec_" + id).keydown(function (event) {
+                            if (!dotFormatter && (event.keyCode == 190 || event.keyCode == 110)) {// , separator
+                                return false;
+                            }
+                            else if (dotFormatter && event.keyCode == 188) { // . separator
+                                return false;
+                            }
+                            if (event.target.value.contains(".") && (event.which == 110 || event.which == 190 || event.which == 188)) {
+                                if (event.target.value.indexOf('.') > -1) {
+                                    event.target.value = event.target.value.replace('.', '');
+                                }
+                            }
+                            if (event.target.value.contains(",") && (event.which == 110 || event.which == 190 || event.which == 188)) {
+                                if (event.target.value.indexOf(',') > -1) {
+                                    event.target.value = event.target.value.replace(',', '');
+                                }
+                            }
+                            if (event.keyCode != 8 && event.keyCode != 9 && (event.keyCode < 37 || event.keyCode > 40) &&
+                                (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105)
+                                && event.keyCode != 109 && event.keyCode != 189 && event.keyCode != 110
+                                && event.keyCode != 144 && event.keyCode != 188 && event.keyCode != 190) {
+                                return false;
+                            }
+                        });
+                    }
+                }
             });
             cartGrid.hideColumn('product_ID');
             cartGrid.hideColumn('attribute_ID');
@@ -1245,7 +1283,7 @@
                             attribute_ID: VIS.Utility.Util.getValueOfInt(ds.tables[0].rows[i].cells.m_attributesetinstance_id),
                             Attribute: ds.tables[0].rows[i].cells.description,
                             UPC: ds.tables[0].rows[i].cells.upc,
-                            Qty: parseFloat(ds.tables[0].rows[i].cells.vaicnt_quantity).toLocaleString(),
+                            Qty: ds.tables[0].rows[i].cells.vaicnt_quantity,
                             updated: false
                         });
                 }
@@ -1420,10 +1458,10 @@
                         {
                             recid: Recid,
                             Product: ds.tables[0].rows[i].cells.product,
-                            QtyOnHand: parseFloat(ds.tables[0].rows[i].cells.qtyonhand).toLocaleString(),
+                            QtyOnHand: ds.tables[0].rows[i].cells.qtyonhand,
                             UOM: ds.tables[0].rows[i].cells.uom,
-                            Reserved: parseFloat(ds.tables[0].rows[i].cells.qtyreserved).toLocaleString(),
-                            ATP: parseFloat(ds.tables[0].rows[i].cells.qtyavailable).toLocaleString(),
+                            Reserved: ds.tables[0].rows[i].cells.qtyreserved,
+                            ATP: ds.tables[0].rows[i].cells.qtyavailable,
                             M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
                         });
                 }
@@ -1593,10 +1631,10 @@
                         {
                             recid: Recid,
                             Product: ds.tables[0].rows[i].cells.product,
-                            QtyOnHand: parseFloat(ds.tables[0].rows[i].cells.qtyonhand).toLocaleString(),
+                            QtyOnHand: ds.tables[0].rows[i].cells.qtyonhand,
                             UOM: ds.tables[0].rows[i].cells.uom,
-                            Reserved: parseFloat(ds.tables[0].rows[i].cells.qtyreserved).toLocaleString(),
-                            ATP: parseFloat(ds.tables[0].rows[i].cells.qtyavailable).toLocaleString(),
+                            Reserved: ds.tables[0].rows[i].cells.qtyreserved,
+                            ATP: ds.tables[0].rows[i].cells.qtyavailable,
                             M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
                         });
                 }
@@ -1745,9 +1783,9 @@
                         {
                             recid: Recid,
                             Supplier: ds.tables[0].rows[i].cells.supplier,
-                            QtyOrderPack: parseFloat(ds.tables[0].rows[i].cells.qtyorderpack).toLocaleString(),
+                            QtyOrderPack: ds.tables[0].rows[i].cells.qtyorderpack,
                             UOM: ds.tables[0].rows[i].cells.uom,
-                            MinOrder: parseFloat(ds.tables[0].rows[i].cells.minorder).toLocaleString(),
+                            MinOrder: ds.tables[0].rows[i].cells.minorder,
                             DeliveryTime: ds.tables[0].rows[i].cells.deliverytime,
                             M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
                         });
@@ -1914,8 +1952,8 @@
                             Product: ds.tables[0].rows[i].cells.product,
                             Factor: ds.tables[0].rows[i].cells.factor,
                             UOM: ds.tables[0].rows[i].cells.uom,
-                            QtyOnHand: parseFloat(ds.tables[0].rows[i].cells.qtyonhand).toLocaleString(),
-                            ATP: parseFloat(ds.tables[0].rows[i].cells.qtyavailable).toLocaleString(),
+                            QtyOnHand: ds.tables[0].rows[i].cells.qtyonhand,
+                            ATP: ds.tables[0].rows[i].cells.qtyavailable,
                             M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
                         });
                 }
@@ -2121,7 +2159,7 @@
                         {
                             recid: Recid,
                             Attribute: ds.tables[0].rows[i].cells.description,
-                            QtyOnHand: parseFloat(ds.tables[0].rows[i].cells.qtyonhand).toLocaleString(),
+                            QtyOnHand: ds.tables[0].rows[i].cells.qtyonhand,
                             UOM: ds.tables[0].rows[i].cells.uom,
                             //UPC: ds.tables[0].rows[i].cells.upc,
                             SerialNo: ds.tables[0].rows[i].cells.serno,
@@ -2341,8 +2379,8 @@
                             recid: Recid,
                             Warehouse: ds.tables[0].rows[i].cells.warehouse,
                             Locator: ds.tables[0].rows[i].cells.locator,
-                            Quantity: parseFloat(ds.tables[0].rows[i].cells.qtyonhand).toLocaleString(),
-                            Unconfirmed: parseFloat(ds.tables[0].rows[i].cells.qtyunconfirmed).toLocaleString(),
+                            Quantity: ds.tables[0].rows[i].cells.qtyonhand,
+                            Unconfirmed: ds.tables[0].rows[i].cells.qtyunconfirmed,
                             Attribute: ds.tables[0].rows[i].cells.description,
                             LastReceipt: lastReceipt,
                             M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
@@ -2515,10 +2553,10 @@
                         {
                             recid: Recid,
                             DatePromised: datePromised,
-                            Quantity: parseFloat(ds.tables[0].rows[i].cells.qtyordered).toLocaleString(),
+                            Quantity: ds.tables[0].rows[i].cells.qtyordered,
                             DateOrdered: dateOrdered,
                             Supplier: ds.tables[0].rows[i].cells.supplier,
-                            QtyReserved: parseFloat(ds.tables[0].rows[i].cells.qtyreserved).toLocaleString(),
+                            QtyReserved: ds.tables[0].rows[i].cells.qtyreserved,
                             M_Product_ID: 0,
                         });
                 }
@@ -2649,9 +2687,9 @@
                                         recid: Recid,
                                         RequisitionNo: dsRep.tables[0].rows[i].cells.documentno,
                                         Date: date,
-                                        QtyDemanded: parseFloat(dsRep.tables[0].rows[i].cells.qty).toLocaleString(),
-                                        QtyReceived: parseFloat(dsRep.tables[0].rows[i].cells.dtd001_deliveredqty).toLocaleString(),
-                                        QtyPending: parseFloat(dsRep.tables[0].rows[i].cells.qtypending).toLocaleString(),
+                                        QtyDemanded: dsRep.tables[0].rows[i].cells.qty,
+                                        QtyReceived: dsRep.tables[0].rows[i].cells.dtd001_deliveredqty,
+                                        QtyPending: dsRep.tables[0].rows[i].cells.qtypending,
                                         // LastReceipt: dsRep.tables[0].rows[i].cells.lastreceipt,
                                         M_Product_ID: dsRep.tables[0].rows[i].cells.m_product_id,
                                     });
@@ -2932,7 +2970,7 @@
                             recid: Recid,
                             DocumentType: ds.tables[0].rows[i].cells.doctype,
                             DocumentNo: ds.tables[0].rows[i].cells.documentno,
-                            Quantity: parseFloat(ds.tables[0].rows[i].cells.qtyentered).toLocaleString(),
+                            Quantity: ds.tables[0].rows[i].cells.qtyentered,
                             DatePromised: datePromised,
                             DemandedBy: ds.tables[0].rows[i].cells.demandedby,
                             AvailabilityStatus: "",
@@ -3130,11 +3168,11 @@
                     var InvOut = 0;
                     var date = null;
                     if (ds.tables[0].rows[i].cells.inventoryin > 0) {
-                        invIn = parseFloat(ds.tables[0].rows[i].cells.inventoryin).toLocaleString();
+                        invIn = ds.tables[0].rows[i].cells.inventoryin;
                     }
 
                     if (ds.tables[0].rows[i].cells.inventoryout < 0) {
-                        InvOut = parseFloat(ds.tables[0].rows[i].cells.inventoryout).toLocaleString();
+                        InvOut = ds.tables[0].rows[i].cells.inventoryout;
                     }
 
 
@@ -3156,7 +3194,7 @@
                             InventoryOut: InvOut,
                             // attribute_ID: "",
                             Attribute: ds.tables[0].rows[i].cells.description,
-                            Balance: parseFloat(ds.tables[0].rows[i].cells.currentqty).toLocaleString(),
+                            Balance: ds.tables[0].rows[i].cells.currentqty,
                             // C_UOM_ID: "",
                             M_Product_ID: 0,
                         });
@@ -4978,16 +5016,16 @@
                         SearchKey: data[i].Value,
                         Product: data[i].Name,
                         UPC: data[i].UPC,
-                        QtyOnHand: parseFloat(data[i].QtyOnHand).toLocaleString(),
+                        QtyOnHand: data[i].QtyOnHand,
                         UOM: data[i].UOM,
                         C_UOM_ID: data[i].C_UOM_ID,
-                        Reserved: parseFloat(data[i].Reserved).toLocaleString(),
-                        QtyAvailable: parseFloat(data[i].QtyAvailable).toLocaleString(),
-                        UnConfirmed: parseFloat(data[i].UnConfirmed).toLocaleString(),
+                        Reserved: data[i].Reserved,
+                        QtyAvailable: data[i].QtyAvailable,
+                        UnConfirmed: data[i].UnConfirmed,
                         Ordered: data[i].Ordered,
                         Demanded: data[i].Demanded,
                         TillReorder: data[i].TillReorder,
-                        QtyToReplenish: parseFloat(data[i].QtyToReplenish).toLocaleString(),
+                        QtyToReplenish: data[i].QtyToReplenish,
                         MinLevel: data[i].MinLevel,
                         Status: ""
                     });
