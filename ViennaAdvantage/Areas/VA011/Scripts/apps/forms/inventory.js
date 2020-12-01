@@ -3608,7 +3608,7 @@
             var sqlRep = "";
 
             if (moduleExists > 0) {
-                sqlRep = "SELECT p.Name AS Product, w.Name      AS Warehouse, w.M_Warehouse_ID, NVL(rep.Level_Max,0) AS Maxi, NVL(rep.Level_Min,0)            AS Mini,  NVL(rep.ReplenishType,0)        AS rtype, "
+                sqlRep = "SELECT p.Name AS Product, w.Name      AS Warehouse, w.M_Warehouse_ID, NVL(rep.Level_Max,0) AS Maxi, NVL(rep.Level_Min,0) AS Mini, rep.ReplenishType AS rtype, "
                     + " NVL(DTD001_MinOrderQty,0)       AS Qty,  NVL(DTD001_OrderPackQty,0)      AS OrderPack,  rep.M_WarehouseSource_ID AS SourceWarehouse,  p.M_Product_ID FROM M_Product p "
                     + " Left Outer Join M_Replenish rep ON (p.M_Product_ID = rep.M_Product_ID) Left JOIN M_Warehouse w ON (w.M_Warehouse_ID = rep.M_Warehouse_ID) LEFT JOIN M_Warehouse w1 "
                     + " ON (w1.M_Warehouse_ID   = rep.M_WarehouseSource_ID) WHERE w.M_Warehouse_ID = " + $cmbRepAllWarehouse.val() + " AND p.IsActive      = 'Y' AND p.AD_Client_ID        = " + VIS.context.getContext("#AD_Client_ID");
