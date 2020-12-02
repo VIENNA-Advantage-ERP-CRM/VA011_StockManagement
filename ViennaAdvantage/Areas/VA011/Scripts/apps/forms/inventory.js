@@ -3672,7 +3672,7 @@
                             Type: ds.tables[0].rows[i].cells.rtype,
                             Min: ds.tables[0].rows[i].cells.mini,
                             Max: ds.tables[0].rows[i].cells.maxi,
-                            Qty: ds.tables[0].rows[i].cells.qty),
+                            Qty: ds.tables[0].rows[i].cells.qty,
                             OrderPack: ds.tables[0].rows[i].cells.orderpack,
                             SourceWarehouse: ds.tables[0].rows[i].cells.sourcewarehouse,
                             // M_Warehouse_ID: ds.tables[0].rows[i].cells.m_warehouse_id,
