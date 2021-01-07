@@ -5550,6 +5550,7 @@
                             "Ordered": dRepTopGrid.records[j].Ordered, "QtyOnHand": dRepTopGrid.records[j].QtyOnHand,
                             "QtyToOrder": dRepTopGrid.records[j].QtyToOrder, "ReplenishmentType": dRepTopGrid.records[j].ReplenishmentType,
                             "ReqReserved": dRepTopGrid.records[j].ReqReserved, "Reserved": dRepTopGrid.records[j].Reserved,
+                            "M_AttributeSetInstance_ID": dRepTopGrid.records[j].M_AttributesetInstance_ID
                         };
                         records.push(obj);
                     }
