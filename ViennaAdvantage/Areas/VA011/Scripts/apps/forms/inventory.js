@@ -565,7 +565,6 @@
                     fillAutoCompleteonTextBox(request.term, response, false, "GetOrgs");
                 },
                 select: function (ev, ui) {
-                    debugger;
                     if (isInList(ui.item.ids, selOrgs)) {
                         return;
                     }
@@ -2078,7 +2077,6 @@
 
         // Bind Variant Grid 
         function bindVariantGrid() {
-            debugger;
             // if (!initLoad) {
             $bsyDiv[0].style.visibility = "visible";
 
@@ -3345,7 +3343,6 @@
                 ],
                 onChange: function (event) {
 
-                    debugger;
                     //w2ui['gridprice_' + $self.windowNo].records[event.index]["updated"] = true;
                     if (event.column == 0) {
                         w2ui['VA011_gridReplenishmentPop_' + $self.windowNo].records[event.index]["Product"] = event.value_new;
@@ -3386,7 +3383,6 @@
                         if (dReplenishmentPopGrid.records[event.recid - 1] != null) {
 
                             $bsyDiv[0].style.visibility = "visible";
-                            debugger;
                             var warehoue_ID = $cmbRepAllWarehouse.val();
                             var prod_ID = dReplenishmentPopGrid.records[event.recid - 1].M_Product_ID;
                             var type = dReplenishmentPopGrid.records[event.recid - 1].Type;
@@ -3604,7 +3600,6 @@
         };
 
         function callbackModuleCheckRepAll(moduleExists) {
-            debugger;
             var sqlRep = "";
 
             if (moduleExists > 0) {
@@ -3687,7 +3682,6 @@
         };
 
         function callbackModuleCheckRepAllWhNull(moduleExists) {
-            debugger;
 
             var Recid = grdReplenishmentPopValues.length;
 
@@ -4102,7 +4096,6 @@
         };
 
         function callbackBindReplenishmentBGrid(ds) {
-
             var Recid = 0;
 
             if (ds != null && ds.tables[0].rows.length > 0) {
@@ -4141,7 +4134,6 @@
 
         // Create Product Panel Grid at the Top
         function gridReplenishTopPanel() {
-
             dRepTopGrid = null;
             dRepTopGrid = $divRepTopGrid.w2grid({
                 name: 'VA011_gridRepTop_' + $self.windowNo,
@@ -4173,8 +4165,11 @@
                     { field: "C_BPartner_ID", caption: "C_BPartner_ID", sortable: false, size: '80px', display: false },
                     { field: "M_Warehouse_ID", caption: "M_Warehouse_ID", sortable: false, size: '80px', display: false },
                     { field: "DocStatus", caption: "DocStatus", sortable: false, size: '35%', hidden: false, display: false },
+                    { field: "M_AttributeSetInstance_ID", caption: "M_AttributeSetInstance_ID", sortable: false, size: '80px', display: false },
+
 
                     { field: "Product", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("Product") + '</span></div>', sortable: false, size: '12%', hidden: false },
+                    { field: "Attribute", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Attribute") + '</span></div>', sortable: false, size: '12%', hidden: false },
                     { field: "Warehouse", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_Warehouse") + '</span></div>', sortable: false, size: '12%', hidden: false },
                     { field: "SourceWarehouse", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_SourceWarehouse") + '</span></div>', sortable: false, size: '12%', hidden: false },
                     { field: "ReplenishmentType", caption: '<div style="text-align: center;" ><span>' + VIS.Msg.getMsg("VA011_ReplenishmentType") + '</span></div>', sortable: false, size: '9%', hidden: false },
@@ -4306,6 +4301,7 @@
             dRepTopGrid.hideColumn('M_Warehouse_ID');
             dRepTopGrid.hideColumn('DocStatus');
             dRepTopGrid.hideColumn('ReplenishmentType');
+            dRepTopGrid.hideColumn('M_AttributeSetInstance_ID');
 
         }
 
@@ -5084,7 +5080,6 @@
         function callbackBindProdReplenish(res) {
             // Bind Grid Product Here
             lstNoRepRule = [];
-            debugger;
             calculateReplenishSelected = true;
             for (var i = 0; i < res.length; i++) {
                 if (res[i] == -999999999) {
@@ -5458,11 +5453,13 @@
                             M_PriceList_ID: data.Table[i].M_PRICELIST_ID,
                             M_WarehouseSource_ID: data.Table[i].M_WAREHOUSESOURCE_ID,
                             M_Product_ID: data.Table[i].M_PRODUCT_ID,
+                            M_AttributesetInstance_ID: data.Table[i].M_ATTRIBUTESETINSTANCE_ID,
                             M_Warehouse_ID: data.Table[i].M_WAREHOUSE_ID,
                             C_BPartner_ID: data.Table[i].C_BPARTNER_ID,
                             C_DocType_ID: data.Table[i].C_DOCTYPE_ID,
                             DocStatus: _docStatus,
                             Product: data.Table[i].PRODUCT,
+                            Attribute: data.Table[i].ATTRIBUTE,
                             Warehouse: data.Table[i].WAREHOUSE,
                             SourceWarehouse: data.Table[i].SOURCEWAREHOUSE,
                             ReplenishmentType: data.Table[i].REPLENISHTYPE,
@@ -5535,8 +5532,7 @@
         };
 
         var records = [];
-        function generateReplenishments() {
-            debugger;
+        function generateReplenishments() {           
             var x = 0;
             if (dRepTopGrid.getSelection().length > 0) {
 
@@ -5798,7 +5794,6 @@
                     }
                 }
                 else if (btn.indexOf("VA011_DisplayReplenishRule_") >= 0) {
-                    debugger;
 
                     if (dProdGrid.getSelection().length <= 0) {
                         //alert(VIS.Msg.getMsg("VA011_PleaseSelectaRecord"));
@@ -5930,7 +5925,6 @@
                     var sqlWhere = "";
 
                     $bsyDiv[0].style.visibility = "visible";
-                    debugger;
                     for (var j = 0; j < dReplenishmentPopGrid.records.length; j++) {
                         //if (dReplenishmentPopGrid.getSelection().map(function (item) { return item == dReplenishmentPopGrid.records[j].recid; }).indexOf(true) >= 0) {
                         recSelected = true;
@@ -6191,7 +6185,6 @@
                 if (tgt.className != "VA011-clsDIV") {
                     var ind = -1;
                     var orgID = -1;
-                    debugger;
                     if (tgt.id.indexOf("VA011_spnOrg") >= 0) {
                         var val = tgt.id.replace("VA011_spnOrg", "");
                         // orgID = $("#VA011_chkOrg" + val).val();
