@@ -72,7 +72,7 @@ namespace VA011.Models
             PrepareTable();
             FillTable(wh);
 
-            dsRet = DB.ExecuteDataset("SELECT r.*, p.Name AS Product, w.Name AS Warehouse, sw.Name AS SourceWarehouse FROM T_Replenish r INNER JOIN m_Product p ON (p.M_Product_ID = r.M_Product_ID) INNER JOIN M_Warehouse w ON (w.M_Warehouse_ID = r.M_Warehouse_ID) LEFT OUTER JOIN M_Warehouse sw ON (sw.M_Warehouse_ID  = r.M_WarehouseSource_ID) WHERE AD_PInstance_ID = " + pins.GetAD_PInstance_ID());
+            dsRet = DB.ExecuteDataset("SELECT r.*, p.Name AS Product, w.Name AS Warehouse, sw.Name AS SourceWarehouse,attr.Description AS Attribute FROM T_Replenish r INNER JOIN m_Product p ON (p.M_Product_ID = r.M_Product_ID) INNER JOIN M_Warehouse w ON (w.M_Warehouse_ID = r.M_Warehouse_ID) LEFT OUTER JOIN M_Warehouse sw ON (sw.M_Warehouse_ID  = r.M_WarehouseSource_ID) LEFT JOIN M_AttributeSetInstance attr ON(attr.M_AttributeSetInstance_ID=r.M_AttributeSetInstance_ID) WHERE AD_PInstance_ID = " + pins.GetAD_PInstance_ID());
 
             // int delCount = DB.ExecuteQuery("DELETE FROM T_Replenish WHERE AD_PInstance_ID = " + pins.GetAD_PInstance_ID());
 
@@ -319,12 +319,12 @@ namespace VA011.Models
                 // In Serial No,  i put Min order qty from replenish as a dummy data
                 sql = "INSERT INTO T_Replenish "
                 + "(AD_PInstance_ID, M_Warehouse_ID,DocStatus, M_Product_ID, AD_Client_ID, AD_Org_ID,"
-                + " ReplenishType, Level_Min, Level_Max, QtyOnHand,QtyReserved,QtyOrdered,"
+                + " ReplenishType, M_AttributeSetInstance_ID, Level_Min, Level_Max, QtyOnHand,QtyReserved,QtyOrdered,"
                 + " C_BPartner_ID, Order_Min, Order_Pack, QtyToOrder, ReplenishmentCreate , Serial_No) "
                 + "SELECT " + pins.GetAD_PInstance_ID()
                     + ", r.M_Warehouse_ID,'" + _DocStatus + "', r.M_Product_ID, r.AD_Client_ID, r.AD_Org_ID,"
-                + " r.ReplenishType, r.Level_Min, r.Level_Max, 0,0,0,"
-                + " po.C_BPartner_ID, po.Order_Min, po.Order_Pack, 0, ";
+                + " r.ReplenishType, r.M_AttributeSetInstance_ID, r.Level_Min, r.Level_Max, 0,0,0,"
+                + " po.C_BPartner_ID, po.Order_Min, CASE WHEN NVL(po.Order_Pack, 0) > 0 THEN po.Order_Pack ELSE NVL(r.DTD001_OrderPackQty, 0) END AS Order_Pack, 0, ";
                 if (_ReplenishmentCreate == null)
                 {
                     sql += "null";
@@ -388,12 +388,12 @@ namespace VA011.Models
             {
                 sql = "INSERT INTO T_Replenish "
                 + "(AD_PInstance_ID, M_Warehouse_ID,DocStatus, M_Product_ID, AD_Client_ID, AD_Org_ID,"
-                + " ReplenishType, Level_Min, Level_Max, QtyOnHand,QtyReserved,QtyOrdered,"
+                + " ReplenishType, M_AttributeSetInstance_ID,Level_Min, Level_Max, QtyOnHand,QtyReserved,QtyOrdered,"
                 + " C_BPartner_ID, Order_Min, Order_Pack, QtyToOrder, ReplenishmentCreate) "
                 + "SELECT " + pins.GetAD_PInstance_ID()
                     + ", r.M_Warehouse_ID,'" + _DocStatus + "', r.M_Product_ID, r.AD_Client_ID, r.AD_Org_ID,"
-                + " r.ReplenishType, r.Level_Min, r.Level_Max, 0,0,0,"
-                + " po.C_BPartner_ID, po.Order_Min, po.Order_Pack, 0, ";
+                + " r.ReplenishType, r.M_AttributeSetInstance_ID, r.Level_Min, r.Level_Max, 0,0,0,"
+                + " po.C_BPartner_ID, po.Order_Min, CASE WHEN NVL(po.Order_Pack, 0) > 0 THEN po.Order_Pack ELSE NVL(r.DTD001_OrderPackQty, 0) END AS Order_Pack, 0,";
                 if (_ReplenishmentCreate == null)
                 {
                     sql += "null";
@@ -421,11 +421,11 @@ namespace VA011.Models
                 {
                     sql = "INSERT INTO T_Replenish "
                         + "(AD_PInstance_ID, M_Warehouse_ID,DocStatus, M_Product_ID, AD_Client_ID, AD_Org_ID,"
-                        + " ReplenishType, Level_Min, Level_Max,"
+                        + " ReplenishType, M_AttributeSetInstance_ID, Level_Min, Level_Max,"
                         + " C_BPartner_ID, Order_Min, Order_Pack, QtyToOrder, ReplenishmentCreate) "
                         + "SELECT " + pins.GetAD_PInstance_ID()
                         + ", r.M_Warehouse_ID,'" + _DocStatus + "', r.M_Product_ID, r.AD_Client_ID, r.AD_Org_ID,"
-                        + " r.ReplenishType, r.Level_Min, r.Level_Max,"
+                        + " r.ReplenishType,r.M_AttributeSetInstance_ID, r.Level_Min, r.Level_Max,"
                         //jz + " null, 1, 1, 0, ";
                         + DB.NULL("I", Types.VARCHAR)
                         + " , 1, 1, 0, ";
@@ -456,11 +456,11 @@ namespace VA011.Models
             {
                 sql = "INSERT INTO T_Replenish "
                 + "(AD_PInstance_ID, M_Warehouse_ID,DocStatus, M_Product_ID, AD_Client_ID, AD_Org_ID,"
-                + " ReplenishType, Level_Min, Level_Max, QtyOnHand,QtyReserved,QtyOrdered,"
+                + " ReplenishType,M_AttributeSetInstance_ID, Level_Min, Level_Max, QtyOnHand,QtyReserved,QtyOrdered,"
                 + " C_BPartner_ID, Order_Min, Order_Pack, QtyToOrder, ReplenishmentCreate) "
                 + "SELECT " + pins.GetAD_PInstance_ID()
                     + ", r.M_Warehouse_ID,'" + _DocStatus + "', r.M_Product_ID, r.AD_Client_ID, r.AD_Org_ID,"
-                + " r.ReplenishType, r.Level_Min, r.Level_Max, 0,0,0,"
+                + " r.ReplenishType,r.M_AttributeSetInstance_ID, r.Level_Min, r.Level_Max, 0,0,0,"
                 + " po.C_BPartner_ID,NVL(r.DTD001_MinOrderQty,0), NVL(r.DTD001_OrderPackQty,0), 0, ";
                 if (_ReplenishmentCreate == null)
                 {
@@ -475,7 +475,7 @@ namespace VA011.Models
                      + "WHERE po.IsCurrentVendor='Y'"	//	Only Current Vendor
                     + " AND r.ReplenishType<>'0'"
 
-                   // + "WHERE r.ReplenishType<>'0' "	//	Only Current Vendor
+                    // + "WHERE r.ReplenishType<>'0' "	//	Only Current Vendor
                     + " AND po.IsActive='Y' AND r.IsActive='Y'   AND  ( r.Level_Min<> 0 OR r.Level_Max <> 0 )   "  // max or min level 0 qty not consider
                     + " AND r.M_Warehouse_ID=" + _M_Warehouse_ID;
                 if (_C_BPartner_ID != 0 && _C_BPartner_ID != -1)
@@ -493,11 +493,11 @@ namespace VA011.Models
                 {
                     sql = "INSERT INTO T_Replenish "
                         + "(AD_PInstance_ID, M_Warehouse_ID,DocStatus, M_Product_ID, AD_Client_ID, AD_Org_ID,"
-                        + " ReplenishType, Level_Min, Level_Max,"
+                        + " ReplenishType, M_AttributeSetInstance_ID, Level_Min, Level_Max,"
                         + " C_BPartner_ID, Order_Min, Order_Pack, QtyToOrder, ReplenishmentCreate) "
                         + "SELECT " + pins.GetAD_PInstance_ID()
                         + ", r.M_Warehouse_ID,'" + _DocStatus + "', r.M_Product_ID, r.AD_Client_ID, r.AD_Org_ID,"
-                        + " r.ReplenishType, r.Level_Min, r.Level_Max,"
+                        + " r.ReplenishType, r.M_AttributeSetInstance_ID, r.Level_Min, r.Level_Max,"
                         //jz + " null, 1, 1, 0, ";
                         + DB.NULL("I", Types.VARCHAR)
                         + " , NVL(r.DTD001_MinOrderQty,0), NVL(r.DTD001_OrderPackQty,0), 0, ";
@@ -529,27 +529,68 @@ namespace VA011.Models
             if (_CountDTD001 > 0)
             {
                 sql = "UPDATE T_Replenish t SET "
-                + "QtyOnHand = (SELECT COALESCE(SUM(QtyOnHand),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
-                    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID),"
-                + "QtyReserved = (SELECT COALESCE(SUM(QtyReserved),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
-                    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID),"
-                + "QtyOrdered = (SELECT COALESCE(SUM(QtyOrdered),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
-                    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID),"
-                + "DTD001_QtyReserved = (SELECT COALESCE(SUM(DTD001_QtyReserved),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
-                + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID),"
-                    //v3
-                + "DTD001_SourceReserve = (SELECT COALESCE(SUM(DTD001_SourceReserve),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
-                    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID)";
+                //+ "QtyOnHand = (SELECT COALESCE(SUM(QtyOnHand),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
+                //    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID),"
+                //+ "QtyReserved = (SELECT COALESCE(SUM(QtyReserved),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
+                //    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID),"
+                //+ "QtyOrdered = (SELECT COALESCE(SUM(QtyOrdered),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
+                //    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID),"
+                //+ "DTD001_QtyReserved = (SELECT COALESCE(SUM(DTD001_QtyReserved),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
+                //+ " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID),"
+                //    //v3
+                //+ "DTD001_SourceReserve = (SELECT COALESCE(SUM(DTD001_SourceReserve),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
+                //    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID)";
+                + "QtyOnHand = CASE WHEN (t.M_Attributesetinstance_ID > 0) THEN (SELECT COALESCE(SUM(QtyOnHand),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
+                    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID AND t.M_Attributesetinstance_ID=s.M_Attributesetinstance_ID)"
+                    + " ELSE (SELECT COALESCE(SUM(QtyOnHand),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
+                    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID AND s.M_Attributesetinstance_ID NOT IN ("
+                    + " SELECT M_AttributeSetInstance_ID FROM T_Replenish WHERE M_Product_ID = t.M_Product_ID AND M_AttributeSetInstance_ID > 0 AND AD_PInstance_ID=" + pins.GetAD_PInstance_ID() + ")) END,"
+                + "QtyReserved = CASE WHEN (t.M_Attributesetinstance_ID > 0) THEN (SELECT COALESCE(SUM(QtyReserved),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
+                    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID AND t.M_Attributesetinstance_ID=s.M_Attributesetinstance_ID)"
+                    + " ELSE (SELECT COALESCE(SUM(QtyReserved),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
+                    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID AND s.M_Attributesetinstance_ID NOT IN ("
+                    + " SELECT M_AttributeSetInstance_ID FROM T_Replenish WHERE M_Product_ID = t.M_Product_ID AND M_AttributeSetInstance_ID > 0 AND AD_PInstance_ID=" + pins.GetAD_PInstance_ID() + ")) END,"
+                + "QtyOrdered = CASE WHEN (t.M_Attributesetinstance_ID > 0) THEN (SELECT COALESCE(SUM(QtyOrdered),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
+                    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID AND t.M_Attributesetinstance_ID=s.M_Attributesetinstance_ID)"
+                    + " ELSE (SELECT COALESCE(SUM(QtyOrdered),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
+                    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID AND s.M_Attributesetinstance_ID NOT IN ("
+                    + " SELECT M_AttributeSetInstance_ID FROM T_Replenish WHERE M_Product_ID = t.M_Product_ID AND M_AttributeSetInstance_ID > 0 AND AD_PInstance_ID=" + pins.GetAD_PInstance_ID() + ")) END,"
+                + "DTD001_QtyReserved = CASE WHEN (t.M_Attributesetinstance_ID > 0) THEN (SELECT COALESCE(SUM(DTD001_QtyReserved),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
+                   + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID AND t.M_Attributesetinstance_ID=s.M_Attributesetinstance_ID)"
+                   + " ELSE (SELECT COALESCE(SUM(DTD001_QtyReserved),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
+                   + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID AND s.M_Attributesetinstance_ID NOT IN ("
+                    + " SELECT M_AttributeSetInstance_ID FROM T_Replenish WHERE M_Product_ID = t.M_Product_ID AND M_AttributeSetInstance_ID > 0 AND AD_PInstance_ID=" + pins.GetAD_PInstance_ID() + ")) END,"
+                //v3
+                + "DTD001_SourceReserve = CASE WHEN (t.M_Attributesetinstance_ID > 0) THEN (SELECT COALESCE(SUM(DTD001_SourceReserve),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
+                    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID AND t.M_Attributesetinstance_ID=s.M_Attributesetinstance_ID)"
+                    + " ELSE (SELECT COALESCE(SUM(DTD001_SourceReserve),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
+                    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID AND s.M_Attributesetinstance_ID NOT IN ("
+                    + " SELECT M_AttributeSetInstance_ID FROM T_Replenish WHERE M_Product_ID = t.M_Product_ID AND M_AttributeSetInstance_ID > 0 AND AD_PInstance_ID=" + pins.GetAD_PInstance_ID() + ")) END";
             }
             else
             {
                 sql = "UPDATE T_Replenish t SET "
-                + "QtyOnHand = (SELECT COALESCE(SUM(QtyOnHand),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
-                    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID),"
-                + "QtyReserved = (SELECT COALESCE(SUM(QtyReserved),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
-                    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID),"
-                + "QtyOrdered = (SELECT COALESCE(SUM(QtyOrdered),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
-                    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID)";
+                //+ "QtyOnHand = (SELECT COALESCE(SUM(QtyOnHand),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
+                //    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID),"
+                //+ "QtyReserved = (SELECT COALESCE(SUM(QtyReserved),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
+                //    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID),"
+                //+ "QtyOrdered = (SELECT COALESCE(SUM(QtyOrdered),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
+                //    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID)";
+                + "QtyOnHand = CASE WHEN (t.M_Attributesetinstance_ID > 0) THEN (SELECT COALESCE(SUM(QtyOnHand),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
+                    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID AND t.M_Attributesetinstance_ID=s.M_Attributesetinstance_ID)"
+                    + " ELSE (SELECT COALESCE(SUM(QtyOnHand),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
+                    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID AND s.M_Attributesetinstance_ID NOT IN ("
+                    + " SELECT M_AttributeSetInstance_ID FROM T_Replenish WHERE M_Product_ID = t.M_Product_ID AND M_AttributeSetInstance_ID > 0 AND AD_PInstance_ID=" + pins.GetAD_PInstance_ID() + ")) END,"
+                + "QtyReserved = CASE WHEN (t.M_Attributesetinstance_ID > 0) THEN (SELECT COALESCE(SUM(QtyReserved),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
+                    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID AND t.M_Attributesetinstance_ID=s.M_Attributesetinstance_ID)"
+                    + " ELSE (SELECT COALESCE(SUM(QtyReserved),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
+                    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID AND s.M_Attributesetinstance_ID NOT IN ("
+                    + " SELECT M_AttributeSetInstance_ID FROM T_Replenish WHERE M_Product_ID = t.M_Product_ID AND M_AttributeSetInstance_ID > 0 AND AD_PInstance_ID=" + pins.GetAD_PInstance_ID() + ")) END,"
+                + "QtyOrdered = CASE WHEN (t.M_Attributesetinstance_ID > 0) THEN (SELECT COALESCE(SUM(QtyOrdered),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
+                    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID AND t.M_Attributesetinstance_ID=s.M_Attributesetinstance_ID)"
+                    + " ELSE (SELECT COALESCE(SUM(QtyOrdered),0) FROM M_Storage s, M_Locator l WHERE t.M_Product_ID=s.M_Product_ID"
+                    + " AND l.M_Locator_ID=s.M_Locator_ID AND l.M_Warehouse_ID=t.M_Warehouse_ID AND s.M_Attributesetinstance_ID NOT IN ("
+                    + " SELECT M_AttributeSetInstance_ID FROM T_Replenish WHERE M_Product_ID = t.M_Product_ID AND M_AttributeSetInstance_ID > 0 AND AD_PInstance_ID=" + pins.GetAD_PInstance_ID() + ")) END,";
             }
             //dtd
             if (_C_DocType_ID != 0 && _C_DocType_ID != -1)
@@ -673,6 +714,10 @@ namespace VA011.Models
                 // change qtyOrder when if the minimum order is equal to zero
                 sql = "  UPDATE t_replenish SET  QtyToOrder=  QtyToOrder  WHERE  order_min = 0 AND ReplenishType='1' AND  ad_pinstance_id =" + pins.GetAD_PInstance_ID();
                 no = DB.ExecuteQuery(sql, null, null);
+
+                // Maintain Minimum Order qty when replenishmnt set maximam level
+                sql = "  UPDATE t_replenish SET  QtyToOrder= order_min  WHERE  order_min > QtyToOrder AND ReplenishType='2' AND  ad_pinstance_id =" + pins.GetAD_PInstance_ID();
+                no = DB.ExecuteQuery(sql, null, null);
             }
 
             if (_ReplenishmentCreate == "POO")
@@ -684,6 +729,15 @@ namespace VA011.Models
                 //change qtyOrder when if the minimum order qty at purchasing is less than order qty at Replenish Tab then take replenish qty
                 sql = "  UPDATE t_replenish SET  QtyToOrder=  QtyToOrder + serial_no  WHERE  order_min < serial_no AND ReplenishType='1' AND  ad_pinstance_id =" + pins.GetAD_PInstance_ID();
                 no = DB.ExecuteQuery(sql, null, null);
+
+                //change qtyOrder when if the minimum order qty at purchasing is greater than equal to order qty at Replenish Tab then take purchasing qty
+                sql = "  UPDATE t_replenish SET  QtyToOrder= order_min  WHERE  order_min >= serial_no  AND order_min > QtyToOrder  AND ReplenishType='2' AND  ad_pinstance_id =" + pins.GetAD_PInstance_ID();
+                no = DB.ExecuteQuery(sql, null, null);
+
+                //change qtyOrder when if the minimum order qty at purchasing is less than order qty at Replenish Tab then take replenish qty
+                sql = "  UPDATE t_replenish SET  QtyToOrder= serial_no  WHERE  order_min < serial_no AND serial_no >QtyToOrder  AND ReplenishType='2' AND  ad_pinstance_id =" + pins.GetAD_PInstance_ID();
+                no = DB.ExecuteQuery(sql, null, null);
+                //end
 
                 sql = "UPDATE t_replenish SET serial_no = null where ad_pinstance_id =" + pins.GetAD_PInstance_ID();
                 no = DB.ExecuteQuery(sql, null, null);
@@ -737,10 +791,11 @@ namespace VA011.Models
             sql = "UPDATE T_Replenish "
                 + "SET M_WarehouseSource_ID=(SELECT M_WarehouseSource_ID FROM M_Replenish r "
                     + "WHERE r.M_Product_ID=T_Replenish.M_Product_ID"
-                    + " AND r.M_Warehouse_ID=" + _M_Warehouse_ID + ")"
+                    + " AND r.M_Warehouse_ID=" + _M_Warehouse_ID + " AND r.M_Attributesetinstance_ID = T_Replenish.M_Attributesetinstance_ID)"
                 + "WHERE AD_PInstance_ID=" + pins.GetAD_PInstance_ID()
                 + " AND EXISTS (SELECT * FROM M_Replenish r "
                     + "WHERE r.M_Product_ID=T_Replenish.M_Product_ID"
+                    + " AND r.M_Attributesetinstance_ID=T_Replenish.M_Attributesetinstance_ID"
                     + " AND r.M_Warehouse_ID=" + _M_Warehouse_ID
                     + " AND r.M_WarehouseSource_ID > 0)";
             no = DB.ExecuteQuery(sql, null, null);

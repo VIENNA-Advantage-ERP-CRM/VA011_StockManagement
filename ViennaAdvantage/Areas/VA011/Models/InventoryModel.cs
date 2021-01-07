@@ -1482,6 +1482,7 @@ WHERE M_Product_ID = " + M_Product_ID;
                 VAdvantage.Model.MOrderLine line = null;
                 line = new VAdvantage.Model.MOrderLine(orderReps);
                 line.SetM_Product_ID(Rep.M_Product_ID);
+                line.SetM_AttributeSetInstance_ID(Rep.M_AttributeSetInstance_ID);
                 //line.SetQty(replenish.GetQtyToOrder());
                 int UOM = 0, prdUOM = 0;
                 decimal? OrdQty = 0, OrignlQty = 0;
@@ -1793,6 +1794,7 @@ WHERE M_Product_ID = " + M_Product_ID;
             //ViennaAdvantage.Model.MRequisitionLine line = new ViennaAdvantage.Model.MRequisitionLine(GetCtx() , 0 , Get_Trx());
             line.SetM_Requisition_ID(requisitionReps.GetM_Requisition_ID());
             line.SetM_Product_ID(Rep.M_Product_ID);
+            line.SetM_AttributeSetInstance_ID(Rep.M_AttributeSetInstance_ID);
             line.SetC_BPartner_ID(Rep.C_BPartner_ID);
             line.SetQty(Rep.QtyToOrder);
             //    line.SetPrice();
@@ -1852,8 +1854,8 @@ WHERE M_Product_ID = " + M_Product_ID;
                 moveReps.SetC_DocType_ID(Rep.C_DocType_ID);
                 moveReps.SetDescription(Msg.GetMsg(ct, "Replenishment")
                     + ": " + whSource.GetName() + "->" + whTarget.GetName());
-                //	Set Org
-                moveReps.SetAD_Org_ID(whSource.GetAD_Org_ID());
+                //	Set Org            
+                moveReps.SetAD_Org_ID(whSource.GetAD_Org_ID());              
                 moveReps.SetDTD001_MWarehouseSource_ID(M_WarehouseSource_ID);
                 moveReps.SetMovementDate(DateTime.Now);
                 moveReps.SetM_Warehouse_ID(M_Warehouse_ID);
@@ -1913,6 +1915,7 @@ WHERE M_Product_ID = " + M_Product_ID;
                 VAdvantage.Model.MMovementLine line = new VAdvantage.Model.MMovementLine(moveReps);
                 line.SetM_Product_ID(Rep.M_Product_ID);
                 line.SetMovementQty(moveQty);
+                line.SetM_AttributeSetInstance_ID(Rep.M_AttributeSetInstance_ID);
                 if (Rep.QtyToOrder.CompareTo(moveQty) != 0)
                 {
                     line.SetDescription("Total: " + Rep.QtyToOrder);
@@ -2102,6 +2105,7 @@ WHERE M_Product_ID = " + M_Product_ID;
         public int M_Warehouse_ID { get; set; }
         public int C_BPartner_ID { get; set; }
         public int C_DocType_ID { get; set; }
+        public int M_AttributeSetInstance_ID { get; set; }
         public string DocStatus { get; set; }
         public string ReplenishmentType { get; set; }
         public decimal Max { get; set; }
