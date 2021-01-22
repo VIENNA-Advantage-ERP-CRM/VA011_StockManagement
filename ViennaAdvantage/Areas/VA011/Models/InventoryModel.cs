@@ -1789,7 +1789,7 @@ WHERE M_Product_ID = " + M_Product_ID;
                 info += " - " + requisitionReps.GetDocumentNo();
             }
 
-            //MRequisitionLine line = new MRequisitionLine(requisition);
+            MProduct product = MProduct.Get(ct, Rep.M_Product_ID);
             VAdvantage.Model.MRequisitionLine line = new VAdvantage.Model.MRequisitionLine(requisitionReps);
             //ViennaAdvantage.Model.MRequisitionLine line = new ViennaAdvantage.Model.MRequisitionLine(GetCtx() , 0 , Get_Trx());
             line.SetM_Requisition_ID(requisitionReps.GetM_Requisition_ID());
@@ -1797,7 +1797,18 @@ WHERE M_Product_ID = " + M_Product_ID;
             line.SetM_AttributeSetInstance_ID(Rep.M_AttributeSetInstance_ID);
             line.SetC_BPartner_ID(Rep.C_BPartner_ID);
             line.SetQty(Rep.QtyToOrder);
-            //    line.SetPrice();
+
+            // Set Value in Qty Entered field on Requisition Line
+            if (line.Get_ColumnIndex("QtyEntered") > 0)
+            {
+                line.Set_Value("QtyEntered", Rep.QtyToOrder);
+            }
+
+            // Set Value of Product UOM on Requisition Line.
+            if (line.Get_ColumnIndex("C_UOM_ID") > 0)
+            {
+                line.Set_ValueNoCheck("C_UOM_ID", product.GetC_UOM_ID());
+            }
             if (!line.Save())
             {
 
@@ -1920,6 +1931,9 @@ WHERE M_Product_ID = " + M_Product_ID;
                 {
                     line.SetDescription("Total: " + Rep.QtyToOrder);
                 }
+                line.SetQtyEntered(moveQty);
+                line.Set_Value("C_UOM_ID", product.GetC_UOM_ID());
+
                 line.SetM_Locator_ID(storage.GetM_Locator_ID());		//	from
                 line.SetM_AttributeSetInstance_ID(storage.GetM_AttributeSetInstance_ID());
                 line.SetM_LocatorTo_ID(M_LocatorTo_ID);					//	to
