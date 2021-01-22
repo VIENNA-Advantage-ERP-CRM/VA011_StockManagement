@@ -398,8 +398,8 @@ namespace VA011.Models
             sbSql.Append(sqlDmd.ToString()).Append(minLevelSQL);
             sbSql.Append(" FROM (SELECT DISTINCT p.M_Product_ID, p.C_UOM_ID, p.UPC, 0 AS QtyAvailable, "
           + " um.Name as UOM, p.Value, p.Name, 0 AS QTYENTERED, "
-                // + " bomPriceListUom(p.M_Product_ID, pr.M_PriceList_Version_ID,pr.M_AttriButeSetInstance_ID,pr.C_UOM_ID) AS PriceList, "
-                // + " bomPriceStdUom(p.M_Product_ID, pr.M_PriceList_Version_ID,pr.M_AttriButeSetInstance_ID,pr.C_UOM_ID) AS PriceStd,"
+          // + " bomPriceListUom(p.M_Product_ID, pr.M_PriceList_Version_ID,pr.M_AttriButeSetInstance_ID,pr.C_UOM_ID) AS PriceList, "
+          // + " bomPriceStdUom(p.M_Product_ID, pr.M_PriceList_Version_ID,pr.M_AttriButeSetInstance_ID,pr.C_UOM_ID) AS PriceStd,"
           + " 0 AS QtyOnHand, 0 AS QtyReserved,");
             // + " (SELECT NVL(SUM(lc.TargetQty),0) FROM M_InOutLineConfirm lc INNER JOIN M_InOutConfirm ioc ON (ioc.M_InOutConfirm_ID = lc.M_InOutConfirm_ID)  INNER JOIN M_InOutLine iol "
             // + " ON (iol.M_InOutline_ID = lc.M_InOutLine_ID) INNER JOIN M_InOut io ON (iol.M_Inout_ID   = io.M_InOut_ID) WHERE ioc.DocStatus NOT IN ('CO', 'CL')  AND iol.M_Product_ID = p.M_Product_ID"
@@ -420,7 +420,7 @@ namespace VA011.Models
             + " LEFT OUTER JOIN M_Product_PO pu ON (pu.M_Product_ID = p.M_Product_ID) "
             + " LEFT OUTER JOIN M_AttributeSet pa ON (p.M_AttributeSet_ID=pa.M_AttributeSet_ID) LEFT OUTER JOIN M_manufacturer mr ON (p.M_Product_ID=mr.M_Product_ID)  "
             + " LEFT OUTER JOIN M_ProductAttributes patr ON (p.M_Product_ID=patr.M_Product_ID) left join M_Storage s ON p.M_Product_ID = s.M_Product_ID  LEFT OUTER JOIN M_Locator l "
-                //+ " LEFT OUTER JOIN M_Replenish rep ON (rep.M_Product_ID = )"
+            //+ " LEFT OUTER JOIN M_Replenish rep ON (rep.M_Product_ID = )"
             + " ON s.M_Locator_ID=l.M_Locator_ID  LEFT OUTER JOIN M_Warehouse w ON l.M_Warehouse_ID = w.M_Warehouse_ID WHERE p.AD_Client_ID = " + ct.GetAD_Client_ID() + " AND p.IsActive='Y' AND p.IsSummary ='N' ");
 
             StringBuilder sbGroup = new StringBuilder("GROUP BY M_Product_ID,C_UOM_ID, UOM, Value, Name,UPC");
@@ -462,7 +462,7 @@ namespace VA011.Models
 
             sbSql.Append(sbWhere.ToString());
             sbSql.Append(" Order by p.name  ) prd ");
-            sbSql.Append(sbGroup.ToString() );
+            sbSql.Append(sbGroup.ToString());
 
             DataSet dsPro = null;
             try
@@ -496,7 +496,7 @@ namespace VA011.Models
                                 //sbGroup.Append(",M_Warehouse_ID");
                             }
                             sbSql.Append(") t");
-                             DataSet dsQty = DB.ExecuteDataset(sbSql.ToString());
+                            DataSet dsQty = DB.ExecuteDataset(sbSql.ToString());
                             if (dsQty != null)
                             {
                                 if (dsQty.Tables[0].Rows.Count > 0)
@@ -537,20 +537,20 @@ namespace VA011.Models
             int count = 0;
 
             StringBuilder sbSql = new StringBuilder(@"SELECT COUNT(*) "
-                //+ " SUM(QTYENTERED) AS QTYENTERED, SUM(QtyOnHand) AS QtyOnHand," 
-                //+ "SUM(QtyReserved) AS QtyReserved, SUM(QtyAvailable) AS QtyAvailable, SUM(QtyUnconfirmed) AS QtyUnconfirmed,SUM(QtyOrdered) AS QtyOrdered 
+            //+ " SUM(QTYENTERED) AS QTYENTERED, SUM(QtyOnHand) AS QtyOnHand," 
+            //+ "SUM(QtyReserved) AS QtyReserved, SUM(QtyAvailable) AS QtyAvailable, SUM(QtyUnconfirmed) AS QtyUnconfirmed,SUM(QtyOrdered) AS QtyOrdered 
             + " FROM (SELECT DISTINCT p.M_Product_ID, p.C_UOM_ID, "
-                //bomQtyAvailable(p.M_Product_ID,w.M_Warehouse_ID,0) AS QtyAvailable,"
+          //bomQtyAvailable(p.M_Product_ID,w.M_Warehouse_ID,0) AS QtyAvailable,"
           + " um.Name as UOM, p.Value, p.Name, 0 AS QTYENTERED "
-                // + " bomPriceListUom(p.M_Product_ID, pr.M_PriceList_Version_ID,pr.M_AttriButeSetInstance_ID,pr.C_UOM_ID) AS PriceList, "
-                // + " bomPriceStdUom(p.M_Product_ID, pr.M_PriceList_Version_ID,pr.M_AttriButeSetInstance_ID,pr.C_UOM_ID) AS PriceStd,"
-                //+ " bomQtyOnHand(p.M_Product_ID,w.M_Warehouse_ID,0) AS QtyOnHand, bomQtyReserved(p.M_Product_ID,w.M_Warehouse_ID,0)  AS QtyReserved,"
-                //+ " (SELECT NVL(SUM(lc.TargetQty),0) FROM M_InOutLineConfirm lc INNER JOIN M_InOutConfirm ioc ON (ioc.M_InOutConfirm_ID = lc.M_InOutConfirm_ID)  INNER JOIN M_InOutLine iol "
-                //+ " ON (iol.M_InOutline_ID = lc.M_InOutLine_ID) INNER JOIN M_InOut io ON (iol.M_Inout_ID   = io.M_InOut_ID) WHERE ioc.DocStatus NOT IN ('CO', 'CL')  AND iol.M_Product_ID = p.M_Product_ID"
-                //+ " AND io.IsSOTrx = 'N'  AND iol.M_Locator_ID IN ( SELECT loc.M_Locator_ID FROM M_Locator loc WHERE M_Warehouse_ID = w.M_Warehouse_ID)) AS QtyUnconfirmed "
-                //+ " bomQtyOrdered(p.M_Product_ID,w.M_Warehouse_ID,0) AS QtyOrdered"
-                // + " bomPriceStdUom(p.M_Product_ID, pr.M_PriceList_Version_ID,pr.M_AttriButeSetInstance_ID,pr.C_UOM_ID)-bomPriceLimitUom(p.M_Product_ID, pr.M_PriceList_Version_ID,pr.M_AttriButeSetInstance_ID,pr.C_UOM_ID) AS Margin, "
-                // + " bomPriceLimitUom(p.M_Product_ID, pr.M_PriceList_Version_ID,pr.M_AttriButeSetInstance_ID,pr.C_UOM_ID) AS PriceLimit,  "
+          // + " bomPriceListUom(p.M_Product_ID, pr.M_PriceList_Version_ID,pr.M_AttriButeSetInstance_ID,pr.C_UOM_ID) AS PriceList, "
+          // + " bomPriceStdUom(p.M_Product_ID, pr.M_PriceList_Version_ID,pr.M_AttriButeSetInstance_ID,pr.C_UOM_ID) AS PriceStd,"
+          //+ " bomQtyOnHand(p.M_Product_ID,w.M_Warehouse_ID,0) AS QtyOnHand, bomQtyReserved(p.M_Product_ID,w.M_Warehouse_ID,0)  AS QtyReserved,"
+          //+ " (SELECT NVL(SUM(lc.TargetQty),0) FROM M_InOutLineConfirm lc INNER JOIN M_InOutConfirm ioc ON (ioc.M_InOutConfirm_ID = lc.M_InOutConfirm_ID)  INNER JOIN M_InOutLine iol "
+          //+ " ON (iol.M_InOutline_ID = lc.M_InOutLine_ID) INNER JOIN M_InOut io ON (iol.M_Inout_ID   = io.M_InOut_ID) WHERE ioc.DocStatus NOT IN ('CO', 'CL')  AND iol.M_Product_ID = p.M_Product_ID"
+          //+ " AND io.IsSOTrx = 'N'  AND iol.M_Locator_ID IN ( SELECT loc.M_Locator_ID FROM M_Locator loc WHERE M_Warehouse_ID = w.M_Warehouse_ID)) AS QtyUnconfirmed "
+          //+ " bomQtyOrdered(p.M_Product_ID,w.M_Warehouse_ID,0) AS QtyOrdered"
+          // + " bomPriceStdUom(p.M_Product_ID, pr.M_PriceList_Version_ID,pr.M_AttriButeSetInstance_ID,pr.C_UOM_ID)-bomPriceLimitUom(p.M_Product_ID, pr.M_PriceList_Version_ID,pr.M_AttriButeSetInstance_ID,pr.C_UOM_ID) AS Margin, "
+          // + " bomPriceLimitUom(p.M_Product_ID, pr.M_PriceList_Version_ID,pr.M_AttriButeSetInstance_ID,pr.C_UOM_ID) AS PriceLimit,  "
           + " FROM M_Product p INNER JOIN C_UOM um ON (um.C_UOM_ID=p.C_UOM_ID) LEFT OUTER JOIN M_ProductPrice pr ON (p.M_Product_ID=pr.M_Product_ID AND pr.IsActive   ='Y') "
           + " LEFT OUTER JOIN M_PriceList_Version plv ON (pr.M_PriceList_Version_ID=plv.M_PriceList_Version_ID) "
           + " LEFT OUTER JOIN M_Product_PO pu ON (pu.M_Product_ID = p.M_Product_ID) "
@@ -1585,7 +1585,7 @@ WHERE M_Product_ID = " + M_Product_ID;
                 }
                 if (Env.HasModulePrefix("VAPRC_", out aInfo))
                 {
-                    SQL.Append(" AND M_AttributeSetInstance_ID = 0");
+                    SQL.Append(" AND M_AttributeSetInstance_ID = " + Rep.M_AttributeSetInstance_ID);
                     if (Env.HasModulePrefix("ED011_", out aInfo))
                     {
                         SqlUom.Append(SQL);
@@ -1866,7 +1866,7 @@ WHERE M_Product_ID = " + M_Product_ID;
                 moveReps.SetDescription(Msg.GetMsg(ct, "Replenishment")
                     + ": " + whSource.GetName() + "->" + whTarget.GetName());
                 //	Set Org            
-                moveReps.SetAD_Org_ID(whSource.GetAD_Org_ID());              
+                moveReps.SetAD_Org_ID(whSource.GetAD_Org_ID());
                 moveReps.SetDTD001_MWarehouseSource_ID(M_WarehouseSource_ID);
                 moveReps.SetMovementDate(DateTime.Now);
                 moveReps.SetM_Warehouse_ID(M_Warehouse_ID);
@@ -1926,7 +1926,7 @@ WHERE M_Product_ID = " + M_Product_ID;
                 VAdvantage.Model.MMovementLine line = new VAdvantage.Model.MMovementLine(moveReps);
                 line.SetM_Product_ID(Rep.M_Product_ID);
                 line.SetMovementQty(moveQty);
-                line.SetM_AttributeSetInstance_ID(Rep.M_AttributeSetInstance_ID);
+                //line.SetM_AttributeSetInstance_ID(Rep.M_AttributeSetInstance_ID);
                 if (Rep.QtyToOrder.CompareTo(moveQty) != 0)
                 {
                     line.SetDescription("Total: " + Rep.QtyToOrder);
@@ -2062,7 +2062,7 @@ WHERE M_Product_ID = " + M_Product_ID;
         public bool GetModuleInfo(string _prefix)
         {
             bool exist = false;
-           
+
             if (Env.HasModulePrefix(_prefix, out aInfo))
             {
                 exist = true;
