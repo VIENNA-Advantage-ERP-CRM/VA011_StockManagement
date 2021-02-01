@@ -72,7 +72,10 @@ namespace VA011.Models
             PrepareTable();
             FillTable(wh);
 
-            dsRet = DB.ExecuteDataset("SELECT r.*, p.Name AS Product, w.Name AS Warehouse, sw.Name AS SourceWarehouse,attr.Description AS Attribute FROM T_Replenish r INNER JOIN m_Product p ON (p.M_Product_ID = r.M_Product_ID) INNER JOIN M_Warehouse w ON (w.M_Warehouse_ID = r.M_Warehouse_ID) LEFT OUTER JOIN M_Warehouse sw ON (sw.M_Warehouse_ID  = r.M_WarehouseSource_ID) LEFT JOIN M_AttributeSetInstance attr ON(attr.M_AttributeSetInstance_ID=r.M_AttributeSetInstance_ID) WHERE AD_PInstance_ID = " + pins.GetAD_PInstance_ID());
+            dsRet = DB.ExecuteDataset("SELECT r.*, p.Name AS Product, w.Name AS Warehouse, sw.Name AS SourceWarehouse,attr.Description AS Attribute " +
+                "FROM T_Replenish r INNER JOIN m_Product p ON (p.M_Product_ID = r.M_Product_ID) INNER JOIN M_Warehouse w ON (w.M_Warehouse_ID = r.M_Warehouse_ID) " +
+                "LEFT OUTER JOIN M_Warehouse sw ON (sw.M_Warehouse_ID  = r.M_WarehouseSource_ID) LEFT JOIN M_AttributeSetInstance attr ON(attr.M_AttributeSetInstance_ID=r.M_AttributeSetInstance_ID) " +
+                "WHERE r.AD_PInstance_ID = " + pins.GetAD_PInstance_ID() + " ORDER BY r.M_Warehouse_ID, r.M_WarehouseSource_ID, r.C_BPartner_ID");
 
             // int delCount = DB.ExecuteQuery("DELETE FROM T_Replenish WHERE AD_PInstance_ID = " + pins.GetAD_PInstance_ID());
 
