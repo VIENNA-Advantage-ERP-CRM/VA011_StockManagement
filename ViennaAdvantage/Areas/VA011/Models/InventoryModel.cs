@@ -477,7 +477,7 @@ namespace VA011.Models
                             sbSql.Clear();
                             // changes done to get storage related quantities right, Previously it multiplies qty with number of locators in warehouse.- Done by mohit - asked by mukesh sir. ticket from client- Date : 6-June-2018
                             sbSql.Append("SELECT SUM (QtyAvailable) AS QtyAvailable, SUM( QtyOnHand) AS QtyOnHand, SUM( QtyReserved) AS QtyReserved,  SUM(QtyOrdered) AS QtyOrdered FROM ("
-                            + "SELECT  DISTINCT bomQtyAvailableAttr(p.M_Product_ID,s.M_AttributeSetInstance_ID,w.M_Warehouse_ID,0) AS QtyAvailable,"
+                            + "SELECT bomQtyAvailableAttr(p.M_Product_ID,s.M_AttributeSetInstance_ID,w.M_Warehouse_ID,0) AS QtyAvailable,"
                             + " bomQtyOnHandAttr(p.M_Product_ID,s.M_AttributeSetInstance_ID,w.M_Warehouse_ID,0) AS QtyOnHand,"
                             + " bomQtyReservedAttr(p.M_Product_ID,s.M_AttributeSetInstance_ID,w.M_Warehouse_ID,0) AS QtyReserved,"
                             + " bomQtyOrderedAttr(p.M_Product_ID,s.M_AttributeSetInstance_ID,w.M_Warehouse_ID,0) AS QtyOrdered,l.M_Warehouse_ID");
@@ -1147,6 +1147,8 @@ WHERE M_Product_ID = " + M_Product_ID;
         string _DocNo = "";
         StringBuilder sbRetMsg = new StringBuilder("");
         static VLogger log = VLogger.GetVLogger("StockManagement");
+        int M_Warehouse_ID = 0;
+        int M_WarehouseSource_ID = 0;
 
         public string GenerateReps(List<RepCreateData> Reps, Ctx ct)
         {
@@ -1830,9 +1832,7 @@ WHERE M_Product_ID = " + M_Product_ID;
             int noMoves = 0;
             String info = "";
             //
-            MClient client = null;
-            int M_Warehouse_ID = 0;
-            int M_WarehouseSource_ID = 0;
+            MClient client = null;            
             MWarehouse whSource = null;
             MWarehouse whTarget = null;
 
