@@ -1272,6 +1272,7 @@ WHERE M_Product_ID = " + M_Product_ID;
                             int[] array = createdRecordReps.ToArray();
                             for (int k = 0; k < array.Length; k++)
                             {
+                                orderReps = new VAdvantage.Model.MOrder(ct, Util.GetValueOfInt(array[k]), trx);
                                 if (docStatusReps == "IP")
                                 {
                                     orderReps.SetDocStatus("IP");
@@ -1305,66 +1306,65 @@ WHERE M_Product_ID = " + M_Product_ID;
                         }
                         else if (RepCreate == "POR")
                         {
-                            if (docStatusReps == "IP")
+                            int[] array = createdRecordReps.ToArray();
+                            for (int k = 0; k < array.Length; k++)
                             {
-                                requisitionReps.PrepareIt();
-                                requisitionReps.SetDocStatus("IP");
-                            }
-                            if (docStatusReps == "CO")
-                            {
-                                string chk = requisitionReps.CompleteIt();
-                                if (chk == "CO")
+                                requisitionReps = new VAdvantage.Model.MRequisition(ct, Util.GetValueOfInt(array[k]), trx);
+                                if (docStatusReps == "IP")
                                 {
-                                    requisitionReps.SetDocStatus("CO");
+                                    requisitionReps.PrepareIt();
+                                    requisitionReps.SetDocStatus("IP");
                                 }
-                            }
-                            if (!requisitionReps.Save())
-                            {
-                                allOK = false;
-                                sbRetMsg.Clear().Append(Msg.GetMsg(ct, "VA011_RequisitionNotSaved"));
-                                trx.Rollback();
-                                trx.Close();
+                                if (docStatusReps == "CO")
+                                {
+                                    string chk = requisitionReps.CompleteIt();
+                                    if (chk == "CO")
+                                    {
+                                        requisitionReps.SetDocStatus("CO");
+                                    }
+                                }
+                                if (!requisitionReps.Save())
+                                {
+                                    allOK = false;
+                                    sbRetMsg.Clear().Append(Msg.GetMsg(ct, "VA011_RequisitionNotSaved"));
+                                    trx.Rollback();
+                                    trx.Close();
+                                }
                             }
                         }
                         else if (RepCreate == "MMM")
                         {
-                            if (docStatusReps == "IP" || docStatusReps == "CO")
+                            int[] array = createdRecordReps.ToArray();
+                            for (int k = 0; k < array.Length; k++)
                             {
-                                if (createdRecordReps.Count > 0)
+                                moveReps = new VAdvantage.Model.MMovement(ct, Util.GetValueOfInt(array[k]), trx);
+                                if (docStatusReps == "IP")
                                 {
-                                    int[] array = createdRecordReps.ToArray();
-                                    for (int k = 0; k < array.Length; k++)
+                                    moveReps.SetDocStatus("IP");
+                                    moveReps.Save();
+                                    moveReps.PrepareIt();
+                                    if (!moveReps.Save())
                                     {
-
-                                        if (docStatusReps == "IP")
-                                        {
-                                            moveReps.SetDocStatus("IP");
-                                            moveReps.Save();
-                                            moveReps.PrepareIt();
-                                            if (!moveReps.Save())
-                                            {
-                                                sbRetMsg.Clear().Append(Msg.GetMsg(ct, "VA011_MoveNotSaved"));
-                                                allOK = false;
-                                                trx.Rollback();
-                                                trx.Close();
-                                                break;
-                                            }
-                                        }
-                                        else if (docStatusReps == "CO")
-                                        {
-                                            moveReps.SetDocStatus("CO");
-                                            moveReps.SetDocAction("CL");
-                                            moveReps.Save();
-                                            moveReps.CompleteIt();
-                                            if (!moveReps.Save())
-                                            {
-                                                sbRetMsg.Clear().Append(Msg.GetMsg(ct, "VA011_MoveNotSaved"));
-                                                allOK = false;
-                                                trx.Rollback();
-                                                trx.Close();
-                                                break;
-                                            }
-                                        }
+                                        sbRetMsg.Clear().Append(Msg.GetMsg(ct, "VA011_MoveNotSaved"));
+                                        allOK = false;
+                                        trx.Rollback();
+                                        trx.Close();
+                                        break;
+                                    }
+                                }
+                                else if (docStatusReps == "CO")
+                                {
+                                    moveReps.SetDocStatus("CO");
+                                    moveReps.SetDocAction("CL");
+                                    moveReps.Save();
+                                    moveReps.CompleteIt();
+                                    if (!moveReps.Save())
+                                    {
+                                        sbRetMsg.Clear().Append(Msg.GetMsg(ct, "VA011_MoveNotSaved"));
+                                        allOK = false;
+                                        trx.Rollback();
+                                        trx.Close();
+                                        break;
                                     }
                                 }
                             }
@@ -1747,7 +1747,7 @@ WHERE M_Product_ID = " + M_Product_ID;
             {
                 return "-1";
             }
-        }	//	createPO
+        }   //	createPO
 
         /// <summary>
         /// Create Requisition
@@ -1761,9 +1761,13 @@ WHERE M_Product_ID = " + M_Product_ID;
             {
                 wh = MWarehouse.Get(ct, Rep.M_Warehouse_ID);
             }
-            //
-            //old     if (requisition == null
-            //old       || requisition.GetM_Warehouse_ID() != replenish.GetM_Warehouse_ID())
+
+            if (!gotDocStatus)
+            {
+                docStatusReps = Rep.DocStatus;
+                gotDocStatus = true;
+            }
+
             if (requisitionReps == null   //newchange
                || requisitionReps.GetDTD001_MWarehouseSource_ID() != Rep.M_WarehouseSource_ID)
             {
@@ -1785,8 +1789,15 @@ WHERE M_Product_ID = " + M_Product_ID;
                 {
                     return "-99";
                 }
+                else
+                {
+                    if (!createdRecordReps.Contains(requisitionReps.GetM_Requisition_ID()))
+                    {
+                        createdRecordReps.Add(requisitionReps.GetM_Requisition_ID());
+                    }
+                }
                 _DocNo = requisitionReps.GetDocumentNo(); //dtd
-                //log.Fine(requisition.ToString());
+                                                          //log.Fine(requisition.ToString());
                 noReqs++;
                 info += " - " + requisitionReps.GetDocumentNo();
             }
@@ -1822,7 +1833,7 @@ WHERE M_Product_ID = " + M_Product_ID;
 
             // _info = "#" + noReqs + info;
             //  log.Info(_info);
-        }	//	createRequisition
+        }   //	createRequisition
 
         /// <summary>
         /// Create Inventory Movements
@@ -1832,9 +1843,15 @@ WHERE M_Product_ID = " + M_Product_ID;
             int noMoves = 0;
             String info = "";
             //
-            MClient client = null;            
+            MClient client = null;
             MWarehouse whSource = null;
             MWarehouse whTarget = null;
+
+            if (!gotDocStatus)
+            {
+                docStatusReps = Rep.DocStatus;
+                gotDocStatus = true;
+            }
 
             if (whSource == null || whSource.GetM_WarehouseSource_ID() != Rep.M_WarehouseSource_ID)
             {
@@ -1934,9 +1951,9 @@ WHERE M_Product_ID = " + M_Product_ID;
                 line.SetQtyEntered(moveQty);
                 line.Set_Value("C_UOM_ID", product.GetC_UOM_ID());
 
-                line.SetM_Locator_ID(storage.GetM_Locator_ID());		//	from
+                line.SetM_Locator_ID(storage.GetM_Locator_ID());        //	from
                 line.SetM_AttributeSetInstance_ID(storage.GetM_AttributeSetInstance_ID());
-                line.SetM_LocatorTo_ID(M_LocatorTo_ID);					//	to
+                line.SetM_LocatorTo_ID(M_LocatorTo_ID);                 //	to
                 line.SetM_AttributeSetInstanceTo_ID(storage.GetM_AttributeSetInstance_ID());
                 line.Save();
                 //
@@ -1965,7 +1982,7 @@ WHERE M_Product_ID = " + M_Product_ID;
             //    _info = "#" + noMoves + info;
             //    log.Info(_info);
             //}
-        }	//	createRequisition
+        }   //	createRequisition
 
         /// <summary>
         /// Get Locator_ID
@@ -1981,7 +1998,7 @@ WHERE M_Product_ID = " + M_Product_ID;
                 M_Locator_ID = wh.GetDefaultM_Locator_ID();
             }
             return M_Locator_ID;
-        }	//	getLocator_ID
+        }   //	getLocator_ID
 
         public List<NameIDClass> GetProductsAll(Ctx ctx)
         {
