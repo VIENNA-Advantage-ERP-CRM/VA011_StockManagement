@@ -1455,6 +1455,7 @@ WHERE M_Product_ID = " + M_Product_ID;
                     // MBPartner bp = new MBPartner(GetCtx(), replenish.GetC_BPartner_ID(), Get_Trx());
                     bp = new VAdvantage.Model.MBPartner(ct, Rep.C_BPartner_ID, _trx);
                     orderReps.SetBPartner(bp);
+                    orderReps.SetVA009_PaymentMethod_ID(bp.GetVA009_PO_PaymentMethod_ID());
                     orderReps.SetSalesRep_ID(ct.GetAD_User_ID());
                     orderReps.SetDescription(Msg.GetMsg(ct, "Replenishment"));
                     //	Set Org/WH
