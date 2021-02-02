@@ -196,6 +196,7 @@
         var listKeyDocType = [];
         var listNameDocType = [];
         var listValueDocType = [];
+        var listValuePOType = [];
 
         var listSelProducts = [];
 
@@ -1096,7 +1097,7 @@
                     //if (event.column == 2) {
                     //    cartGrid.records[event.index]["Qty"] = event.value_new;
                     //}
-                    if (event.column == 2) {                        
+                    if (event.column == 2) {
                         var _val = format.GetConvertedNumber(event.value_new, dotFormatter);
                         cartGrid.records[event.index]["Qty"] = _val.toFixed(precision);
                     }
@@ -1145,10 +1146,10 @@
                         BindCartGrid();
                     }
                 },
-                onEditField: function (event) {                    
+                onEditField: function (event) {
                     // To get value acc. to culture while editing grid column
                     id = event.recid;
-                    if (event.column == 2 ) {
+                    if (event.column == 2) {
                         cartGrid.records[event.index][cartGrid.columns[event.column].field] = checkcommaordot(event, cartGrid.records[event.index][cartGrid.columns[event.column].field]);
                         var _value = format.GetFormatAmount(cartGrid.records[event.index][cartGrid.columns[event.column].field], "init", dotFormatter);
                         cartGrid.records[event.index][cartGrid.columns[event.column].field] = format.GetConvertedString(_value, dotFormatter);
@@ -5223,7 +5224,8 @@
 
         function LoadDocTypeCombo() {
             cmbDocType.empty();
-            var qry = "SELECT C_DocType_ID, Name, DocBaseType FROM C_DocType WHERE DocBaseType IN (SELECT Value FROM AD_Ref_List WHERE AD_Reference_ID =(SELECT AD_Reference_ID FROM AD_Reference WHERE Name = 'M_Replenishment Create')) AND IsReturnTrx ='N' AND AD_Client_ID = " + VIS.context.getContext("#AD_Client_ID");
+            var qry = "SELECT C_DocType_ID, Name, DocBaseType, IsReleaseDocument FROM C_DocType WHERE DocBaseType IN "
+                + "(SELECT Value FROM AD_Ref_List WHERE AD_Reference_ID =(SELECT AD_Reference_ID FROM AD_Reference WHERE Name = 'M_Replenishment Create')) AND IsReturnTrx ='N' AND AD_Client_ID = " + VIS.context.getContext("#AD_Client_ID");
             VIS.DB.executeReader(qry, null, callbackLoadCmbDocType);
         };
 
@@ -5235,6 +5237,7 @@
                 value = dr.getString(1);
                 listNameDocType.push(value);
                 listValueDocType.push(dr.getString(2));
+                listValuePOType.push(dr.getString(3));
                 //cmbDocType.append(" <option value=" + key + ">" + VIS.Utility.encodeText(value) + "</option>");
             }
             dr.close();
@@ -5396,8 +5399,12 @@
                 cmbDocType.empty();
 
                 for (var i = 0; i < listValueDocType.length; i++) {
-                    if (listValueDocType[i] == cmbCreate.val())
+                    if (listValueDocType[i] == cmbCreate.val()) {
+                        if (cmbCreate.val() == "POO" && listValuePOType[i] == "Y") {
+                            continue;
+                        }
                         cmbDocType.append(" <option value=" + listKeyDocType[i] + ">" + VIS.Utility.encodeText(listNameDocType[i]) + "</option>");
+                    }
                 }
             });
 
@@ -5532,7 +5539,7 @@
         };
 
         var records = [];
-        function generateReplenishments() {           
+        function generateReplenishments() {
             var x = 0;
             if (dRepTopGrid.getSelection().length > 0) {
 
