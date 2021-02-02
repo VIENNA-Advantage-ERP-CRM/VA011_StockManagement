@@ -2133,7 +2133,7 @@
 
                 if (orgString.length > 0)
                     sqlVar += " AND w.AD_Org_ID IN (" + orgString + ")";
-                sqlVar += ") GROUP BY Name,  M_Product_ID,  UOM,  lot,  serno,  M_AttributeSetInstance_ID,  guaranteedate,  Description";
+                sqlVar += ") t GROUP BY Name,  M_Product_ID,  UOM,  lot,  serno,  M_AttributeSetInstance_ID,  guaranteedate,  Description";
             }
 
             VIS.DB.executeReader(sqlVar.toString(), null, callbackVariantGrid);
