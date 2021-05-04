@@ -29,14 +29,14 @@ namespace VA011 //  Please replace namespace with prefix of your module..
             ScriptBundle script = new ScriptBundle("~/Areas/VA011/Scripts/VA011minall.js");
 
 
-            //style.Include("~/Areas/VA011/Contents/VA011_Inventory.css");
-            //style.Include("~/Areas/VA011/Contents/VA011_style.css");
-            //script.Include("~/Areas/VA011/Scripts/apps/forms/inventory.js",
-            //           "~/Areas/VA011/Scripts/jquery-barcode.js");           
+            style.Include("~/Areas/VA011/Contents/VA011_Inventory.css");
+            style.Include("~/Areas/VA011/Contents/VA011_style.css");
+            script.Include("~/Areas/VA011/Scripts/apps/forms/inventory.js",
+                       "~/Areas/VA011/Scripts/jquery-barcode.js");
 
 
-            style.Include("~/Areas/VA011/Contents/VA011minstyle.css");
-            script.Include("~/Areas/VA011/Scripts/VA011min.js");
+            //style.Include("~/Areas/VA011/Contents/VA011minstyle.css");
+            //script.Include("~/Areas/VA011/Scripts/VA011min.js");
 
             /*-------------------------------------------------------
                     Here include all js files in style bundle......see example below....
