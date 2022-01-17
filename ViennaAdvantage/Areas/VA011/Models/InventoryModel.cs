@@ -1495,7 +1495,8 @@ WHERE M_Product_ID = " + M_Product_ID;
                 {
                     prdUOM = Util.GetValueOfInt(prodDs.Tables[0].Rows[0]["C_UOM_ID"]);
                     //190- Set the print desc.
-                    line.Set_Value("PrintDescription", Util.GetValueOfString(prodDs.Tables[0].Rows[0]["DocumentNote"]));
+                    if (line.Get_ColumnIndex("PrintDescription") >= 0)
+                        line.Set_Value("PrintDescription", Util.GetValueOfString(prodDs.Tables[0].Rows[0]["DocumentNote"]));
                 }
                 UOM = Util.GetValueOfInt(DB.ExecuteScalar("SELECT C_UOM_ID  FROM  M_Product_PO prdct WHERE prdct.isactive='Y' AND prdct.M_Product_ID=" + Rep.M_Product_ID));
 
@@ -1830,7 +1831,8 @@ WHERE M_Product_ID = " + M_Product_ID;
                 line.Set_ValueNoCheck("C_UOM_ID", product.GetC_UOM_ID());
             }
             //190- Set the print desc.
-            line.Set_Value("PrintDescription", product.GetDocumentNote());
+            if (line.Get_ColumnIndex("PrintDescription") >= 0)
+                line.Set_Value("PrintDescription", product.GetDocumentNote());
             if (!line.Save())
             {
 
