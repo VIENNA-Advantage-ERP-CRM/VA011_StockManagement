@@ -476,12 +476,12 @@ namespace VA011.Models
                         {
                             sbSql.Clear();
                             // changes done to get storage related quantities right, Previously it multiplies qty with number of locators in warehouse.- Done by mohit - asked by mukesh sir. ticket from client- Date : 6-June-2018
-                            sbSql.Append("SELECT SUM (QtyAvailable) AS QtyAvailable, SUM( QtyOnHand) AS QtyOnHand, SUM( QtyReserved) AS QtyReserved,  SUM(QtyOrdered) AS QtyOrdered FROM ("
-                            + "SELECT bomQtyAvailableAttr(p.M_Product_ID,s.M_AttributeSetInstance_ID,w.M_Warehouse_ID,0) AS QtyAvailable,"
+                            sbSql.Append("SELECT SUM (QtyAvailable) AS QtyAvailable, SUM(QtyOnHand) AS QtyOnHand, SUM(QtyReserved) AS QtyReserved, SUM(QtyOrdered) AS QtyOrdered FROM ("
+                            + "SELECT DISTINCT bomQtyAvailableAttr(p.M_Product_ID,s.M_AttributeSetInstance_ID,w.M_Warehouse_ID,0) AS QtyAvailable,"
                             + " bomQtyOnHandAttr(p.M_Product_ID,s.M_AttributeSetInstance_ID,w.M_Warehouse_ID,0) AS QtyOnHand,"
                             + " bomQtyReservedAttr(p.M_Product_ID,s.M_AttributeSetInstance_ID,w.M_Warehouse_ID,0) AS QtyReserved,"
-                            + " bomQtyOrderedAttr(p.M_Product_ID,s.M_AttributeSetInstance_ID,w.M_Warehouse_ID,0) AS QtyOrdered,l.M_Warehouse_ID");
-                            sbSql.Append(" FROM M_Product p left join M_Storage s ON p.M_Product_ID = s.M_Product_ID  INNER JOIN M_Locator l "
+                            + " bomQtyOrderedAttr(p.M_Product_ID,s.M_AttributeSetInstance_ID,w.M_Warehouse_ID,0) AS QtyOrdered,l.M_Warehouse_ID,s.M_AttributeSetInstance_ID");
+                            sbSql.Append(" FROM M_Product p left join M_Storage s ON p.M_Product_ID = s.M_Product_ID INNER JOIN M_Locator l "
                             + " ON s.M_Locator_ID=l.M_Locator_ID  INNER JOIN M_Warehouse w ON l.M_Warehouse_ID = w.M_Warehouse_ID WHERE p.AD_Client_ID = " + ct.GetAD_Client_ID() +
                             " AND p.IsActive='Y' AND p.IsSummary ='N' AND p.M_Product_ID = " + Util.GetValueOfInt(dsPro.Tables[0].Rows[i]["M_Product_ID"]));
                             //sbSql.Append(sbWhere.ToString());
@@ -1213,7 +1213,7 @@ WHERE M_Product_ID = " + M_Product_ID;
                     if (docNo == "-99")
                     {
                         allOK = false;
-                        sbRetMsg.Clear().Append(Msg.GetMsg(ct, "VA011_RequisitionNotCreated"));
+                        //sbRetMsg.Clear().Append(Msg.GetMsg(ct, "VA011_RequisitionNotCreated"));
                         trx.Rollback();
                         trx.Close();
                         break;
@@ -1430,7 +1430,7 @@ WHERE M_Product_ID = " + M_Product_ID;
             int _TaxCtgry_ID = 0;
             int _TaxID = 0;
             String _qry = null;
-            
+
             if (!gotDocStatus)
             {
                 docStatusReps = Rep.DocStatus;
@@ -1784,9 +1784,7 @@ WHERE M_Product_ID = " + M_Product_ID;
                 requisitionReps.SetC_DocType_ID(Rep.C_DocType_ID);
                 requisitionReps.SetDescription(Msg.GetMsg(ct, "Replenishment"));
                 //	Set Org/WH
-                //vikas  SetSourcehouse
-                int _CountDTD001 = Util.GetValueOfInt(DB.ExecuteScalar("SELECT COUNT(AD_MODULEINFO_ID) FROM AD_MODULEINFO WHERE PREFIX='DTD001_'"));
-                if (_CountDTD001 > 0)
+                if (Env.IsModuleInstalled("DTD001_"))
                 {
                     requisitionReps.SetDTD001_MWarehouseSource_ID(Rep.M_WarehouseSource_ID);
                 }
@@ -1795,6 +1793,12 @@ WHERE M_Product_ID = " + M_Product_ID;
 
                 if (!requisitionReps.Save())
                 {
+                    sbRetMsg.Clear();
+                    ValueNamePair pp = VLogger.RetrieveError();
+                    if (pp != null && !String.IsNullOrEmpty(pp.GetName()))
+                        sbRetMsg.Append(pp.GetName());
+                    else
+                        sbRetMsg.Append(Msg.GetMsg(ct, "VA011_RequisitionNotCreated"));                    
                     return "-99";
                 }
                 else
@@ -1835,7 +1839,13 @@ WHERE M_Product_ID = " + M_Product_ID;
                 line.Set_Value("PrintDescription", product.GetDocumentNote());
             if (!line.Save())
             {
-
+                sbRetMsg.Clear();
+                ValueNamePair pp = VLogger.RetrieveError();
+                if (pp != null && !String.IsNullOrEmpty(pp.GetName()))
+                    sbRetMsg.Append(pp.GetName());
+                else
+                    sbRetMsg.Append(Msg.GetMsg(ct, "VA011_RequisitionNotCreated"));
+                return "-99";
             }
 
             return _DocNo;
