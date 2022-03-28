@@ -5112,9 +5112,11 @@
                         }
 
                         var src = "";
+                        var title = "";
                         if ((dProdGrid.records[i].QtyOnHand > dProdGrid.records[i].MinLevel) && ((dProdGrid.records[i].QtyOnHand - dProdGrid.records[i].Demanded
                             + dProdGrid.records[i].Ordered + dProdGrid.records[i].UnConfirmed) > dProdGrid.records[i].MinLevel)) {
                             src = VIS.Application.contextUrl + "Areas/VA011/Images/green.png";
+                            title = VIS.Msg.getMsg("QtyAvailable");
                         }
                         else if (((dProdGrid.records[i].QtyOnHand < dProdGrid.records[i].MinLevel) && ((dProdGrid.records[i].QtyOnHand - dProdGrid.records[i].Demanded
                             + dProdGrid.records[i].Ordered + dProdGrid.records[i].UnConfirmed) > dProdGrid.records[i].MinLevel)) ||
@@ -5122,14 +5124,16 @@
                                 + dProdGrid.records[i].Ordered + dProdGrid.records[i].UnConfirmed) < dProdGrid.records[i].MinLevel))
                         ) {
                             src = VIS.Application.contextUrl + "Areas/VA011/Images/yellow.png";
+                            title = VIS.Msg.getMsg("VA011_Unconfirmed");
                         }
                         else if ((dProdGrid.records[i].QtyOnHand < dProdGrid.records[i].MinLevel) && ((dProdGrid.records[i].QtyOnHand - dProdGrid.records[i].Demanded
                             + dProdGrid.records[i].Ordered + dProdGrid.records[i].UnConfirmed) < dProdGrid.records[i].MinLevel)) {
                             src = VIS.Application.contextUrl + "Areas/VA011/Images/red.png";
+                            title = VIS.Msg.getMsg("VA011_RepRequired");
                         }
 
                         var rec = i + 1;
-                        $("#grid_VA011_gridProd_" + $self.windowNo + "_rec_" + rec).find("img").prop("src", src);
+                        $("#grid_VA011_gridProd_" + $self.windowNo + "_rec_" + rec).find("img").prop("src", src).prop("title", title);
                     }
                 }
             }
