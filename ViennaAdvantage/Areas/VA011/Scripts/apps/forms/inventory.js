@@ -6906,6 +6906,24 @@
             return $root;
         };
 
+        this.refreshUI = function () {
+            /*Refresh Grid on Focus*/
+            dProdGrid.resize();
+            dRepTopGrid.resize();
+            dVariantGrid.resize();
+            dLocatorGrid.resize();
+            dOrderedGrid.resize();
+            dReplenishedGrid.resize();
+            dDemandGrid.resize();
+            dTransactionsGrid.resize();
+            dReplenishmentBGrid.resize();
+            dRelatedGrid.resize();
+            dSuppliersRightGrid.resize();
+            dKitsGrid.resize();
+            dSubstituteGrid.resize();            
+            cartGrid.resize();
+        };
+
         this.disposeComponent = function () {
 
             self = null;
@@ -6926,6 +6944,10 @@
         this.frame.getContentGrid().append(this.getRoot());
         this.initalLoad();
         w2ui['VA011_gridVariant_' + windowNo].refresh();
+    };
+
+    VA011.InventoryForm.prototype.refresh = function () {
+        this.refreshUI();
     };
 
     VA011.InventoryForm.prototype.sizeChanged = function (height, width) {
