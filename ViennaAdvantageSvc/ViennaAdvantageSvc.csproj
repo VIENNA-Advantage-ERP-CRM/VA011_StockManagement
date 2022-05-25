@@ -35,8 +35,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BaseLibrary">
+      <HintPath>..\..\..\Framework Breakage Dlls\BaseLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="CoreLibrary">
+      <HintPath>..\..\..\Framework Breakage Dlls\CoreLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="ModelLibrary">
-      <HintPath>..\ViennaAdvantageWeb\DLL\ModelLibrary.dll</HintPath>
+      <HintPath>..\..\..\Framework Breakage Dlls\ModelLibrary.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -45,6 +51,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="VAModelAD">
+      <HintPath>..\..\..\Framework Breakage Dlls\VAModelAD.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\MReplenish.cs" />
