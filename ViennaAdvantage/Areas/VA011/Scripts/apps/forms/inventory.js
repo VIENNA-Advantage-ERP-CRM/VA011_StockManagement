@@ -276,7 +276,7 @@
 
         this.initalLoad = function () {
             initLoad = false;
-            _countBGT01 = VIS.Utility.Util.getValueOfInt(VIS.DB.executeScalar("SELECT COUNT(*) FROM AD_MODULEINFO WHERE PREFIX='BGT01_' "));
+            _countBGT01 = 0;
             window.setTimeout(function () {
                 imgUsrImage = $('<img>');
                 $(".VA011_image-wrap").append(imgUsrImage);
@@ -353,7 +353,7 @@
         function LoadWarehouses() {
             cmbWarehouses.empty();
             listWarehouses = [];
-            var qry = "SELECT M_Warehouse_ID, Name FROM M_Warehouse WHERE AD_Client_ID = " + VIS.context.getContext("#AD_Client_ID") + " AND IsActive = 'Y'";
+            //var qry = "SELECT M_Warehouse_ID, Name FROM M_Warehouse WHERE AD_Client_ID = " + VIS.context.getContext("#AD_Client_ID") + " AND IsActive = 'Y'";
             VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/GetOrgWarehouseAll", { "value": "", "orgs": selOrgs, "fill": false }, LoadWarehouseCallBack);
             //VIS.DB.executeReader(qry, null, LoadWarehouseCallBack);
         };
@@ -382,7 +382,8 @@
         function ReLoadWarehouses() {
             cmbWarehouses.empty();
             listWarehouses = [];
-            var qry = "SELECT M_Warehouse_ID, Name FROM M_Warehouse WHERE AD_Client_ID = " + VIS.context.getContext("#AD_Client_ID") + " AND IsActive = 'Y'";
+
+            //var qry = "SELECT M_Warehouse_ID, Name FROM M_Warehouse WHERE AD_Client_ID = " + VIS.context.getContext("#AD_Client_ID") + " AND IsActive = 'Y'";
             VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/GetOrgWarehouseAll", { "value": "", "orgs": selOrgs, "fill": false }, ReLoadWarehouseCallBack);
             //VIS.DB.executeReader(qry, null, LoadWarehouseCallBack);
         };
@@ -402,7 +403,7 @@
 
         function LoadSrcWarehouses() {
             //cmbWarehouses.empty();
-            var qry = "SELECT M_Warehouse_ID, Name FROM M_Warehouse WHERE AD_Client_ID = " + VIS.context.getContext("#AD_Client_ID") + " AND IsActive = 'Y'";
+            //var qry = "SELECT M_Warehouse_ID, Name FROM M_Warehouse WHERE AD_Client_ID = " + VIS.context.getContext("#AD_Client_ID") + " AND IsActive = 'Y'";
             VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/GetOrgWarehouseAll", { "value": "", "orgs": srcOrgs, "fill": false }, LoadSrcWarehousesCallBack);
             //VIS.DB.executeReader(qry, null, LoadWarehouseCallBack);
         };
@@ -431,18 +432,26 @@
 
         function LoadSuppliers() {
             cmbSuppliers.empty();
-            var qry = "SELECT C_BPartner_ID, Name FROM C_BPartner WHERE AD_Client_ID = " + VIS.context.getContext("#AD_Client_ID") + " AND IsActive = 'Y' AND IsVendor = 'Y'";
-            VIS.DB.executeReader(qry, null, LoadSuppliersCallBack);
+            //var qry = "SELECT C_BPartner_ID, Name FROM C_BPartner WHERE AD_Client_ID = " + VIS.context.getContext("#AD_Client_ID") + " AND IsActive = 'Y' AND IsVendor = 'Y'";
+            VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/GetSupplier", "", LoadSuppliersCallBack);
+            //VIS.DB.executeReader(qry, null, LoadSuppliersCallBack);
         };
 
         function LoadSuppliersCallBack(dr) {
-            cmbSuppliers.append(" <option value = 0></option>");
-            while (dr.read()) {
-                key = VIS.Utility.Util.getValueOfInt(dr.getString(0));
-                value = dr.getString(1);
-                cmbSuppliers.append(" <option value=" + key + ">" + VIS.Utility.encodeText(value) + "</option>");
+            if (dr.length > 0) {
+                for (var i = 0; i < dr.length; i++) {
+                    key = VIS.Utility.Util.getValueOfInt(dr[i].ID);
+                    value = dr[i].Name;
+                    cmbSuppliers.append(" <option value=" + key + ">" + VIS.Utility.encodeText(value) + "</option>");
+                }
             }
-            dr.close();
+            //cmbSuppliers.append(" <option value = 0></option>");
+            //while (dr.read()) {
+            //    key = VIS.Utility.Util.getValueOfInt(dr.getString(0));
+            //    value = dr.getString(1);
+            //    cmbSuppliers.append(" <option value=" + key + ">" + VIS.Utility.encodeText(value) + "</option>");
+            //}
+            //dr.close();
             LoadUOM();
         };
 
@@ -1109,8 +1118,10 @@
                 onClick: function (event) {
                     if (event.column == 5 && cartGrid.records.length > 0) {
 
-                        var qry = "SELECT M_AttributeSet_ID FROM M_Product WHERE M_Product_ID = " + VIS.Utility.Util.getValueOfInt(cartGrid.records[event.recid - 1]["product_ID"]);
-                        var mattsetid = VIS.Utility.Util.getValueOfInt(VIS.DB.executeScalar(qry));
+                        //var qry = "SELECT M_AttributeSet_ID FROM M_Product WHERE M_Product_ID = " + VIS.Utility.Util.getValueOfInt(cartGrid.records[event.recid - 1]["product_ID"]);
+                        var product_ID = VIS.Utility.Util.getValueOfInt(cartGrid.records[event.recid - 1]["product_ID"]);
+                        //var mattsetid = VIS.Utility.Util.getValueOfInt(VIS.DB.executeScalar(qry));
+                        var mattsetid = VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/cartGrid", { "M_Product_ID": product_ID });
                         if (mattsetid != 0) {
                             var productWindow = AD_Column_ID == 8418;		//	HARDCODED
                             var M_Locator_ID = VIS.context.getContextAsInt($self.windowNo, "M_Locator_ID");
@@ -1190,18 +1201,27 @@
         // Added by Shifali on 06 July 2020 to check data comes in dropdown for same tenant
         var LoadCart = function () {
             cmbCart.empty();
-            var qry = "SELECT VAICNT_InventoryCount_ID,VAICNT_ScanName FROM VAICNT_InventoryCount WHERE IsActive = 'Y' AND VAICNT_TransactionType = 'OT' AND AD_Client_ID = " + VIS.context.getContext("#AD_Client_ID") + " ORDER BY VAICNT_ScanName";
-            VIS.DB.executeReader(qry, null, LoadcartCallBack);
+            //var qry = "SELECT VAICNT_InventoryCount_ID,VAICNT_ScanName FROM VAICNT_InventoryCount WHERE IsActive = 'Y' AND VAICNT_TransactionType = 'OT' AND AD_Client_ID = " + VIS.context.getContext("#AD_Client_ID") + " ORDER BY VAICNT_ScanName";
+            VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/GetCart", "", LoadcartCallBack);
+            //VIS.DB.executeReader(qry, null, LoadcartCallBack);
         }
 
         function LoadcartCallBack(dr) {
             cmbCart.append(" <option value = 0></option>");
-            while (dr.read()) {
-                key = VIS.Utility.Util.getValueOfInt(dr.getString(0));
-                value = dr.getString(1);
-                cmbCart.append(" <option value=" + key + ">" + VIS.Utility.encodeText(value) + "</option>");
+            if (dr.length > 0) {
+                for (var i = 0; i < dr.length; i++) {
+                    key = VIS.Utility.Util.getValueOfInt(dr[i].ID);
+                    value = dr[i].Name;
+                    cmbCart.append(" <option value=" + key + ">" + VIS.Utility.encodeText(value) + "</option>");
+                }
             }
-            dr.close();
+
+            //while (dr.read()) {
+            //    key = VIS.Utility.Util.getValueOfInt(dr.getString(0));
+            //    value = dr.getString(1);
+            //    cmbCart.append(" <option value=" + key + ">" + VIS.Utility.encodeText(value) + "</option>");
+            //}
+            //dr.close();
             cmbCart.val(cart);
             $("#VA011_CartLabel" + $self.windowNo).text(cmbCart.find('option:selected').text());
             LoadReplenishType();
@@ -1253,14 +1273,16 @@
                 $bsyDiv[0].style.visibility = "visible";
                 multiValues = [];
                 cartGrid.clear();
-                if (cmbCart.val() > 0) {
-                    var sqlaa = "";
-                    var ds = null;
-                    var sqlaa = "SELECT po.VAICNT_InventoryCountLine_ID,po.M_Product_ID,prd.Name, po.C_UOM_ID, u.Name AS UOM, po.UPC, po.M_AttributeSetInstance_ID, ats.Description, po.VAICNT_Quantity," +
-                        " prd.M_AttributeSet_ID FROM VAICNT_InventoryCountLine po LEFT JOIN C_UOM u ON po.C_UOM_ID = u.C_UOM_ID LEFT JOIN M_Product prd" +
-                        " ON po.M_Product_ID= prd.M_Product_ID LEFT JOIN M_AttributeSetInstance ats ON po.M_AttributeSetInstance_ID = ats.M_AttributeSetInstance_ID" +
-                        " WHERE po.VAICNT_InventoryCount_ID = " + cmbCart.val();
-                    VIS.DB.executeDataSet(sqlaa.toString(), null, BindCartCallBack);
+                if (cmbCart.length > 0) {
+                    //var sqlaa = "";
+                    //var ds = null;
+                    //var sqlaa = "SELECT po.VAICNT_InventoryCountLine_ID,po.M_Product_ID,prd.Name, po.C_UOM_ID, u.Name AS UOM, po.UPC, po.M_AttributeSetInstance_ID, ats.Description, po.VAICNT_Quantity," +
+                    //    " prd.M_AttributeSet_ID FROM VAICNT_InventoryCountLine po LEFT JOIN C_UOM u ON po.C_UOM_ID = u.C_UOM_ID LEFT JOIN M_Product prd" +
+                    //    " ON po.M_Product_ID= prd.M_Product_ID LEFT JOIN M_AttributeSetInstance ats ON po.M_AttributeSetInstance_ID = ats.M_AttributeSetInstance_ID" +
+                    //    " WHERE po.VAICNT_InventoryCount_ID = " + cmbCart.val();
+                    //VIS.DB.executeDataSet(sqlaa.toString(), null, BindCartCallBack);
+                    VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LoadBindcart", { "VAICNT_InventoryCount_ID": cmbCart.val() }, BindCartCallBack);
+
                 }
                 else {
                     $bsyDiv[0].style.visibility = "hidden";
@@ -1268,33 +1290,54 @@
             }
         };
 
-        function BindCartCallBack(ds) {
+        function BindCartCallBack(dr) {
             var Recid = 0;
-            if (ds != null && ds.tables[0].rows.length > 0) {
-                for (var i = 0; i < ds.tables[0].rows.length; i++) {
+            if (dr.length > 0) {
+                for (var i = 0; i < dr.length; i++) {
                     Recid = Recid + 1;
                     multiValues.push(
                         {
                             recid: Recid,
-                            LineID: ds.tables[0].rows[i].cells.vaicnt_inventorycountline_id,
-                            product_ID: ds.tables[0].rows[i].cells.m_product_id,
-                            Product: ds.tables[0].rows[i].cells.name,
-                            C_Uom_ID: VIS.Utility.Util.getValueOfInt(ds.tables[0].rows[i].cells.c_uom_id),
-                            attribute_ID: VIS.Utility.Util.getValueOfInt(ds.tables[0].rows[i].cells.m_attributesetinstance_id),
-                            Attribute: ds.tables[0].rows[i].cells.description,
-                            UPC: ds.tables[0].rows[i].cells.upc,
-                            Qty: ds.tables[0].rows[i].cells.vaicnt_quantity,
+                            LineID: dr[i]["LineID"],
+                            product_ID: dr[i]["product_ID"],
+                            Product: dr[i]["Product"],
+                            C_Uom_ID: VIS.Utility.Util.getValueOfInt(dr[i]["C_Uom_ID"]),
+                            attribute_ID: VIS.Utility.Util.getValueOfInt(dr[i]["attribute_ID"]),
+                            Attribute: dr[i]["Attribute"],
+                            UPC: dr[i]["UPC"],
+                            Qty: dr[i]["Qty"],
                             updated: false
                         });
+
                 }
             }
+            //if (ds != null && ds.tables[0].rows.length > 0) {
+            //    for (var i = 0; i < ds.tables[0].rows.length; i++) {
+            //        Recid = Recid + 1;
+            //        multiValues.push(
+            //            {
+            //                recid: Recid,
+            //                LineID: ds.tables[0].rows[i].cells.vaicnt_inventorycountline_id,
+            //                product_ID: ds.tables[0].rows[i].cells.m_product_id,
+            //                Product: ds.tables[0].rows[i].cells.name,
+            //                C_Uom_ID: VIS.Utility.Util.getValueOfInt(ds.tables[0].rows[i].cells.c_uom_id),
+            //                attribute_ID: VIS.Utility.Util.getValueOfInt(ds.tables[0].rows[i].cells.m_attributesetinstance_id),
+            //                Attribute: ds.tables[0].rows[i].cells.description,
+            //                UPC: ds.tables[0].rows[i].cells.upc,
+            //                Qty: ds.tables[0].rows[i].cells.vaicnt_quantity,
+            //                updated: false
+            //            });
+            //    }
+            //}
 
             w2utils.encodeTags(multiValues);
             cartGrid.add(multiValues);
             for (var k = 0; k < cartGrid.records.length; k++) {
                 $("#grid_gridcart_" + $self.windowNo + "_rec_" + cartGrid.records[k].recid).find("input[type=text]").val(multiValues[k].Attribute);
-                var qry = "SELECT M_AttributeSet_ID FROM M_Product WHERE M_Product_ID = " + multiValues[k].product_ID;
-                if (VIS.Utility.Util.getValueOfInt(VIS.DB.executeScalar(qry)) <= 0) {
+                //var qry = "SELECT M_AttributeSet_ID FROM M_Product WHERE M_Product_ID = " + multiValues[k].product_ID;
+                var product_ID = multiValues[k].product_ID;
+                var mattsetid = VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/selectGrid", { "M_Product_ID": product_ID });
+                if (mattsetid <= 0) {
                     $("#grid_gridcart_" + $self.windowNo + "_rec_" + cartGrid.records[k].recid).find("input:not([type='checkbox'])").hide();
                     $("#grid_gridcart_" + $self.windowNo + "_rec_" + cartGrid.records[k].recid).find("i").hide();
                 }
@@ -1424,11 +1467,11 @@
 
                 var sqlVar = "";
 
-                sqlVar = "SELECT DISTINCT p.Name as Product, p.M_Product_ID, u.Name AS UOM , (bomQtyOnHand(p.M_Product_ID,w.M_Warehouse_ID,0)) AS QtyOnHand,"
-                    + " bomQtyAvailable(p.M_Product_ID,w.M_Warehouse_ID,0) AS QtyAvailable, (bomQtyReserved(p.M_Product_ID,w.M_Warehouse_ID,0))  AS QtyReserved"
-                    + " FROM M_Substitute s INNER JOIN M_Product p ON (p.M_Product_ID = s.SUBSTITUTE_ID) INNER JOIN C_UOM u ON (p.C_UOM_ID = u.C_UOM_ID) LEFT OUTER JOIN M_Storage st "
-                    + " ON (st.M_Product_ID = p.M_Product_ID) LEFT OUTER JOIN M_Locator l ON (st.M_Locator_ID = l.M_Locator_ID) LEFT OUTER JOIN M_Warehouse w ON (w.M_Warehouse_ID = l.M_Warehouse_ID)"
-                    + " WHERE s.IsActive='Y' AND s.M_Product_ID = " + _product_ID;
+                //sqlVar = "SELECT DISTINCT p.Name as Product, p.M_Product_ID, u.Name AS UOM , (bomQtyOnHand(p.M_Product_ID,w.M_Warehouse_ID,0)) AS QtyOnHand,"
+                //    + " bomQtyAvailable(p.M_Product_ID,w.M_Warehouse_ID,0) AS QtyAvailable, (bomQtyReserved(p.M_Product_ID,w.M_Warehouse_ID,0))  AS QtyReserved"
+                //    + " FROM M_Substitute s INNER JOIN M_Product p ON (p.M_Product_ID = s.SUBSTITUTE_ID) INNER JOIN C_UOM u ON (p.C_UOM_ID = u.C_UOM_ID) LEFT OUTER JOIN M_Storage st "
+                //    + " ON (st.M_Product_ID = p.M_Product_ID) LEFT OUTER JOIN M_Locator l ON (st.M_Locator_ID = l.M_Locator_ID) LEFT OUTER JOIN M_Warehouse w ON (w.M_Warehouse_ID = l.M_Warehouse_ID)"
+                //    + " WHERE s.IsActive='Y' AND s.M_Product_ID = " + _product_ID;
 
                 var whString = "";
                 for (var w = 0; w < selWh.length; w++) {
@@ -1443,29 +1486,43 @@
                 if (whString.length > 0) {
                     sqlVar += " AND w.M_Warehouse_ID IN (" + whString + ")";
                 }
-
-                VIS.DB.executeReader(sqlVar.toString(), null, callbackSubstituteGrid);
+                VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LoadSubstituteGrid", { "M_Product_ID": _product_ID }, callbackSubstituteGrid);
+                //    VIS.DB.executeReader(sqlVar.toString(), null, callbackSubstituteGrid);
             }
         };
 
-        function callbackSubstituteGrid(ds) {
-
+        function callbackSubstituteGrid(dr) {
             var Recid = 0;
-            if (ds != null && ds.tables[0].rows.length > 0) {
-                for (var i = 0; i < ds.tables[0].rows.length; i++) {
+            if (dr.length > 0) {
+                for (var i = 0; i < dr.length; i++) {
                     Recid = Recid + 1;
                     grdSubstituteProdValues.push(
                         {
                             recid: Recid,
-                            Product: ds.tables[0].rows[i].cells.product,
-                            QtyOnHand: ds.tables[0].rows[i].cells.qtyonhand,
-                            UOM: ds.tables[0].rows[i].cells.uom,
-                            Reserved: ds.tables[0].rows[i].cells.qtyreserved,
-                            ATP: ds.tables[0].rows[i].cells.qtyavailable,
-                            M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
+                            Product: dr[i]["Product"],
+                            QtyOnHand: dr[i]["QtyOnHand"],
+                            UOM: dr[i]["UOM"],
+                            Reserved: dr[i]["Reserved"],
+                            ATP: dr[i]["ATP"],
+                            M_Product_ID: VIS.Utility.Util.getValueOfInt(dr[i]["M_Product_ID"]),
                         });
                 }
             }
+            //if (ds != null && ds.tables[0].rows.length > 0) {
+            //    for (var i = 0; i < ds.tables[0].rows.length; i++) {
+            //        Recid = Recid + 1;
+            //        grdSubstituteProdValues.push(
+            //            {
+            //                recid: Recid,
+            //                Product: ds.tables[0].rows[i].cells.product,
+            //                QtyOnHand: ds.tables[0].rows[i].cells.qtyonhand,
+            //                UOM: ds.tables[0].rows[i].cells.uom,
+            //                Reserved: ds.tables[0].rows[i].cells.qtyreserved,
+            //                ATP: ds.tables[0].rows[i].cells.qtyavailable,
+            //                M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
+            //            });
+            //    }
+            //}
 
             w2utils.encodeTags(grdSubstituteProdValues);
 
@@ -1597,11 +1654,11 @@
 
                 var sqlVar = "";
 
-                sqlVar = "SELECT DISTINCT p.Name as Product, p.M_Product_ID, u.Name AS UOM , (bomQtyOnHand(p.M_Product_ID,w.M_Warehouse_ID,0)) AS QtyOnHand,"
-                    + " bomQtyAvailable(p.M_Product_ID,w.M_Warehouse_ID,0) AS QtyAvailable, (bomQtyReserved(p.M_Product_ID,w.M_Warehouse_ID,0))  AS QtyReserved"
-                    + " FROM M_RelatedProduct s INNER JOIN M_Product p ON (p.M_Product_ID = s.RelatedProduct_ID) INNER JOIN C_UOM u ON (p.C_UOM_ID = u.C_UOM_ID) LEFT OUTER JOIN M_Storage st "
-                    + " ON (st.M_Product_ID = p.M_Product_ID) LEFT OUTER JOIN M_Locator l ON (st.M_Locator_ID = l.M_Locator_ID) LEFT OUTER JOIN M_Warehouse w ON (w.M_Warehouse_ID = l.M_Warehouse_ID)"
-                    + " WHERE s.IsActive='Y' AND s.M_Product_ID = " + _product_ID;
+                //sqlVar = "SELECT DISTINCT p.Name as Product, p.M_Product_ID, u.Name AS UOM , (bomQtyOnHand(p.M_Product_ID,w.M_Warehouse_ID,0)) AS QtyOnHand,"
+                //    + " bomQtyAvailable(p.M_Product_ID,w.M_Warehouse_ID,0) AS QtyAvailable, (bomQtyReserved(p.M_Product_ID,w.M_Warehouse_ID,0))  AS QtyReserved"
+                //    + " FROM M_RelatedProduct s INNER JOIN M_Product p ON (p.M_Product_ID = s.RelatedProduct_ID) INNER JOIN C_UOM u ON (p.C_UOM_ID = u.C_UOM_ID) LEFT OUTER JOIN M_Storage st "
+                //    + " ON (st.M_Product_ID = p.M_Product_ID) LEFT OUTER JOIN M_Locator l ON (st.M_Locator_ID = l.M_Locator_ID) LEFT OUTER JOIN M_Warehouse w ON (w.M_Warehouse_ID = l.M_Warehouse_ID)"
+                //    + " WHERE s.IsActive='Y' AND s.M_Product_ID = " + _product_ID;
 
                 var whString = "";
                 for (var w = 0; w < selWh.length; w++) {
@@ -1616,29 +1673,45 @@
                 if (whString.length > 0) {
                     sqlVar += " AND w.M_Warehouse_ID IN (" + whString + ")";
                 }
+                VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LoadSubstituteGrid", { "M_Product_ID": _product_ID }, callbackRelatedGrid);
 
-                VIS.DB.executeReader(sqlVar.toString(), null, callbackRelatedGrid);
+                //VIS.DB.executeReader(sqlVar.toString(), null, callbackRelatedGrid);
             }
         };
 
-        function callbackRelatedGrid(ds) {
+        function callbackRelatedGrid(dr) {
 
             var Recid = 0;
-            if (ds != null && ds.tables[0].rows.length > 0) {
-                for (var i = 0; i < ds.tables[0].rows.length; i++) {
+            if (dr.length > 0) {
+                for (var i = 0; i < dr.length; i++) {
                     Recid = Recid + 1;
                     grdRelatedProdValues.push(
                         {
                             recid: Recid,
-                            Product: ds.tables[0].rows[i].cells.product,
-                            QtyOnHand: ds.tables[0].rows[i].cells.qtyonhand,
-                            UOM: ds.tables[0].rows[i].cells.uom,
-                            Reserved: ds.tables[0].rows[i].cells.qtyreserved,
-                            ATP: ds.tables[0].rows[i].cells.qtyavailable,
-                            M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
+                            Product: dr[i]["Product"],
+                            QtyOnHand: dr[i]["QtyOnHand"],
+                            UOM: dr[i]["UOM"],
+                            Reserved: dr[i]["Reserved"],
+                            ATP: dr[i]["ATP"],
+                            M_Product_ID: VIS.Utility.Util.getValueOfInt(dr[i]["M_Product_ID"]),
                         });
                 }
             }
+            //if (ds != null && ds.tables[0].rows.length > 0) {
+            //    for (var i = 0; i < ds.tables[0].rows.length; i++) {
+            //        Recid = Recid + 1;
+            //        grdRelatedProdValues.push(
+            //            {
+            //                recid: Recid,
+            //                Product: ds.tables[0].rows[i].cells.product,
+            //                QtyOnHand: ds.tables[0].rows[i].cells.qtyonhand,
+            //                UOM: ds.tables[0].rows[i].cells.uom,
+            //                Reserved: ds.tables[0].rows[i].cells.qtyreserved,
+            //                ATP: ds.tables[0].rows[i].cells.qtyavailable,
+            //                M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
+            //            });
+            //    }
+            //}
 
             w2utils.encodeTags(grdRelatedProdValues);
 
@@ -1765,32 +1838,49 @@
 
                 var sqlVar = "";
 
-                sqlVar = "SELECT bp.name  AS Supplier, po.order_pack AS QtyOrderPack, u.Name AS UOM, po.order_min AS MinOrder, po.deliverytime_promised AS DeliveryTime, po.M_Product_ID"
-                    + " FROM M_Product_PO po INNER JOIN C_BPartner bp  ON (bp.C_BPartner_ID = po.C_BPartner_ID) Left outer join C_UOM u on (u.C_UOM_ID = po.C_UOM_ID)"
-                    + " WHERE po.IsActive = 'Y' AND po.M_Product_ID = " + _product_ID;
+                //sqlVar = "SELECT bp.name  AS Supplier, po.order_pack AS QtyOrderPack, u.Name AS UOM, po.order_min AS MinOrder, po.deliverytime_promised AS DeliveryTime, po.M_Product_ID"
+                //    + " FROM M_Product_PO po INNER JOIN C_BPartner bp  ON (bp.C_BPartner_ID = po.C_BPartner_ID) Left outer join C_UOM u on (u.C_UOM_ID = po.C_UOM_ID)"
+                //    + " WHERE po.IsActive = 'Y' AND po.M_Product_ID = " + _product_ID;
 
-                VIS.DB.executeReader(sqlVar.toString(), null, callbackSuppliersRightGrid);
+                //VIS.DB.executeReader(sqlVar.toString(), null, callbackSuppliersRightGrid);
+                VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LoadSuppliersRightGrid", { "M_Product_ID": _product_ID }, callbackSuppliersRightGrid);
+
             }
         };
 
-        function callbackSuppliersRightGrid(ds) {
+        function callbackSuppliersRightGrid(dr) {
 
             var Recid = 0;
-            if (ds != null && ds.tables[0].rows.length > 0) {
-                for (var i = 0; i < ds.tables[0].rows.length; i++) {
+            if (dr.length > 0) {
+                for (var i = 0; i < dr.length; i++) {
                     Recid = Recid + 1;
                     grdSuppliersRightProdValues.push(
                         {
                             recid: Recid,
-                            Supplier: ds.tables[0].rows[i].cells.supplier,
-                            QtyOrderPack: ds.tables[0].rows[i].cells.qtyorderpack,
-                            UOM: ds.tables[0].rows[i].cells.uom,
-                            MinOrder: ds.tables[0].rows[i].cells.minorder,
-                            DeliveryTime: ds.tables[0].rows[i].cells.deliverytime,
-                            M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
+                            Supplier: dr[i]["Supplier"],
+                            QtyOrderPack: dr[i]["Qty"],
+                            UOM: dr[i]["UOM"],
+                            MinOrder: dr[i]["OrderMin"],
+                            DeliveryTime: dr[i]["DeliveryTime"],
+                            M_Product_ID: VIS.Utility.Util.getValueOfInt(dr[i]["product_ID"]),
                         });
                 }
             }
+            //if (ds != null && ds.tables[0].rows.length > 0) {
+            //    for (var i = 0; i < ds.tables[0].rows.length; i++) {
+            //        Recid = Recid + 1;
+            //        grdSuppliersRightProdValues.push(
+            //            {
+            //                recid: Recid,
+            //                Supplier: ds.tables[0].rows[i].cells.supplier,
+            //                QtyOrderPack: ds.tables[0].rows[i].cells.qtyorderpack,
+            //                UOM: ds.tables[0].rows[i].cells.uom,
+            //                MinOrder: ds.tables[0].rows[i].cells.minorder,
+            //                DeliveryTime: ds.tables[0].rows[i].cells.deliverytime,
+            //                M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
+            //            });
+            //    }
+            //}
 
             w2utils.encodeTags(grdSuppliersRightProdValues);
 
@@ -1917,10 +2007,10 @@
 
                 var sqlVar = "";
 
-                sqlVar = "SELECT DISTINCT p.Name as Product, u.Name as UOM, bomQtyOnHand(b.M_Product_ID,w.M_Warehouse_ID,0) AS QtyOnHand, bomQtyAvailable(b.M_Product_ID,w.M_Warehouse_ID,0) AS QtyAvailable,"
-                    + " b.BOMQty AS Factor FROM M_Product_BOM b INNER JOIN M_Product p ON p.M_Product_ID = b.M_Product_ID INNER JOIN C_UOM u ON (p.C_UOM_ID = u.C_UOM_ID) "
-                    + " LEFT OUTER JOIN M_Storage st ON (st.M_Product_ID = p.M_Product_ID) LEFT OUTER JOIN M_Locator l ON (st.M_Locator_ID = l.M_Locator_ID) LEFT OUTER JOIN M_Warehouse w "
-                    + " ON (w.M_Warehouse_ID    = l.M_Warehouse_ID) WHERE b.IsActive='Y' AND b.M_ProductBOM_ID = " + _product_ID;
+                //sqlVar = "SELECT DISTINCT p.Name as Product, u.Name as UOM, bomQtyOnHand(b.M_Product_ID,w.M_Warehouse_ID,0) AS QtyOnHand, bomQtyAvailable(b.M_Product_ID,w.M_Warehouse_ID,0) AS QtyAvailable,"
+                //    + " b.BOMQty AS Factor FROM M_Product_BOM b INNER JOIN M_Product p ON p.M_Product_ID = b.M_Product_ID INNER JOIN C_UOM u ON (p.C_UOM_ID = u.C_UOM_ID) "
+                //    + " LEFT OUTER JOIN M_Storage st ON (st.M_Product_ID = p.M_Product_ID) LEFT OUTER JOIN M_Locator l ON (st.M_Locator_ID = l.M_Locator_ID) LEFT OUTER JOIN M_Warehouse w "
+                //    + " ON (w.M_Warehouse_ID    = l.M_Warehouse_ID) WHERE b.IsActive='Y' AND b.M_ProductBOM_ID = " + _product_ID;
 
                 var whString = "";
                 for (var w = 0; w < selWh.length; w++) {
@@ -1935,29 +2025,45 @@
                 if (whString.length > 0) {
                     sqlVar += " AND w.M_Warehouse_ID IN (" + whString + ")";
                 }
+                VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LoadKitsGrid", { "M_ProductBOM_ID": _product_ID }, callbackKitsGrid);
 
-                VIS.DB.executeReader(sqlVar.toString(), null, callbackKitsGrid);
+                //VIS.DB.executeReader(sqlVar.toString(), null, callbackKitsGrid);
             }
         };
 
-        function callbackKitsGrid(ds) {
+        function callbackKitsGrid(dr) {
 
             var Recid = 0;
-            if (ds != null && ds.tables[0].rows.length > 0) {
-                for (var i = 0; i < ds.tables[0].rows.length; i++) {
+            if (dr.length > 0) {
+                for (var i = 0; i < dr.length; i++) {
                     Recid = Recid + 1;
                     grdKitsProdValues.push(
                         {
                             recid: Recid,
-                            Product: ds.tables[0].rows[i].cells.product,
-                            Factor: ds.tables[0].rows[i].cells.factor,
-                            UOM: ds.tables[0].rows[i].cells.uom,
-                            QtyOnHand: ds.tables[0].rows[i].cells.qtyonhand,
-                            ATP: ds.tables[0].rows[i].cells.qtyavailable,
-                            M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
+                            Product: dr[i]["Product"],
+                            Factor: dr[i]["Factor"],
+                            UOM: dr[i]["UOM"],
+                            QtyOnHand: dr[i]["QtyOnHand"],
+                            ATP: dr[i]["ATP"],
+                            M_Product_ID: VIS.Utility.Util.getValueOfInt(dr[i]["M_Product_ID"]),
                         });
                 }
             }
+            //if (ds != null && ds.tables[0].rows.length > 0) {
+            //    for (var i = 0; i < ds.tables[0].rows.length; i++) {
+            //        Recid = Recid + 1;
+            //        grdKitsProdValues.push(
+            //            {
+            //                recid: Recid,
+            //                Product: ds.tables[0].rows[i].cells.product,
+            //                Factor: ds.tables[0].rows[i].cells.factor,
+            //                UOM: ds.tables[0].rows[i].cells.uom,
+            //                QtyOnHand: ds.tables[0].rows[i].cells.qtyonhand,
+            //                ATP: ds.tables[0].rows[i].cells.qtyavailable,
+            //                M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
+            //            });
+            //    }
+            //}
 
             w2utils.encodeTags(grdKitsProdValues);
 
@@ -2099,75 +2205,107 @@
                     orgString += selOrgs[w];
                 }
             }
-            // changes done to get storage related quantities right, Previously it multiplies qty with number of locators in warehouse.- Done by mohit - asked by mukesh sir. ticket from client- Date : 6-June-2018
-            sqlVar = "SELECT Name,  M_Product_ID,  UOM,  lot,  serno,  guaranteedate,  SUM(QtyOnHand) AS QtyOnHand,  M_AttributeSetInstance_ID,  Description FROM  ( ";
-            if (selWh.length > 0) {
-                var whString = "";
-                for (var w = 0; w < selWh.length; w++) {
-                    if (w == 0) {
-                        sqlVar += " SELECT distinct p.Name, p.M_Product_ID, u.Name as UOM, ats.lot, ats.serno, ats.guaranteedate, bomQtyOnHandAttr(p.M_Product_ID, s.M_AttributeSetInstance_ID ,w.M_Warehouse_ID,0) AS QtyOnHand, "
-                            + " s.M_AttributeSetInstance_ID, ats.Description FROM M_Storage s INNER JOIN M_AttributeSetInstance ats ON (s.M_AttributeSetInstance_ID = ats.M_AttributeSetInstance_ID) "
-                            + " INNER JOIN M_LOcator l ON (l.M_Locator_ID = s.M_Locator_ID) INNER JOIN M_Warehouse w ON (w.M_Warehouse_ID = l.M_Warehouse_ID) "
-                            + " INNER JOIN M_Product p ON (p.M_Product_ID = s.M_Product_ID) INNER JOIN C_UOM u ON (p.C_UOM_ID = u.C_UOM_ID) WHERE w.M_Warehouse_ID = " + selWh[w] + " AND s.M_Product_ID = " + _product_ID
-                        //+ " AND bomQtyOnHandAttr(p.M_Product_ID, s.M_AttributeSetInstance_ID ,w.M_Warehouse_ID,0) > 0";
-                    }
-                    else {
-                        sqlVar += "  UNION SELECT distinct p.Name, p.M_Product_ID, u.Name as UOM, ats.lot, ats.serno, ats.guaranteedate, bomQtyOnHandAttr(p.M_Product_ID, s.M_AttributeSetInstance_ID ,w.M_Warehouse_ID,0) AS QtyOnHand, "
-                            + " s.M_AttributeSetInstance_ID, ats.Description FROM M_Storage s INNER JOIN M_AttributeSetInstance ats ON (s.M_AttributeSetInstance_ID = ats.M_AttributeSetInstance_ID) "
-                            + " INNER JOIN M_LOcator l ON (l.M_Locator_ID = s.M_Locator_ID) INNER JOIN M_Warehouse w ON (w.M_Warehouse_ID = l.M_Warehouse_ID) "
-                            + " INNER JOIN M_Product p ON (p.M_Product_ID = s.M_Product_ID) INNER JOIN C_UOM u ON (p.C_UOM_ID = u.C_UOM_ID) WHERE w.M_Warehouse_ID = " + selWh[w] + " AND s.M_Product_ID = " + _product_ID
-                        // + " AND bomQtyOnHandAttr(p.M_Product_ID, s.M_AttributeSetInstance_ID ,w.M_Warehouse_ID,0) > 0";
-                    }
-                    if (orgString.length > 0)
-                        sqlVar += " AND w.AD_Org_ID IN (" + orgString + ")";
-                    sqlVar += " ) t GROUP BY Name,  M_Product_ID,  UOM,  lot,  serno,  M_AttributeSetInstance_ID,  guaranteedate,  Description";
-                }
-            }
-            else {
-                sqlVar += "SELECT distinct p.Name, p.M_Product_ID, u.Name as UOM, ats.lot, ats.serno, ats.guaranteedate, bomQtyOnHandAttr(p.M_Product_ID, s.M_AttributeSetInstance_ID ,w.M_Warehouse_ID,0) AS QtyOnHand, "
-                    + " s.M_AttributeSetInstance_ID, ats.Description FROM M_Storage s INNER JOIN M_AttributeSetInstance ats ON (s.M_AttributeSetInstance_ID = ats.M_AttributeSetInstance_ID) "
-                    + " INNER JOIN M_LOcator l ON (l.M_Locator_ID = s.M_Locator_ID) INNER JOIN M_Warehouse w ON (w.M_Warehouse_ID = l.M_Warehouse_ID) "
-                    + " INNER JOIN M_Product p ON (p.M_Product_ID = s.M_Product_ID) INNER JOIN C_UOM u ON (p.C_UOM_ID = u.C_UOM_ID) WHERE s.M_Product_ID = " + _product_ID
-                // + " AND bomQtyOnHandAttr(p.M_Product_ID, s.M_AttributeSetInstance_ID ,w.M_Warehouse_ID,0) > 0";
+            //changes done to get storage related quantities right, Previously it multiplies qty with number of locators in warehouse.- Done by mohit - asked by mukesh sir. ticket from client- Date : 6-June-2018
+            //sqlVar = "SELECT Name,  M_Product_ID,  UOM,  lot,  serno,  guaranteedate,  SUM(QtyOnHand) AS QtyOnHand,  M_AttributeSetInstance_ID,  Description FROM  ( ";
+            //if (selWh.length > 0) {
+            //    var whString = "";
+            //    for (var w = 0; w < selWh.length; w++) {
+            //        if (w == 0) {
+            //            sqlVar += " SELECT distinct p.Name, p.M_Product_ID, u.Name as UOM, ats.lot, ats.serno, ats.guaranteedate, bomQtyOnHandAttr(p.M_Product_ID, s.M_AttributeSetInstance_ID ,w.M_Warehouse_ID,0) AS QtyOnHand, "
+            //                + " s.M_AttributeSetInstance_ID, ats.Description FROM M_Storage s INNER JOIN M_AttributeSetInstance ats ON (s.M_AttributeSetInstance_ID = ats.M_AttributeSetInstance_ID) "
+            //                + " INNER JOIN M_LOcator l ON (l.M_Locator_ID = s.M_Locator_ID) INNER JOIN M_Warehouse w ON (w.M_Warehouse_ID = l.M_Warehouse_ID) "
+            //                + " INNER JOIN M_Product p ON (p.M_Product_ID = s.M_Product_ID) INNER JOIN C_UOM u ON (p.C_UOM_ID = u.C_UOM_ID) WHERE w.M_Warehouse_ID = " + selWh[w] + " AND s.M_Product_ID = " + _product_ID
+            //            //+ " AND bomQtyOnHandAttr(p.M_Product_ID, s.M_AttributeSetInstance_ID ,w.M_Warehouse_ID,0) > 0";
+            //        }
+            //        else {
+            //            sqlVar += "  UNION SELECT distinct p.Name, p.M_Product_ID, u.Name as UOM, ats.lot, ats.serno, ats.guaranteedate, bomQtyOnHandAttr(p.M_Product_ID, s.M_AttributeSetInstance_ID ,w.M_Warehouse_ID,0) AS QtyOnHand, "
+            //                + " s.M_AttributeSetInstance_ID, ats.Description FROM M_Storage s INNER JOIN M_AttributeSetInstance ats ON (s.M_AttributeSetInstance_ID = ats.M_AttributeSetInstance_ID) "
+            //                + " INNER JOIN M_LOcator l ON (l.M_Locator_ID = s.M_Locator_ID) INNER JOIN M_Warehouse w ON (w.M_Warehouse_ID = l.M_Warehouse_ID) "
+            //                + " INNER JOIN M_Product p ON (p.M_Product_ID = s.M_Product_ID) INNER JOIN C_UOM u ON (p.C_UOM_ID = u.C_UOM_ID) WHERE w.M_Warehouse_ID = " + selWh[w] + " AND s.M_Product_ID = " + _product_ID
+            //            // + " AND bomQtyOnHandAttr(p.M_Product_ID, s.M_AttributeSetInstance_ID ,w.M_Warehouse_ID,0) > 0";
+            //        }
+            //        if (orgString.length > 0)
+            //            sqlVar += " AND w.AD_Org_ID IN (" + orgString + ")";
+            //        sqlVar += " ) t GROUP BY Name,  M_Product_ID,  UOM,  lot,  serno,  M_AttributeSetInstance_ID,  guaranteedate,  Description";
+            //    }
+            //}
+            //else {
+            //    sqlVar += "SELECT distinct p.Name, p.M_Product_ID, u.Name as UOM, ats.lot, ats.serno, ats.guaranteedate, bomQtyOnHandAttr(p.M_Product_ID, s.M_AttributeSetInstance_ID ,w.M_Warehouse_ID,0) AS QtyOnHand, "
+            //        + " s.M_AttributeSetInstance_ID, ats.Description FROM M_Storage s INNER JOIN M_AttributeSetInstance ats ON (s.M_AttributeSetInstance_ID = ats.M_AttributeSetInstance_ID) "
+            //        + " INNER JOIN M_LOcator l ON (l.M_Locator_ID = s.M_Locator_ID) INNER JOIN M_Warehouse w ON (w.M_Warehouse_ID = l.M_Warehouse_ID) "
+            //        + " INNER JOIN M_Product p ON (p.M_Product_ID = s.M_Product_ID) INNER JOIN C_UOM u ON (p.C_UOM_ID = u.C_UOM_ID) WHERE s.M_Product_ID = " + _product_ID
+            //    // + " AND bomQtyOnHandAttr(p.M_Product_ID, s.M_AttributeSetInstance_ID ,w.M_Warehouse_ID,0) > 0";
 
 
-                if (orgString.length > 0)
-                    sqlVar += " AND w.AD_Org_ID IN (" + orgString + ")";
-                sqlVar += ") t GROUP BY Name,  M_Product_ID,  UOM,  lot,  serno,  M_AttributeSetInstance_ID,  guaranteedate,  Description";
-            }
+            //    if (orgString.length > 0)
+            //        sqlVar += " AND w.AD_Org_ID IN (" + orgString + ")";
+            //    sqlVar += ") t GROUP BY Name,  M_Product_ID,  UOM,  lot,  serno,  M_AttributeSetInstance_ID,  guaranteedate,  Description";
+            //}
 
-            VIS.DB.executeReader(sqlVar.toString(), null, callbackVariantGrid);
+            //VIS.DB.executeReader(sqlVar.toString(), null, callbackVariantGrid);
+            VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LoadVariantGrid", { "M_Product_ID": _product_ID, "selWH": selWh, "orgs": orgString }, callbackVariantGrid);
 
-            ///  }
         };
 
-        function callbackVariantGrid(ds) {
+        function callbackVariantGrid(dr) {
 
             var Recid = 0;
             var expDate = null;
-            if (ds != null && ds.tables[0].rows.length > 0) {
-                for (var i = 0; i < ds.tables[0].rows.length; i++) {
+            if (dr.length > 0) {
+                for (var i = 0; i < dr.length; i++) {
                     Recid = Recid + 1;
-                    if (ds.tables[0].rows[i].cells.guaranteedate == null) {
+                    if (dr[i]["guaranteedate"] == null) {
                         expDate = null;
                     }
                     else {
-                        expDate = getDate(ds.tables[0].rows[i].cells.guaranteedate);
+                        expDate = getDate(dr[i]["guaranteedate"]);
                     }
                     grdVariantProdValues.push(
                         {
                             recid: Recid,
-                            Attribute: ds.tables[0].rows[i].cells.description,
-                            QtyOnHand: ds.tables[0].rows[i].cells.qtyonhand,
-                            UOM: ds.tables[0].rows[i].cells.uom,
-                            //UPC: ds.tables[0].rows[i].cells.upc,
-                            SerialNo: ds.tables[0].rows[i].cells.serno,
-                            LotNo: ds.tables[0].rows[i].cells.lot,
+                            Attribute: dr[i]["Attribute"],
+                            QtyOnHand: dr[i]["QtyOnHand"],
+                            UOM: dr[i]["UOM"],
+                            SerialNo: dr[i]["SerialNo"],
+                            LotNo: dr[i]["LotNo"],
                             ExpDate: expDate,
-                            M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
+                            M_Product_ID: dr[i]["M_Product_ID"],
                         });
                 }
             }
+            //var params = M_Product_ID.toString().concat(",", (mTab.getValue("description")).toString() +
+            //    "," + Util.getValueOfString(mTab.getValue("qtyonhand")) +
+            //    "," + Util.getValueOfString(mTab.getValue("uom")) +
+            //    "," + Util.getValueOfString(mTab.getValue("serno")) +
+            //    "," + Util.getValueOfString(mTab.getValue("lot")) +
+            //    "," + Util.getValueOfString(mTab.getValue("expDate")) +
+            //    "," + ctx.getAD_Client_ID().toString() +
+            //    "," + M_Product_ID.toString() +
+            //    "," + (mTab.getValue("QtyEntered")).toString() + "," + 1 + "," + 1);
+
+            //if (ds != null && ds.tables[0].rows.length > 0) {
+            //    for (var i = 0; i < ds.tables[0].rows.length; i++) {
+            //        Recid = Recid + 1;
+            //        if (ds.tables[0].rows[i].cells.guaranteedate == null) {
+            //            expDate = null;
+            //        }
+            //        else {
+            //            expDate = getDate(ds.tables[0].rows[i].cells.guaranteedate);
+            //        }
+            //        grdVariantProdValues.push(
+            //            {
+            //                recid: Recid,
+            //                Attribute: ds.tables[0].rows[i].cells.description,
+            //                QtyOnHand: ds.tables[0].rows[i].cells.qtyonhand,
+            //                UOM: ds.tables[0].rows[i].cells.uom,
+            //                //UPC: ds.tables[0].rows[i].cells.upc,
+            //                SerialNo: ds.tables[0].rows[i].cells.serno,
+            //                LotNo: ds.tables[0].rows[i].cells.lot,
+            //                ExpDate: expDate,
+            //                M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
+            //            });
+            //    }
+            //}
 
             //while (dr.read()) {
             //    Recid = Recid + 1;
@@ -2326,16 +2464,19 @@
                 }
 
                 var qryLoc = "";
-                var selQuery = "SELECT p.Name, p.M_Product_ID, l.M_Locator_ID, p.Value, w.Name as Warehouse, l.Value as Locator, s.M_AttributeSetInstance_ID, asi.Description, (SELECT MAX(io.DateAcct) FROM M_InoutLine iol "
-                    + " INNER JOIN M_Inout io ON (io.M_Inout_ID      = iol.M_Inout_ID) WHERE iol.M_Product_ID = p.M_Product_ID  AND io.IsSOTrx = 'N' AND iol.M_Locator_ID = l.M_Locator_ID) as LastReceipt, "
-                    + " (SELECT NVL(SUM(lc.targetqty),0) FROM m_inoutlineconfirm lc INNER JOIN m_inoutconfirm ioc ON (ioc.M_InoutConfirm_ID = lc.M_InoutConfirm_ID) INNER JOIN m_inoutline iol ON (iol.M_Inoutline_ID = lc.m_inoutLine_ID) INNER JOIN m_inout io ON (iol.M_Inout_ID = io.m_inout_ID) "
-                    + " WHERE ioc.docstatus NOT IN  ('CO', 'CL')  AND io.IsSOTrx = 'N'  AND iol.M_Locator_ID  = l.M_Locator_ID) as QtyUnconfirmed, "
-                    + " SUM(s.QtyOnHand) AS QtyOnHand "
-                    + " FROM M_Product p INNER JOIN M_Storage s  ON (s.M_Product_ID = p.M_Product_ID) INNER JOIN M_Locator l ON (l.M_Locator_ID = s.M_Locator_ID) INNER JOIN M_Warehouse w "
-                    + " ON (l.M_Warehouse_ID = w.M_Warehouse_ID) LEFT OUTER JOIN M_AttributeSetInstance asi  ON (s.M_AttributeSetInstance_ID = asi.M_AttributeSetInstance_ID) WHERE p.M_Product_ID = " + _product_ID + " AND p.AD_Client_ID = " + VIS.context.getContext("#AD_Client_ID");
-                var groupBySec = " GROUP BY p.Name, p.M_Product_ID, l.M_Locator_ID, p.Value, w.Name, l.Value, s.M_AttributeSetInstance_ID, asi.Description, "
-                    + " w.M_Warehouse_ID  ";
+                //var selQuery = "SELECT p.Name, p.M_Product_ID, l.M_Locator_ID, p.Value, w.Name as Warehouse, l.Value as Locator, s.M_AttributeSetInstance_ID, asi.Description, (SELECT MAX(io.DateAcct) FROM M_InoutLine iol "
+                //    + " INNER JOIN M_Inout io ON (io.M_Inout_ID      = iol.M_Inout_ID) WHERE iol.M_Product_ID = p.M_Product_ID  AND io.IsSOTrx = 'N' AND iol.M_Locator_ID = l.M_Locator_ID) as LastReceipt, "
+                //    + " (SELECT NVL(SUM(lc.targetqty),0) FROM m_inoutlineconfirm lc INNER JOIN m_inoutconfirm ioc ON (ioc.M_InoutConfirm_ID = lc.M_InoutConfirm_ID) INNER JOIN m_inoutline iol ON (iol.M_Inoutline_ID = lc.m_inoutLine_ID) INNER JOIN m_inout io ON (iol.M_Inout_ID = io.m_inout_ID) "
+                //    + " WHERE ioc.docstatus NOT IN  ('CO', 'CL')  AND io.IsSOTrx = 'N'  AND iol.M_Locator_ID  = l.M_Locator_ID) as QtyUnconfirmed, "
+                //    + " SUM(s.QtyOnHand) AS QtyOnHand "
+                //    + " FROM M_Product p INNER JOIN M_Storage s  ON (s.M_Product_ID = p.M_Product_ID) INNER JOIN M_Locator l ON (l.M_Locator_ID = s.M_Locator_ID) INNER JOIN M_Warehouse w "
+                //    + " ON (l.M_Warehouse_ID = w.M_Warehouse_ID) LEFT OUTER JOIN M_AttributeSetInstance asi  ON (s.M_AttributeSetInstance_ID = asi.M_AttributeSetInstance_ID) WHERE p.M_Product_ID = " + _product_ID + " AND p.AD_Client_ID = " + VIS.context.getContext("#AD_Client_ID");
+                //var groupBySec = " GROUP BY p.Name, p.M_Product_ID, l.M_Locator_ID, p.Value, w.Name, l.Value, s.M_AttributeSetInstance_ID, asi.Description, "
+                //    + " w.M_Warehouse_ID  ";
+
                 //+ " w.M_Warehouse_ID Having bomQtyOnHand(p.M_Product_ID,w.M_Warehouse_ID,l.M_Locator_ID) > 0 AND SUM(s.QtyOnHand) > 0 ";
+
+                var groupBySec = "";
 
                 if (orgString.length > 0)
                     selQuery += " AND w.AD_Org_ID IN (" + orgString + ")";
@@ -2343,10 +2484,12 @@
                 if (selWh.length > 0) {
                     for (var w = 0; w < selWh.length; w++) {
                         if (w == 0) {
-                            qryLoc += " ( " + selQuery + " AND w.M_Warehouse_ID = " + selWh[w] + groupBySec;
+                            //qryLoc += " ( " + selQuery + " AND w.M_Warehouse_ID = " + selWh[w] + groupBySec;
+                            qryLoc += " ( " + selQuery + " AND w.M_Warehouse_ID = " + selWh[w];
                         }
                         else {
-                            qryLoc += " UNION " + selQuery + " AND w.M_Warehouse_ID = " + selWh[w] + groupBySec;
+                            /*qryLoc += " UNION " + selQuery + " AND w.M_Warehouse_ID = " + selWh[w] + groupBySec;*/
+                            qryLoc += " UNION " + selQuery + " AND w.M_Warehouse_ID = " + selWh[w];
                         }
                     }
                     qryLoc += "  ) ORDER BY Name";
@@ -2355,37 +2498,60 @@
                     qryLoc += selQuery + groupBySec + " Order by p.name ";
                 }
 
+                //VIS.DB.executeDataSet(qryLoc.toString(), null, callbackLocatorGrid);
+                var selQuery = VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LocatorGrid", { "M_Product_ID": _product_ID, "Warehouses": selWh, "orgS": orgString }, callbackLocatorGrid);
 
-
-                VIS.DB.executeDataSet(qryLoc.toString(), null, callbackLocatorGrid);
             }
         };
 
-        function callbackLocatorGrid(ds) {
+        function callbackLocatorGrid(dr) {
             var Recid = 0;
             var lastReceipt = null;
-            if (ds != null && ds.tables[0].rows.length > 0) {
-                for (var i = 0; i < ds.tables[0].rows.length; i++) {
+            if (dr.length > 0) {
+                for (var i = 0; i < dr.length; i++) {
                     Recid = Recid + 1;
-                    if (ds.tables[0].rows[i].cells.lastreceipt == null) {
+                    if (dr[i]["LastReceipt"] == null) {
                         lastReceipt = null;
                     }
                     else {
-                        lastReceipt = getDate(ds.tables[0].rows[i].cells.lastreceipt);
+                        lastReceipt = getDate(dr[i]["LastReceipt"]);
                     }
                     grdLocatorProdValues.push(
                         {
                             recid: Recid,
-                            Warehouse: ds.tables[0].rows[i].cells.warehouse,
-                            Locator: ds.tables[0].rows[i].cells.locator,
-                            Quantity: ds.tables[0].rows[i].cells.qtyonhand,
-                            Unconfirmed: ds.tables[0].rows[i].cells.qtyunconfirmed,
-                            Attribute: ds.tables[0].rows[i].cells.description,
-                            LastReceipt: lastReceipt,
-                            M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
+                            Warehouse: dr[i]["Warehouse"],
+                            Locator: dr[i]["Locator"],
+                            Quantity: dr[i]["Quantity"],
+                            Unconfirmed: dr[i]["Unconfirmed"],
+                            Attribute: dr[i]["Attribute"],
+                            LastReceipt: dr[i]["LastReceipt"],
+                            M_Product_ID: dr[i]["M_Product_ID"],
                         });
                 }
             }
+
+            //if (ds != null && ds.tables[0].rows.length > 0) {
+            //    for (var i = 0; i < ds.tables[0].rows.length; i++) {
+            //        Recid = Recid + 1;
+            //        if (ds.tables[0].rows[i].cells.lastreceipt == null) {
+            //            lastReceipt = null;
+            //        }
+            //        else {
+            //            lastReceipt = getDate(ds.tables[0].rows[i].cells.lastreceipt);
+            //        }
+            //        grdLocatorProdValues.push(
+            //            {
+            //                recid: Recid,
+            //                Warehouse: ds.tables[0].rows[i].cells.warehouse,
+            //                Locator: ds.tables[0].rows[i].cells.locator,
+            //                Quantity: ds.tables[0].rows[i].cells.qtyonhand,
+            //                Unconfirmed: ds.tables[0].rows[i].cells.qtyunconfirmed,
+            //                Attribute: ds.tables[0].rows[i].cells.description,
+            //                LastReceipt: lastReceipt,
+            //                M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
+            //            });
+            //    }
+            //}
 
             w2utils.encodeTags(grdLocatorProdValues);
 
@@ -2503,63 +2669,94 @@
                 dOrderedGrid.clear();
                 Recid = Recid + 1;
 
-                var whString = "";
-                for (var w = 0; w < selWh.length; w++) {
-                    if (whString.length > 0) {
-                        whString = whString + ", " + selWh[w];
-                    }
-                    else {
-                        whString = whString + selWh[w];
-                    }
-                }
+                //var whString = "";
+                //for (var w = 0; w < selWh.length; w++) {
+                //    if (whString.length > 0) {
+                //        whString = whString + ", " + selWh[w];
+                //    }
+                //    else {
+                //        whString = whString + selWh[w];
+                //    }
+                //}
 
-                var sqlOrd = "SELECT ol.datepromised, o.dateordered, ol.m_product_ID, ol.qtyordered, ol.qtyentered, ol.qtyreserved, bp.name as supplier FROM c_order o INNER JOIN c_Orderline ol ON (ol.c_ORder_ID = o.C_Order_ID) "
-                    + " inner join c_bpartner bp on (bp.c_BPartner_ID = o.C_Bpartner_ID) WHERE o.IsSOTrx = 'N' AND o.IsReturnTrx = 'N' AND ol.QtyReserved > 0 AND o.DocStatus IN ('CO', 'CL') AND ol.M_Product_ID = " + _product_ID;
+                //var sqlOrd = "SELECT ol.datepromised, o.dateordered, ol.m_product_ID, ol.qtyordered, ol.qtyentered, ol.qtyreserved, bp.name as supplier FROM c_order o INNER JOIN c_Orderline ol ON (ol.c_ORder_ID = o.C_Order_ID) "
+                //    + " inner join c_bpartner bp on (bp.c_BPartner_ID = o.C_Bpartner_ID) WHERE o.IsSOTrx = 'N' AND o.IsReturnTrx = 'N' AND ol.QtyReserved > 0 AND o.DocStatus IN ('CO', 'CL') AND ol.M_Product_ID = " + _product_ID;
 
-                if (whString.length > 0) {
-                    sqlOrd += " AND o.M_Warehouse_ID IN (" + whString + ")";
-                }
+                //if (whString.length > 0) {
+                //    sqlOrd += " AND o.M_Warehouse_ID IN (" + whString + ")";
+                //}
 
-                sqlOrd += " ORDER BY o.Created DESC";
+                //sqlOrd += " ORDER BY o.Created DESC";
+                VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LoadOrderedGrid", { "M_Product_ID": _product_ID, "Warehouses": selWh, }, callbackOrderedGrid);
 
-                VIS.DB.executeDataSet(sqlOrd.toString(), null, callbackOrderedGrid);
+                //VIS.DB.executeDataSet(sqlOrd.toString(), null, callbackOrderedGrid);
             }
         };
 
-        function callbackOrderedGrid(ds) {
+        function callbackOrderedGrid(dr) {
             var Recid = 0;
             var datePromised = null;
             var dateOrdered = null;
-            if (ds != null && ds.tables[0].rows.length > 0) {
-                for (var i = 0; i < ds.tables[0].rows.length; i++) {
+            if (dr != null && dr.length > 0) {
+                for (var i = 0; i < dr.length; i++) {
                     Recid = Recid + 1;
 
-                    if ((ds.tables[0].rows[i].cells.datepromised) == null) {
+
+                    if ((dr[i]["DatePromised"]) == null) {
                         datePromised = null;
                     }
                     else {
-                        datePromised = getDate(ds.tables[0].rows[i].cells.datepromised);
+                        datePromised = getDate(dr[i]["DatePromised"]);
                     }
 
-                    if ((ds.tables[0].rows[i].cells.dateordered) == null) {
+                    if ((dr[i]["DateOrdered"]) == null) {
                         dateOrdered = null;
                     }
                     else {
-                        dateOrdered = getDate(ds.tables[0].rows[i].cells.dateordered);
+                        dateOrdered = getDate(dr[i]["DateOrdered"]);
                     }
-
                     grdOrderedProdValues.push(
                         {
                             recid: Recid,
-                            DatePromised: datePromised,
-                            Quantity: ds.tables[0].rows[i].cells.qtyordered,
-                            DateOrdered: dateOrdered,
-                            Supplier: ds.tables[0].rows[i].cells.supplier,
-                            QtyReserved: ds.tables[0].rows[i].cells.qtyreserved,
+                            DatePromised: dr[i]["DatePromised"],
+                            Quantity: dr[i]["Quantity"],
+                            DateOrdered: dr[i]["DateOrdered"],
+                            Supplier: dr[i]["Supplier"],
+                            QtyReserved: dr[i]["QtyReserved"],
                             M_Product_ID: 0,
                         });
                 }
             }
+            //if (ds != null && ds.tables[0].rows.length > 0) {
+            //    for (var i = 0; i < ds.tables[0].rows.length; i++) {
+            //        Recid = Recid + 1;
+
+            //        if ((ds.tables[0].rows[i].cells.datepromised) == null) {
+            //            datePromised = null;
+            //        }
+            //        else {
+            //            datePromised = getDate(ds.tables[0].rows[i].cells.datepromised);
+            //        }
+
+            //        if ((ds.tables[0].rows[i].cells.dateordered) == null) {
+            //            dateOrdered = null;
+            //        }
+            //        else {
+            //            dateOrdered = getDate(ds.tables[0].rows[i].cells.dateordered);
+            //        }
+
+            //        grdOrderedProdValues.push(
+            //            {
+            //                recid: Recid,
+            //                DatePromised: datePromised,
+            //                Quantity: ds.tables[0].rows[i].cells.qtyordered,
+            //                DateOrdered: dateOrdered,
+            //                Supplier: ds.tables[0].rows[i].cells.supplier,
+            //                QtyReserved: ds.tables[0].rows[i].cells.qtyreserved,
+            //                M_Product_ID: 0,
+            //            });
+            //    }
+            //}
             w2utils.encodeTags(grdOrderedProdValues);
 
             dOrderedGrid.add(grdOrderedProdValues);
@@ -2652,7 +2849,8 @@
 
         // Bind Replenished Grid 
         function bindReplenishedGrid() {
-
+            var sqlRep = "";
+            var dsRep = "";
             if (!initLoad) {
                 $bsyDiv[0].style.visibility = "visible";
 
@@ -2662,78 +2860,79 @@
                 dReplenishedGrid.clear();
                 Recid = Recid + 1;
 
-                // VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/GetReplenishments", { "Warehouses": selWh, "M_Product_ID": _product_ID }, callbackReplenishGrid);
+                VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/GetReplenishments", { "Warehouses": selWh, "M_Product_ID": _product_ID }, callbackReplenishGrid);
 
-                if (selWh.length > 0) {
-                    for (var w = 0; w < selWh.length; w++) {
-                        var sqlRep = "SELECT r.DocumentNo, r.datedoc, rl.Qty, rl.M_Product_ID, rl.DTD001_DeliveredQty, CASE WHEN (rl.Qty - rl.DTD001_DeliveredQty) > 0 THEN (rl.Qty - rl.DTD001_DeliveredQty) ELSE 0 END AS QtyPending "
-                            + " FROM m_requisitionline rl INNER JOIN M_Requisition r ON (r.M_Requisition_ID = rl.M_Requisition_ID) INNER JOIN m_product p ON (p.M_Product_ID = rl.M_Product_ID) WHERE rl.M_Product_ID = " + _product_ID
-                            + " AND r.M_Warehouse_ID = " + selWh[w];
+                //if (selWh.length > 0) {
+                //    for (var w = 0; w < selWh.length; w++) {
+                //        console.log(selWh);
+                //        //var sqlRep = "SELECT r.DocumentNo, r.datedoc, rl.Qty, rl.M_Product_ID, rl.DTD001_DeliveredQty, CASE WHEN (rl.Qty - rl.DTD001_DeliveredQty) > 0 THEN (rl.Qty - rl.DTD001_DeliveredQty) ELSE 0 END AS QtyPending "
+                //        //    + " FROM m_requisitionline rl INNER JOIN M_Requisition r ON (r.M_Requisition_ID = rl.M_Requisition_ID) INNER JOIN m_product p ON (p.M_Product_ID = rl.M_Product_ID) WHERE rl.M_Product_ID = " + _product_ID
+                //        //    + " AND r.M_Warehouse_ID = " + selWh[w];
 
-                        var dsRep = VIS.DB.executeDataSet(sqlRep.toString(), null, null);
-                        if (dsRep != null && dsRep.tables[0].rows.length > 0) {
-                            var date = null;
-                            for (var i = 0; i < dsRep.tables[0].rows.length; i++) {
-                                Recid = Recid + 1;
-                                if (dsRep.tables[0].rows[i].cells.datedoc == null) {
-                                    date = null;
-                                }
-                                else {
-                                    date = getDate(dsRep.tables[0].rows[i].cells.datedoc);
-                                }
-                                grdReplenishedProdValues.push(
-                                    {
-                                        recid: Recid,
-                                        RequisitionNo: dsRep.tables[0].rows[i].cells.documentno,
-                                        Date: date,
-                                        QtyDemanded: dsRep.tables[0].rows[i].cells.qty,
-                                        QtyReceived: dsRep.tables[0].rows[i].cells.dtd001_deliveredqty,
-                                        QtyPending: dsRep.tables[0].rows[i].cells.qtypending,
-                                        // LastReceipt: dsRep.tables[0].rows[i].cells.lastreceipt,
-                                        M_Product_ID: dsRep.tables[0].rows[i].cells.m_product_id,
-                                    });
-                            }
-                        }
+                //        //var dsRep = VIS.DB.executeDataSet(sqlRep.toString(), null, null);
+                //        if (dsRep != null && dsRep.tables[0].rows.length > 0) {
+                //            var date = null;
+                //            for (var i = 0; i < dsRep.tables[0].rows.length; i++) {
+                //                Recid = Recid + 1;
+                //                if (dsRep.tables[0].rows[i].cells.datedoc == null) {
+                //                    date = null;
+                //                }
+                //                else {
+                //                    date = getDate(dsRep.tables[0].rows[i].cells.datedoc);
+                //                }
+                //                grdReplenishedProdValues.push(
+                //                    {
+                //                        recid: Recid,
+                //                        RequisitionNo: dsRep.tables[0].rows[i].cells.documentno,
+                //                        Date: date,
+                //                        QtyDemanded: dsRep.tables[0].rows[i].cells.qty,
+                //                        QtyReceived: dsRep.tables[0].rows[i].cells.dtd001_deliveredqty,
+                //                        QtyPending: dsRep.tables[0].rows[i].cells.qtypending,
+                //                        // LastReceipt: dsRep.tables[0].rows[i].cells.lastreceipt,
+                //                        M_Product_ID: dsRep.tables[0].rows[i].cells.m_product_id,
+                //                    });
+                //            }
+                //        }
 
-                        w2utils.encodeTags(grdReplenishedProdValues);
-                    }
-                }
-                else {
-                    for (var w = 0; w < selWh.length; w++) {
-                        var sqlRep = "SELECT r.DocumentNo, r.datedoc, rl.Qty, rl.M_Product_ID, rl.DTD001_DeliveredQty, CASE WHEN (rl.Qty - rl.DTD001_DeliveredQty) > 0 THEN (rl.Qty - rl.DTD001_DeliveredQty) ELSE 0 END AS QtyPending "
-                            + " FROM m_requisitionline rl INNER JOIN M_Requisition r ON (r.M_Requisition_ID = rl.M_Requisition_ID) INNER JOIN m_product p ON (p.M_Product_ID = rl.M_Product_ID) WHERE rl.M_Product_ID = " + _product_ID;
+                //        w2utils.encodeTags(grdReplenishedProdValues);
+                //    }
+                //}
+                //else {
+                //    for (var w = 0; w < selWh.length; w++) {
+                //        //var sqlRep = "SELECT r.DocumentNo, r.datedoc, rl.Qty, rl.M_Product_ID, rl.DTD001_DeliveredQty, CASE WHEN (rl.Qty - rl.DTD001_DeliveredQty) > 0 THEN (rl.Qty - rl.DTD001_DeliveredQty) ELSE 0 END AS QtyPending "
+                //        //    + " FROM m_requisitionline rl INNER JOIN M_Requisition r ON (r.M_Requisition_ID = rl.M_Requisition_ID) INNER JOIN m_product p ON (p.M_Product_ID = rl.M_Product_ID) WHERE rl.M_Product_ID = " + _product_ID;
 
-                        var dsRep = VIS.DB.executeDataSet(sqlRep.toString(), null, null);
-                        if (dsRep != null && dsRep.tables[0].rows.length > 0) {
-                            var date = null;
+                //        //var dsRep = VIS.DB.executeDataSet(sqlRep.toString(), null, null);
+                //        if (dsRep != null && dsRep.tables[0].rows.length > 0) {
+                //            var date = null;
 
-                            for (var i = 0; i < dsRep.tables[0].rows.length; i++) {
-                                Recid = Recid + 1;
+                //            for (var i = 0; i < dsRep.tables[0].rows.length; i++) {
+                //                Recid = Recid + 1;
 
-                                if (dsRep.tables[0].rows[i].cells.datedoc == null) {
-                                    date = null;
-                                }
-                                else {
-                                    date = getDate(dsRep.tables[0].rows[i].cells.datedoc);
-                                }
+                //                if (dsRep.tables[0].rows[i].cells.datedoc == null) {
+                //                    date = null;
+                //                }
+                //                else {
+                //                    date = getDate(dsRep.tables[0].rows[i].cells.datedoc);
+                //                }
 
-                                grdReplenishedProdValues.push(
-                                    {
-                                        recid: Recid,
-                                        RequisitionNo: dsRep.tables[0].rows[i].cells.documentno,
-                                        Date: date,
-                                        QtyDemanded: dsRep.tables[0].rows[i].cells.qty,
-                                        QtyReceived: dsRep.tables[0].rows[i].cells.dtd001_deliveredqty,
-                                        QtyPending: dsRep.tables[0].rows[i].cells.qtypending,
-                                        // LastReceipt: dsRep.tables[0].rows[i].cells.lastreceipt,
-                                        M_Product_ID: dsRep.tables[0].rows[i].cells.m_product_id,
-                                    });
-                            }
-                        }
+                //                grdReplenishedProdValues.push(
+                //                    {
+                //                        recid: Recid,
+                //                        RequisitionNo: dsRep.tables[0].rows[i].cells.documentno,
+                //                        Date: date,
+                //                        QtyDemanded: dsRep.tables[0].rows[i].cells.qty,
+                //                        QtyReceived: dsRep.tables[0].rows[i].cells.dtd001_deliveredqty,
+                //                        QtyPending: dsRep.tables[0].rows[i].cells.qtypending,
+                //                        // LastReceipt: dsRep.tables[0].rows[i].cells.lastreceipt,
+                //                        M_Product_ID: dsRep.tables[0].rows[i].cells.m_product_id,
+                //                    });
+                //            }
+                //        }
 
-                        w2utils.encodeTags(grdReplenishedProdValues);
-                    }
-                }
+                //        w2utils.encodeTags(grdReplenishedProdValues);
+                //    }
+                //}
 
                 dReplenishedGrid.add(grdReplenishedProdValues);
 
@@ -2743,37 +2942,61 @@
             }
         };
 
-        function callbackReplenishGrid(ds) {
+        function callbackReplenishGrid(dr) {
 
             var Recid = 0;
-
-            if (ds != null && ds.tables[0].rows.length > 0) {
-
-                var date = null;
-
-                for (var i = 0; i < ds.tables[0].rows.length; i++) {
+            if (dr.length > 0) {
+                for (var i = 0; i < dr.length; i++) {
                     Recid = Recid + 1;
 
-                    if (dsRep.tables[0].rows[i].cells.datedoc == null) {
+                    if (dr[i]["datedoc"] == null) {
                         date = null;
                     }
                     else {
-                        date = getDate(dsRep.tables[0].rows[i].cells.datedoc);
+                        date = getDate(dr[i]["datedoc"]);
                     }
 
                     grdReplenishedProdValues.push(
                         {
                             recid: Recid,
-                            RequisitionNo: dsRep.tables[0].rows[i].cells.documentno,
-                            Date: date,
-                            QtyDemanded: dsRep.tables[0].rows[i].cells.qty,
-                            QtyReceived: dsRep.tables[0].rows[i].cells.dtd001_deliveredqty,
-                            QtyPending: dsRep.tables[0].rows[i].cells.qtypending,
+                            RequisitionNo: dr[i]["RequisitionNo"],
+                            Date: dr[i]["Date"],
+                            QtyDemanded: dr[i]["QtyDemanded"],
+                            QtyReceived: dr[i]["QtyReceived"],
+                            QtyPending: dr[i]["QtyPending"],
                             // LastReceipt: dsRep.tables[0].rows[i].cells.lastreceipt,
-                            M_Product_ID: dsRep.tables[0].rows[i].cells.m_product_id,
+                            M_Product_ID: dr[i]["M_Product_ID"],
                         });
                 }
             }
+
+            //if (ds != null && ds.tables[0].rows.length > 0) {
+
+            //    var date = null;
+
+            //    for (var i = 0; i < ds.tables[0].rows.length; i++) {
+            //        Recid = Recid + 1;
+
+            //        if (dsRep.tables[0].rows[i].cells.datedoc == null) {
+            //            date = null;
+            //        }
+            //        else {
+            //            date = getDate(dsRep.tables[0].rows[i].cells.datedoc);
+            //        }
+
+            //        grdReplenishedProdValues.push(
+            //            {
+            //                recid: Recid,
+            //                RequisitionNo: dsRep.tables[0].rows[i].cells.documentno,
+            //                Date: date,
+            //                QtyDemanded: dsRep.tables[0].rows[i].cells.qty,
+            //                QtyReceived: dsRep.tables[0].rows[i].cells.dtd001_deliveredqty,
+            //                QtyPending: dsRep.tables[0].rows[i].cells.qtypending,
+            //                // LastReceipt: dsRep.tables[0].rows[i].cells.lastreceipt,
+            //                M_Product_ID: dsRep.tables[0].rows[i].cells.m_product_id,
+            //            });
+            //    }
+            //}
 
             w2utils.encodeTags(grdReplenishedProdValues);
 
@@ -2885,98 +3108,126 @@
                 dDemandGrid.clear();
                 Recid = Recid + 1;
 
-                var sqlDmd = "SELECT * FROM ( SELECT o.Created, o.documentno, ol.QtyReserved AS qtyentered, dt.name as DocType, o.datepromised, bp.name as demandedby FROM C_Order o INNER JOIN c_orderline ol ON (ol.C_Order_ID = o.C_Order_ID) "
-                    + " INNER JOIN C_DocType dt ON (o.C_DocTypeTarget_ID = dt.C_DocType_ID) INNER JOIN C_BPartner bp ON (bp.C_BPartner_ID = o.C_BPartner_ID) WHERE o.IsSOTrx = 'Y' AND o.IsReturnTrx = 'N' AND o.DocStatus IN ('CO', 'CL') AND ol.QtyReserved >0 AND ol.M_Product_ID = " + _product_ID;
+                //var sqlDmd = "SELECT * FROM ( SELECT o.Created, o.documentno, ol.QtyReserved AS qtyentered, dt.name as DocType, o.datepromised, bp.name as demandedby FROM C_Order o INNER JOIN c_orderline ol ON (ol.C_Order_ID = o.C_Order_ID) "
+                //    + " INNER JOIN C_DocType dt ON (o.C_DocTypeTarget_ID = dt.C_DocType_ID) INNER JOIN C_BPartner bp ON (bp.C_BPartner_ID = o.C_BPartner_ID) WHERE o.IsSOTrx = 'Y' AND o.IsReturnTrx = 'N' AND o.DocStatus IN ('CO', 'CL') AND ol.QtyReserved >0 AND ol.M_Product_ID = " + _product_ID;
 
                 var orgString = "";
-                if (selOrgs.length > 0) {
-                    for (var w = 0; w < selOrgs.length; w++) {
-                        if (orgString.length > 0) {
-                            orgString = orgString + ", " + selOrgs[w];
-                        }
-                        else {
-                            orgString += "0, ";
-                            orgString += selOrgs[w];
-                        }
-                    }
-                    sqlDmd += " AND o.AD_Org_ID IN (0, " + orgString + ")";
-                }
+                //if (selOrgs.length > 0) {
+                //    for (var w = 0; w < selOrgs.length; w++) {
+                //        if (orgString.length > 0) {
+                //            orgString = orgString + ", " + selOrgs[w];
+                //        }
+                //        else {
+                //            orgString += "0, ";
+                //            orgString += selOrgs[w];
+                //        }
+                //    }
+                //    sqlDmd += " AND o.AD_Org_ID IN (0, " + orgString + ")";
+                //}
 
-                var whString = "";
-                if (selWh.length > 0) {
-                    for (var w = 0; w < selWh.length; w++) {
-                        if (whString.length > 0) {
-                            whString = whString + ", " + selWh[w];
-                        }
-                        else {
-                            whString = whString + selWh[w];
-                        }
-                    }
-                    sqlDmd += " AND o.M_Warehouse_ID IN (" + whString + ")";
-                }
+                //var whString = "";
+                //if (selWh.length > 0) {
+                //    for (var w = 0; w < selWh.length; w++) {
+                //        if (whString.length > 0) {
+                //            whString = whString + ", " + selWh[w];
+                //        }
+                //        else {
+                //            whString = whString + selWh[w];
+                //        }
+                //    }
+                //    sqlDmd += " AND o.M_Warehouse_ID IN (" + whString + ")";
+                //}
 
-                sqlDmd += " UNION SELECT r.Created, r.DocumentNo, rl.DTD001_ReservedQty as qtyentered, dt.name AS DocType, r.daterequired as datepromised, w.name AS demandedby  FROM m_requisitionline rl "
-                    + " INNER JOIN M_Requisition r ON (r.M_Requisition_ID = rl.M_Requisition_ID) INNER JOIN C_DocType dt ON (r.C_DocType_ID = dt.C_DocType_ID) INNER JOIN M_Warehouse w "
-                    + " ON (r.M_Warehouse_ID = w.M_Warehouse_ID) INNER JOIN m_product p ON (p.M_Product_ID = rl.M_Product_ID) WHERE r.DocStatus IN ('CO', 'CL') AND rl.DTD001_ReservedQty > 0 AND r.IsActive = 'Y' AND rl.M_Product_ID = " + _product_ID;
-                if (orgString.length > 0) {
-                    sqlDmd += " AND r.AD_Org_ID IN (0, " + orgString + ")";
-                }
+                //sqlDmd += " UNION SELECT r.Created, r.DocumentNo, rl.DTD001_ReservedQty as qtyentered, dt.name AS DocType, r.daterequired as datepromised, w.name AS demandedby  FROM m_requisitionline rl "
+                //    + " INNER JOIN M_Requisition r ON (r.M_Requisition_ID = rl.M_Requisition_ID) INNER JOIN C_DocType dt ON (r.C_DocType_ID = dt.C_DocType_ID) INNER JOIN M_Warehouse w "
+                //    + " ON (r.M_Warehouse_ID = w.M_Warehouse_ID) INNER JOIN m_product p ON (p.M_Product_ID = rl.M_Product_ID) WHERE r.DocStatus IN ('CO', 'CL') AND rl.DTD001_ReservedQty > 0 AND r.IsActive = 'Y' AND rl.M_Product_ID = " + _product_ID;
+                //if (orgString.length > 0) {
+                //    sqlDmd += " AND r.AD_Org_ID IN (0, " + orgString + ")";
+                //}
 
-                if (whString.length > 0) {
-                    sqlDmd += " AND r.M_Warehouse_ID IN (0, " + whString + ")";
-                }
+                //if (whString.length > 0) {
+                //    sqlDmd += " AND r.M_Warehouse_ID IN (0, " + whString + ")";
+                //}
+
+                //// Append Manufacturing Order Records only if Manufacturing Module Exists
+                //var sqlMFGModule = "SELECT COUNT(*) FROM AD_ModuleInfo WHERE Prefix = 'VAMFG_' AND IsActive = 'Y'";
+                //var moduleExists = VIS.DB.executeScalar(sqlMFGModule.toString(), null, null);
+                //if (moduleExists > 0) {
+                //    sqlDmd += " UNION SELECT wo.Created, wo.documentno, wo.vamfg_qtyentered AS qtyentered, dt.Name AS doctype, wo.VAMFG_DateScheduleTo as datepromised, bp.name as demandedby FROM vamfg_M_workorder wo "
+                //        + " INNER JOIN c_doctype dt ON (dt.C_DocType_ID = wo.C_DocType_ID) LEFT OUTER JOIN C_BPartner bp ON (bp.C_BPartner_ID = wo.C_BPartner_ID) INNER JOIN m_product p "
+                //        + " ON (p.M_Product_ID = wo.M_Product_ID) WHERE wo.DocStatus IN ('CO', 'CL') AND wo.IsActive   = 'Y' AND wo.M_Product_ID = " + _product_ID;
+                //    if (orgString.length > 0) {
+                //        sqlDmd += " AND wo.AD_Org_ID IN (0, " + orgString + ")";
+                //    }
+
+                //    if (whString.length > 0) {
+                //        sqlDmd += " AND wo.M_Warehouse_ID IN (0, " + whString + ")";
+                //    }
+                //}
+
+                //sqlDmd += ") ORDER BY Created DESC";
 
                 // Append Manufacturing Order Records only if Manufacturing Module Exists
-                var sqlMFGModule = "SELECT COUNT(*) FROM AD_ModuleInfo WHERE Prefix = 'VAMFG_' AND IsActive = 'Y'";
-                var moduleExists = VIS.DB.executeScalar(sqlMFGModule.toString(), null, null);
-                if (moduleExists > 0) {
-                    sqlDmd += " UNION SELECT wo.Created, wo.documentno, wo.vamfg_qtyentered AS qtyentered, dt.Name AS doctype, wo.VAMFG_DateScheduleTo as datepromised, bp.name as demandedby FROM vamfg_M_workorder wo "
-                        + " INNER JOIN c_doctype dt ON (dt.C_DocType_ID = wo.C_DocType_ID) LEFT OUTER JOIN C_BPartner bp ON (bp.C_BPartner_ID = wo.C_BPartner_ID) INNER JOIN m_product p "
-                        + " ON (p.M_Product_ID = wo.M_Product_ID) WHERE wo.DocStatus IN ('CO', 'CL') AND wo.IsActive   = 'Y' AND wo.M_Product_ID = " + _product_ID;
-                    if (orgString.length > 0) {
-                        sqlDmd += " AND wo.AD_Org_ID IN (0, " + orgString + ")";
-                    }
 
-                    if (whString.length > 0) {
-                        sqlDmd += " AND wo.M_Warehouse_ID IN (0, " + whString + ")";
-                    }
-                }
+                //VIS.DB.executeDataSet(sqlDmd.toString(), null, callbackDemandGrid);
 
-                sqlDmd += ") ORDER BY Created DESC";
-                // Append Manufacturing Order Records only if Manufacturing Module Exists
+                VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LoadDemandGrid", { "M_Product_ID": _product_ID, "selWH": selWh, "orgs": orgString }, callbackDemandGrid);
 
-                VIS.DB.executeDataSet(sqlDmd.toString(), null, callbackDemandGrid);
             }
         };
 
-        function callbackDemandGrid(ds) {
+        function callbackDemandGrid(dr) {
             var Recid = 0;
-
-            if (ds != null && ds.tables[0].rows.length > 0) {
-                var datePromised = null;
-                for (var i = 0; i < ds.tables[0].rows.length; i++) {
+            if (dr.length > 0) {
+                for (var i = 0; i < dr.length; i++) {
                     Recid = Recid + 1;
 
-                    if (ds.tables[0].rows[i].cells.datepromised == null) {
+                    if (dr[i]["DatePromised"] == null) {
                         datePromised = null;
                     }
                     else {
-                        datePromised = getDate(ds.tables[0].rows[i].cells.datepromised);
+                        datePromised = getDate(dr[i]["DatePromised"]);
                     }
 
                     grdDemandProdValues.push(
                         {
                             recid: Recid,
-                            DocumentType: ds.tables[0].rows[i].cells.doctype,
-                            DocumentNo: ds.tables[0].rows[i].cells.documentno,
-                            Quantity: ds.tables[0].rows[i].cells.qtyentered,
-                            DatePromised: datePromised,
-                            DemandedBy: ds.tables[0].rows[i].cells.demandedby,
+                            DocumentType: dr[i]["DocumentType"],
+                            DocumentNo: dr[i]["DocumentNo"],
+                            Quantity: dr[i]["Quantity"],
+                            DatePromised: dr[i]["DatePromised"],
+                            DemandedBy: dr[i]["DemandedBy"],
                             AvailabilityStatus: "",
                             M_Product_ID: 0,
                         });
                 }
             }
+
+            //if (ds != null && ds.tables[0].rows.length > 0) {
+            //    var datePromised = null;
+            //    for (var i = 0; i < ds.tables[0].rows.length; i++) {
+            //        Recid = Recid + 1;
+
+            //        if (ds.tables[0].rows[i].cells.datepromised == null) {
+            //            datePromised = null;
+            //        }
+            //        else {
+            //            datePromised = getDate(ds.tables[0].rows[i].cells.datepromised);
+            //        }
+
+            //        grdDemandProdValues.push(
+            //            {
+            //                recid: Recid,
+            //                DocumentType: ds.tables[0].rows[i].cells.doctype,
+            //                DocumentNo: ds.tables[0].rows[i].cells.documentno,
+            //                Quantity: ds.tables[0].rows[i].cells.qtyentered,
+            //                DatePromised: datePromised,
+            //                DemandedBy: ds.tables[0].rows[i].cells.demandedby,
+            //                AvailabilityStatus: "",
+            //                M_Product_ID: 0,
+            //            });
+            //    }
+            //}
 
             w2utils.encodeTags(grdDemandProdValues);
 
@@ -3123,82 +3374,121 @@
                 dTransactionsGrid.clear();
                 Recid = Recid + 1;
 
-                var sqlTrx = "SELECT t.M_Product_ID, t.M_AttributeSetInstance_ID, asi.description, t.MOVEMENTQTY , t.MOVEMENTTYPE, t.CurrentQty, t.MovementDate, lc.Value AS Locator, t.M_Transaction_ID, iol.M_InOutLine_ID, ivl.M_InventoryLine_ID, mvl.M_MovementLine_ID, "
-                    + " Case when t.MovementQty > 0 Then t.movementQty else 0 end as InventoryIn, Case when t.MovementQty < 0 Then t.movementQty else 0 end as InventoryOut, "
-                    + " CASE WHEN NVL(iol.M_InOutLine_ID,0) > 0 THEN iol.M_InoutLine_ID WHEN NVL(ivl.M_InventoryLine_ID,0) > 0 THEN ivl.M_InventoryLine_ID WHEN NVL(mvl.M_MovementLine_ID,0) > 0 THEN mvl.M_MovementLine_ID END AS ID, "
-                    + " CASE WHEN NVL(iol.M_InOutLine_ID,0) > 0 THEN io.DocumentNo WHEN NVL(ivl.M_InventoryLine_ID,0) > 0 THEN iv.DocumentNo WHEN NVL(mvl.M_MovementLine_ID,0) > 0 THEN mv.DocumentNo END AS DocumentNo,"
-                    + " CASE WHEN NVL(iol.M_InOutLine_ID,0) > 0 THEN dtio.Name WHEN NVL(ivl.M_InventoryLine_ID,0) > 0 THEN dtiv.Name WHEN NVL(mvl.M_MovementLine_ID,0) > 0 THEN dtmv.Name END AS DocType "
-                    + " FROM M_Transaction t LEFT OUTER JOIN M_InoutLine iol ON (iol.M_InOutLine_ID = t.M_InOutLine_ID) LEFT OUTER JOIN M_Inout io ON (iol.M_InOut_ID = io.M_InOut_ID) LEFT OUTER JOIN C_DocType dtio "
-                    + " ON (dtio.C_DocType_ID = io.C_DocType_ID) LEFT OUTER JOIN M_inventoryLine ivl ON (ivl.M_inventoryLine_ID = t.M_inventoryLine_ID) LEFT OUTER JOIN M_Inventory iv ON (ivl.M_Inventory_ID = iv.M_Inventory_ID) "
-                    + " LEFT OUTER JOIN C_DocType dtiv ON (dtiv.C_DocType_ID = iv.C_DocType_ID) LEFT OUTER JOIN M_MovementLine mvl ON (mvl.M_MovementLine_ID = t.M_MovementLine_ID) LEFT OUTER JOIN M_Movement mv "
-                    + " ON (mvl.M_Movement_ID = mv.M_Movement_ID) LEFT OUTER JOIN C_DocType dtmv ON (dtmv.C_DocType_ID = mv.C_DocType_ID) LEFT OUTER JOIN M_AttributeSetInstance asi  ON (t.M_AttributeSetInstance_ID = asi.M_AttributeSetInstance_ID) LEFT OUTER JOIN M_Locator lc ON (lc.M_Locator_ID = t.M_Locator_ID) WHERE t.M_Product_ID = " + _product_ID;
+                //var sqlTrx = "SELECT t.M_Product_ID, t.M_AttributeSetInstance_ID, asi.description, t.MOVEMENTQTY , t.MOVEMENTTYPE, t.CurrentQty, t.MovementDate, lc.Value AS Locator, t.M_Transaction_ID, iol.M_InOutLine_ID, ivl.M_InventoryLine_ID, mvl.M_MovementLine_ID, "
+                //    + " Case when t.MovementQty > 0 Then t.movementQty else 0 end as InventoryIn, Case when t.MovementQty < 0 Then t.movementQty else 0 end as InventoryOut, "
+                //    + " CASE WHEN NVL(iol.M_InOutLine_ID,0) > 0 THEN iol.M_InoutLine_ID WHEN NVL(ivl.M_InventoryLine_ID,0) > 0 THEN ivl.M_InventoryLine_ID WHEN NVL(mvl.M_MovementLine_ID,0) > 0 THEN mvl.M_MovementLine_ID END AS ID, "
+                //    + " CASE WHEN NVL(iol.M_InOutLine_ID,0) > 0 THEN io.DocumentNo WHEN NVL(ivl.M_InventoryLine_ID,0) > 0 THEN iv.DocumentNo WHEN NVL(mvl.M_MovementLine_ID,0) > 0 THEN mv.DocumentNo END AS DocumentNo,"
+                //    + " CASE WHEN NVL(iol.M_InOutLine_ID,0) > 0 THEN dtio.Name WHEN NVL(ivl.M_InventoryLine_ID,0) > 0 THEN dtiv.Name WHEN NVL(mvl.M_MovementLine_ID,0) > 0 THEN dtmv.Name END AS DocType "
+                //    + " FROM M_Transaction t LEFT OUTER JOIN M_InoutLine iol ON (iol.M_InOutLine_ID = t.M_InOutLine_ID) LEFT OUTER JOIN M_Inout io ON (iol.M_InOut_ID = io.M_InOut_ID) LEFT OUTER JOIN C_DocType dtio "
+                //    + " ON (dtio.C_DocType_ID = io.C_DocType_ID) LEFT OUTER JOIN M_inventoryLine ivl ON (ivl.M_inventoryLine_ID = t.M_inventoryLine_ID) LEFT OUTER JOIN M_Inventory iv ON (ivl.M_Inventory_ID = iv.M_Inventory_ID) "
+                //    + " LEFT OUTER JOIN C_DocType dtiv ON (dtiv.C_DocType_ID = iv.C_DocType_ID) LEFT OUTER JOIN M_MovementLine mvl ON (mvl.M_MovementLine_ID = t.M_MovementLine_ID) LEFT OUTER JOIN M_Movement mv "
+                //    + " ON (mvl.M_Movement_ID = mv.M_Movement_ID) LEFT OUTER JOIN C_DocType dtmv ON (dtmv.C_DocType_ID = mv.C_DocType_ID) LEFT OUTER JOIN M_AttributeSetInstance asi  ON (t.M_AttributeSetInstance_ID = asi.M_AttributeSetInstance_ID) LEFT OUTER JOIN M_Locator lc ON (lc.M_Locator_ID = t.M_Locator_ID) WHERE t.M_Product_ID = " + _product_ID;
 
-                if (selWh.length > 0) {
-                    var whString = "";
-                    for (var w = 0; w < selWh.length; w++) {
-                        if (whString.length > 0) {
-                            whString = whString + ", " + selWh[w];
-                        }
-                        else {
-                            whString = whString + selWh[w];
-                        }
-                    }
-                    sqlTrx += " AND t.M_Locator_ID IN (Select loc.M_Locator_ID from m_warehouse wh inner join m_locator loc on (loc.m_warehouse_ID = wh.M_Warehouse_ID) where wh.m_warehouse_ID in (" + whString + ")) ";
-                }
+                //if (selWh.length > 0) {
+                //    var whString = "";
+                //    for (var w = 0; w < selWh.length; w++) {
+                //        if (whString.length > 0) {
+                //            whString = whString + ", " + selWh[w];
+                //        }
+                //        else {
+                //            whString = whString + selWh[w];
+                //        }
+                //    }
+                //    sqlTrx += " AND t.M_Locator_ID IN (Select loc.M_Locator_ID from m_warehouse wh inner join m_locator loc on (loc.m_warehouse_ID = wh.M_Warehouse_ID) where wh.m_warehouse_ID in (" + whString + ")) ";
+                //}
 
-                sqlTrx += " ORDER BY t.MovementDate DESC";
+                //sqlTrx += " ORDER BY t.MovementDate DESC";
 
                 /*Left outer join M_ProductionLine pdl
                 on (pdl.M_ProductionLine_ID = t.M_ProductionLine_ID)
                 Left outer join M_Production pd
                 on (pdl.M_Production_ID = pd.M_Production_ID)*/
 
-                VIS.DB.executeDataSet(sqlTrx.toString(), null, callbackBindTransactionsGrid);
+                VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LoadTransactionsGrid", { "M_Product_ID": _product_ID, "selWH": selWh }, callbackBindTransactionsGrid);
+
+                //VIS.DB.executeDataSet(sqlTrx.toString(), null, callbackBindTransactionsGrid);
 
             }
         };
 
-        function callbackBindTransactionsGrid(ds) {
+        function callbackBindTransactionsGrid(dr) {
             var Recid = 0;
-            if (ds != null && ds.tables[0].rows.length > 0) {
-                for (var i = 0; i < ds.tables[0].rows.length; i++) {
+            if (dr.length > 0) {
+                for (var i = 0; i < dr.length; i++) {
                     Recid = Recid + 1;
                     var invIn = 0;
                     var InvOut = 0;
                     var date = null;
-                    if (ds.tables[0].rows[i].cells.inventoryin > 0) {
-                        invIn = ds.tables[0].rows[i].cells.inventoryin;
+                    if (dr[i]["inventoryin"] > 0) {
+                        invIn = dr[i]["inventoryin"];
                     }
 
-                    if (ds.tables[0].rows[i].cells.inventoryout < 0) {
-                        InvOut = ds.tables[0].rows[i].cells.inventoryout;
+                    if (dr[i]["inventoryout"] < 0) {
+                        InvOut = dr[i]["inventoryout"];
                     }
 
 
-                    if (ds.tables[0].rows[i].cells.movementdate == null) {
+                    if (dr[i]["movementdate"] == null) {
 
                     }
                     else {
-                        date = getDate(ds.tables[0].rows[i].cells.movementdate);
+                        date = getDate(dr[i]["movementdate"]);
                     }
 
                     grdTransactionsProdValues.push(
                         {
                             recid: Recid,
-                            DocumentType: ds.tables[0].rows[i].cells.doctype,
-                            DocumentNo: ds.tables[0].rows[i].cells.documentno,
-                            Locator: ds.tables[0].rows[i].cells.locator,
-                            Date: date,
-                            InventoryIn: invIn,
-                            InventoryOut: InvOut,
-                            // attribute_ID: "",
-                            Attribute: ds.tables[0].rows[i].cells.description,
-                            Balance: ds.tables[0].rows[i].cells.currentqty,
-                            // C_UOM_ID: "",
+                            DocumentType: dr[i]["DocumentType"],
+                            DocumentNo: dr[i]["DocumentNo"],
+                            Locator: dr[i]["Locator"],
+                            Date: dr[i]["Date"],
+                            InventoryIn: dr[i]["InventoryIn"],
+                            InventoryOut: dr[i]["InventoryOut"],
+                            Attribute: dr[i]["Attribute"],
+                            Balance: dr[i]["Balance"],
                             M_Product_ID: 0,
                         });
                 }
             }
+            //if (ds != null && ds.tables[0].rows.length > 0) {
+            //    for (var i = 0; i < ds.tables[0].rows.length; i++) {
+            //        Recid = Recid + 1;
+            //        var invIn = 0;
+            //        var InvOut = 0;
+            //        var date = null;
+            //        if (ds.tables[0].rows[i].cells.inventoryin > 0) {
+            //            invIn = ds.tables[0].rows[i].cells.inventoryin;
+            //        }
+
+            //        if (ds.tables[0].rows[i].cells.inventoryout < 0) {
+            //            InvOut = ds.tables[0].rows[i].cells.inventoryout;
+            //        }
+
+
+            //        if (ds.tables[0].rows[i].cells.movementdate == null) {
+
+            //        }
+            //        else {
+            //            date = getDate(ds.tables[0].rows[i].cells.movementdate);
+            //        }
+
+            //        grdTransactionsProdValues.push(
+            //            {
+            //                recid: Recid,
+            //                DocumentType: ds.tables[0].rows[i].cells.doctype,
+            //                DocumentNo: ds.tables[0].rows[i].cells.documentno,
+            //                Locator: ds.tables[0].rows[i].cells.locator,
+            //                Date: date,
+            //                InventoryIn: invIn,
+            //                InventoryOut: InvOut,
+            //                // attribute_ID: "",
+            //                Attribute: ds.tables[0].rows[i].cells.description,
+            //                Balance: ds.tables[0].rows[i].cells.currentqty,
+            //                // C_UOM_ID: "",
+            //                M_Product_ID: 0,
+            //            });
+            //    }
+            //}
 
             w2utils.encodeTags(grdTransactionsProdValues);
 
@@ -3576,10 +3866,10 @@
             return amt;
         };
 
-
         // Bind Replenishment Popup Grid 
         function bindReplenishmentPopGrid() {
-
+            var sqlWhere = "";
+            var sqlRep = "";
             if (!initLoad) {
 
                 $bsyDiv[0].style.visibility = "visible";
@@ -3592,45 +3882,61 @@
                 }
                 Recid = Recid + 1;
 
-                var sqlDTDModuleChk = "SELECT COUNT(*) FROM AD_ModuleInfo WHERE Prefix = 'DTD001_'";
+                //var sqlDTDModuleChk = "SELECT COUNT(*) FROM AD_ModuleInfo WHERE Prefix = 'DTD001_'";
 
-                VIS.DB.executeScalar(sqlDTDModuleChk.toString(), null, callbackModuleCheckRepAll);
+                //VIS.DB.executeScalar(sqlDTDModuleChk.toString(), null, callbackModuleCheckRepAll);
+                //callbackModuleCheckRepAll(sqlWhere);
+                if (dProdGrid.getSelection().length > 0) {
+                    for (var j = 0; j < dProdGrid.records.length; j++) {
+                        if (dProdGrid.getSelection().map(function (item) { return item == dProdGrid.records[j].recid; }).indexOf(true) >= 0) {
+                            recSelected = true;
+                            sqlWhere += dProdGrid.records[j].M_Product_ID + ",";
+                        }
+                    }
+                    sqlWhere = sqlWhere.substring(0, sqlWhere.length - 1);
+                    sqlWhere += ")";
+                }
+                //if (recSelected) {
+                //    sqlRep += sqlWhere;
+                //}
+                VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LoadReplenishmentPopGrid", { "M_Warehouse_ID": $cmbRepAllWarehouse.val(), "sqlWhere": sqlWhere }, callbackBindReplenishmentPopGrid);
 
                 //$bsyDiv[0].style.visibility = "hidden";
             }
         };
 
-        function callbackModuleCheckRepAll(moduleExists) {
+        function callbackModuleCheckRepAll(sqlWhere) {
             var sqlRep = "";
 
-            if (moduleExists > 0) {
-                sqlRep = "SELECT p.Name AS Product, w.Name      AS Warehouse, w.M_Warehouse_ID, NVL(rep.Level_Max,0) AS Maxi, NVL(rep.Level_Min,0) AS Mini, rep.ReplenishType AS rtype, "
-                    + " NVL(DTD001_MinOrderQty,0)       AS Qty,  NVL(DTD001_OrderPackQty,0)      AS OrderPack,  rep.M_WarehouseSource_ID AS SourceWarehouse,  p.M_Product_ID FROM M_Product p "
-                    + " Left Outer Join M_Replenish rep ON (p.M_Product_ID = rep.M_Product_ID) Left JOIN M_Warehouse w ON (w.M_Warehouse_ID = rep.M_Warehouse_ID) LEFT JOIN M_Warehouse w1 "
-                    + " ON (w1.M_Warehouse_ID   = rep.M_WarehouseSource_ID) WHERE w.M_Warehouse_ID = " + $cmbRepAllWarehouse.val() + " AND p.IsActive      = 'Y' AND p.AD_Client_ID        = " + VIS.context.getContext("#AD_Client_ID");
-            }
-            else {
-                sqlRep = "SELECT p.Name as Product, w.Name AS Warehouse, w.M_Warehouse_ID, NVL(rep.Level_Max,0) AS Maxi, NVL(rep.Level_Min,0) AS Mini, rep.ReplenishType AS rtype, 0 AS Qty, 0 AS OrderPack,"
-                    + " rep.M_WarehouseSource_ID AS SourceWarehouse, p.M_Product_ID FROM M_Product p LEFT JOIN M_Replenish rep ON (p.M_Product_ID = rep.M_Product_ID) LEFT JOIN M_Warehouse w "
-                    + " ON (w.M_Warehouse_ID = rep.M_Warehouse_ID) LEFT JOIN M_Warehouse w1 ON (w1.M_Warehouse_ID = rep.M_WarehouseSource_ID) WHERE w.M_Warehouse_ID = " + $cmbRepAllWarehouse.val() + " AND p.IsActive = 'Y' AND p.AD_Client_ID = " + VIS.context.getContext("#AD_Client_ID");
-            }
+            //if (moduleExists > 0) {
+            //    sqlRep = "SELECT p.Name AS Product, w.Name      AS Warehouse, w.M_Warehouse_ID, NVL(rep.Level_Max,0) AS Maxi, NVL(rep.Level_Min,0) AS Mini, rep.ReplenishType AS rtype, "
+            //        + " NVL(DTD001_MinOrderQty,0)       AS Qty,  NVL(DTD001_OrderPackQty,0)      AS OrderPack,  rep.M_WarehouseSource_ID AS SourceWarehouse,  p.M_Product_ID FROM M_Product p "
+            //        + " Left Outer Join M_Replenish rep ON (p.M_Product_ID = rep.M_Product_ID) Left JOIN M_Warehouse w ON (w.M_Warehouse_ID = rep.M_Warehouse_ID) LEFT JOIN M_Warehouse w1 "
+            //        + " ON (w1.M_Warehouse_ID   = rep.M_WarehouseSource_ID) WHERE w.M_Warehouse_ID = " + $cmbRepAllWarehouse.val() + " AND p.IsActive      = 'Y' AND p.AD_Client_ID        = " + VIS.context.getContext("#AD_Client_ID");
+            //}
+            //else {
+            //    sqlRep = "SELECT p.Name as Product, w.Name AS Warehouse, w.M_Warehouse_ID, NVL(rep.Level_Max,0) AS Maxi, NVL(rep.Level_Min,0) AS Mini, rep.ReplenishType AS rtype, 0 AS Qty, 0 AS OrderPack,"
+            //        + " rep.M_WarehouseSource_ID AS SourceWarehouse, p.M_Product_ID FROM M_Product p LEFT JOIN M_Replenish rep ON (p.M_Product_ID = rep.M_Product_ID) LEFT JOIN M_Warehouse w "
+            //        + " ON (w.M_Warehouse_ID = rep.M_Warehouse_ID) LEFT JOIN M_Warehouse w1 ON (w1.M_Warehouse_ID = rep.M_WarehouseSource_ID) WHERE w.M_Warehouse_ID = " + $cmbRepAllWarehouse.val() + " AND p.IsActive = 'Y' AND p.AD_Client_ID = " + VIS.context.getContext("#AD_Client_ID");
+            //}
 
-            var sqlWhere = " AND p.M_Product_ID IN (";
+            //var sqlWhere = " AND p.M_Product_ID IN (";
+
             var recSelected = false;
-            if (dProdGrid.getSelection().length > 0) {
-                for (var j = 0; j < dProdGrid.records.length; j++) {
-                    if (dProdGrid.getSelection().map(function (item) { return item == dProdGrid.records[j].recid; }).indexOf(true) >= 0) {
-                        recSelected = true;
-                        sqlWhere += dProdGrid.records[j].M_Product_ID + ",";
-                    }
-                }
-                sqlWhere = sqlWhere.substring(0, sqlWhere.length - 1);
-                sqlWhere += ")";
-            }
+            //if (dProdGrid.getSelection().length > 0) {
+            //    for (var j = 0; j < dProdGrid.records.length; j++) {
+            //        if (dProdGrid.getSelection().map(function (item) { return item == dProdGrid.records[j].recid; }).indexOf(true) >= 0) {
+            //            recSelected = true;
+            //            sqlWhere += dProdGrid.records[j].M_Product_ID + ",";
+            //        }
+            //    }
+            //    sqlWhere = sqlWhere.substring(0, sqlWhere.length - 1);
+            //    sqlWhere += ")";
+            //}
 
-            if (recSelected) {
-                sqlRep += sqlWhere;
-            }
+            //if (recSelected) {
+            //    sqlRep += sqlWhere;
+            //}
 
             //if (selWh.length > 0) {
             //    var whString = "";
@@ -3645,38 +3951,56 @@
             //    sqlRep += " AND w.M_Warehouse_ID IN (" + whString + ")";
             //}
 
-            VIS.DB.executeDataSet(sqlRep.toString(), null, callbackBindReplenishmentPopGrid);
+            //VIS.DB.executeDataSet(sqlRep.toString(), null, callbackBindReplenishmentPopGrid);
         };
 
 
-
-        function callbackBindReplenishmentPopGrid(ds) {
+        function callbackBindReplenishmentPopGrid(dr) {
 
             var Recid = 0;
             repProducts = [];
             grdReplenishmentPopValues = [];
 
-            if (ds != null && ds.tables[0].rows.length > 0) {
-                for (var i = 0; i < ds.tables[0].rows.length; i++) {
+            if (dr.length > 0) {
+                for (var i = 0; i < dr.length; i++) {
                     Recid = Recid + 1;
-
                     grdReplenishmentPopValues.push(
                         {
                             recid: Recid,
-                            Product: ds.tables[0].rows[i].cells.product,
-                            Warehouse: ds.tables[0].rows[i].cells.m_warehouse_id,
-                            Type: ds.tables[0].rows[i].cells.rtype,
-                            Min: ds.tables[0].rows[i].cells.mini,
-                            Max: ds.tables[0].rows[i].cells.maxi,
-                            Qty: ds.tables[0].rows[i].cells.qty,
-                            OrderPack: ds.tables[0].rows[i].cells.orderpack,
-                            SourceWarehouse: ds.tables[0].rows[i].cells.sourcewarehouse,
-                            // M_Warehouse_ID: ds.tables[0].rows[i].cells.m_warehouse_id,
-                            // C_UOM_ID: "",
-                            M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
+                            Product: dr[i]["Product"],
+                            Warehouse: dr[i]["Warehouse"],
+                            Type: dr[i]["RepType"],
+                            Min: dr[i]["Min"],
+                            Max: dr[i]["Max"],
+                            Qty: dr[i]["Qty"],
+                            OrderPack: dr[i]["OrderPack"],
+                            SourceWarehouse: dr[i]["SourceWarehouse"],
+                            M_Warehouse_ID: dr[i]["M_Warehouse_ID"],
+                            M_Product_ID: dr[i]["M_Product_ID"],
                         });
                 }
             }
+            //if (ds != null && ds.tables[0].rows.length > 0) {
+            //    for (var i = 0; i < ds.tables[0].rows.length; i++) {
+            //        Recid = Recid + 1;
+
+            //        grdReplenishmentPopValues.push(
+            //            {
+            //                recid: Recid,
+            //                Product: ds.tables[0].rows[i].cells.product,
+            //                Warehouse: ds.tables[0].rows[i].cells.m_warehouse_id,
+            //                Type: ds.tables[0].rows[i].cells.rtype,
+            //                Min: ds.tables[0].rows[i].cells.mini,
+            //                Max: ds.tables[0].rows[i].cells.maxi,
+            //                Qty: ds.tables[0].rows[i].cells.qty,
+            //                OrderPack: ds.tables[0].rows[i].cells.orderpack,
+            //                SourceWarehouse: ds.tables[0].rows[i].cells.sourcewarehouse,
+            //                // M_Warehouse_ID: ds.tables[0].rows[i].cells.m_warehouse_id,
+            //                // C_UOM_ID: "",
+            //                M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
+            //            });
+            //    }
+            //}
 
             callbackModuleCheckRepAllWhNull();
 
@@ -4059,9 +4383,11 @@
                 }
                 Recid = Recid + 1;
 
-                var sqlDTDModuleChk = "SELECT COUNT(*) FROM AD_ModuleInfo WHERE Prefix = 'DTD001_'";
+                //var sqlDTDModuleChk = "SELECT COUNT(*) FROM AD_ModuleInfo WHERE Prefix = 'DTD001_'";
 
-                VIS.DB.executeScalar(sqlDTDModuleChk.toString(), null, callbackModuleCheck);
+                //VIS.DB.executeScalar(sqlDTDModuleChk.toString(), null, callbackModuleCheck);
+                VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LoadReplenishmentBGrid", { "M_Product_ID": _product_ID, "selWH": selWh }, callbackBindReplenishmentBGrid);
+
             }
         };
 
@@ -4069,56 +4395,74 @@
 
             var sqlRep = "";
 
-            if (moduleExists > 0) {
-                sqlRep = "SELECT w.Name AS Warehouse, w.M_Warehouse_ID, rep.Level_Max AS Maxi, rep.Level_Min AS Mini, rep.ReplenishType AS rtype, DTD001_MinOrderQty AS Qty, DTD001_OrderPackQty AS OrderPack,"
-                    + " rep.M_WarehouseSource_ID AS SourceWarehouse, p.M_Product_ID FROM M_Replenish rep INNER JOIN M_Product p ON (p.M_Product_ID = rep.M_Product_ID) INNER JOIN M_Warehouse w "
-                    + " ON (w.M_Warehouse_ID = rep.M_Warehouse_ID) LEFT JOIN M_Warehouse w1 ON (w1.M_Warehouse_ID = rep.M_WarehouseSource_ID) WHERE rep.IsActive = 'Y' AND p.M_Product_ID    = " + _product_ID;
-            }
-            else {
-                sqlRep = "SELECT w.Name AS Warehouse, w.M_Warehouse_ID, rep.Level_Max AS Maxi, rep.Level_Min AS Mini, rep.ReplenishType AS rtype, 0 AS Qty, 0 AS OrderPack,"
-                    + " rep.M_WarehouseSource_ID AS SourceWarehouse, p.M_Product_ID FROM M_Replenish rep INNER JOIN M_Product p ON (p.M_Product_ID = rep.M_Product_ID) INNER JOIN M_Warehouse w "
-                    + " ON (w.M_Warehouse_ID = rep.M_Warehouse_ID) LEFT JOIN M_Warehouse w1 ON (w1.M_Warehouse_ID = rep.M_WarehouseSource_ID) WHERE rep.IsActive = 'Y' AND p.M_Product_ID    = " + _product_ID;
-            }
+            //if (moduleExists > 0) {
+            //    sqlRep = "SELECT w.Name AS Warehouse, w.M_Warehouse_ID, rep.Level_Max AS Maxi, rep.Level_Min AS Mini, rep.ReplenishType AS rtype, DTD001_MinOrderQty AS Qty, DTD001_OrderPackQty AS OrderPack,"
+            //        + " rep.M_WarehouseSource_ID AS SourceWarehouse, p.M_Product_ID FROM M_Replenish rep INNER JOIN M_Product p ON (p.M_Product_ID = rep.M_Product_ID) INNER JOIN M_Warehouse w "
+            //        + " ON (w.M_Warehouse_ID = rep.M_Warehouse_ID) LEFT JOIN M_Warehouse w1 ON (w1.M_Warehouse_ID = rep.M_WarehouseSource_ID) WHERE rep.IsActive = 'Y' AND p.M_Product_ID    = " + _product_ID;
+            //}
+            //else {
+            //    sqlRep = "SELECT w.Name AS Warehouse, w.M_Warehouse_ID, rep.Level_Max AS Maxi, rep.Level_Min AS Mini, rep.ReplenishType AS rtype, 0 AS Qty, 0 AS OrderPack,"
+            //        + " rep.M_WarehouseSource_ID AS SourceWarehouse, p.M_Product_ID FROM M_Replenish rep INNER JOIN M_Product p ON (p.M_Product_ID = rep.M_Product_ID) INNER JOIN M_Warehouse w "
+            //        + " ON (w.M_Warehouse_ID = rep.M_Warehouse_ID) LEFT JOIN M_Warehouse w1 ON (w1.M_Warehouse_ID = rep.M_WarehouseSource_ID) WHERE rep.IsActive = 'Y' AND p.M_Product_ID    = " + _product_ID;
+            //}
 
-            if (selWh.length > 0) {
-                var whString = "";
-                for (var w = 0; w < selWh.length; w++) {
-                    if (whString.length > 0) {
-                        whString = whString + ", " + selWh[w];
-                    }
-                    else {
-                        whString = whString + selWh[w];
-                    }
-                }
-                sqlRep += " AND w.M_Warehouse_ID IN (" + whString + ")";
-            }
+            //if (selWh.length > 0) {
+            //    var whString = "";
+            //    for (var w = 0; w < selWh.length; w++) {
+            //        if (whString.length > 0) {
+            //            whString = whString + ", " + selWh[w];
+            //        }
+            //        else {
+            //            whString = whString + selWh[w];
+            //        }
+            //    }
+            //    sqlRep += " AND w.M_Warehouse_ID IN (" + whString + ")";
+            //}
 
-            VIS.DB.executeDataSet(sqlRep.toString(), null, callbackBindReplenishmentBGrid);
+            //VIS.DB.executeDataSet(sqlRep.toString(), null, callbackBindReplenishmentBGrid);
+
         };
 
-        function callbackBindReplenishmentBGrid(ds) {
+        function callbackBindReplenishmentBGrid(dr) {
             var Recid = 0;
-
-            if (ds != null && ds.tables[0].rows.length > 0) {
-                for (var i = 0; i < ds.tables[0].rows.length; i++) {
+            if (dr.length > 0) {
+                for (var i = 0; i < dr.length; i++) {
                     Recid = Recid + 1;
-
                     grdReplenishmentBValues.push(
                         {
                             recid: Recid,
-                            Warehouse: ds.tables[0].rows[i].cells.warehouse,
-                            Type: ds.tables[0].rows[i].cells.rtype,
-                            Min: ds.tables[0].rows[i].cells.mini,
-                            Max: ds.tables[0].rows[i].cells.maxi,
-                            Qty: ds.tables[0].rows[i].cells.qty,
-                            OrderPack: ds.tables[0].rows[i].cells.orderpack,
-                            SourceWarehouse: ds.tables[0].rows[i].cells.sourcewarehouse,
-                            M_Warehouse_ID: ds.tables[0].rows[i].cells.m_warehouse_id,
-                            // C_UOM_ID: "",
-                            M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
+                            Warehouse: dr[i]["Warehouse"],
+                            Type: dr[i]["RepType"],
+                            Min: dr[i]["Min"],
+                            Max: dr[i]["Max"],
+                            Qty: dr[i]["Qty"],
+                            OrderPack: dr[i]["OrderPack"],
+                            SourceWarehouse: dr[i]["SourceWarehouse"],
+                            M_Warehouse_ID: dr[i]["M_Warehouse_ID"],
+                            M_Product_ID: dr[i]["M_Product_ID"],
                         });
                 }
             }
+            //if (ds != null && ds.tables[0].rows.length > 0) {
+            //    for (var i = 0; i < ds.tables[0].rows.length; i++) {
+            //        Recid = Recid + 1;
+
+            //        grdReplenishmentBValues.push(
+            //            {
+            //                recid: Recid,
+            //                Warehouse: ds.tables[0].rows[i].cells.warehouse,
+            //                Type: ds.tables[0].rows[i].cells.rtype,
+            //                Min: ds.tables[0].rows[i].cells.mini,
+            //                Max: ds.tables[0].rows[i].cells.maxi,
+            //                Qty: ds.tables[0].rows[i].cells.qty,
+            //                OrderPack: ds.tables[0].rows[i].cells.orderpack,
+            //                SourceWarehouse: ds.tables[0].rows[i].cells.sourcewarehouse,
+            //                M_Warehouse_ID: ds.tables[0].rows[i].cells.m_warehouse_id,
+            //                // C_UOM_ID: "",
+            //                M_Product_ID: ds.tables[0].rows[i].cells.m_product_id,
+            //            });
+            //    }
+            //}
 
             w2utils.encodeTags(grdReplenishmentBValues);
 
@@ -4725,7 +5069,7 @@
                 //BindCartGrid();
             }
 
-            if (data.Table[0] != null) {
+            if (data && data.Table[0] != null) {
                 divZoomProdName.css("display", "flex");
                 $("#VA011_prodName_" + $self.windowNo).text(data.Table[0].NAME);
                 $("#VA011_inputWeight_" + $self.windowNo).val(data.Table[0].WEIGHT);
@@ -4907,6 +5251,8 @@
         function callbackProdCount(count) {
 
             //var countProd = VIS.DB.executeScalar(sqlProdCount.toString(), null, null);
+
+
             totalRecords = count;
 
             var countPg = calculateNoofPages();
@@ -5212,61 +5558,69 @@
             $divRepAllPop.append($divReplenishmentPopGrid);
         };
 
-        function callbackLoadCmbCreate(dr) {
-
-            //cmbCreate.append(" <option value = 0></option>");
-            while (dr.read()) {
-                key = dr.getString(0);
-                value = dr.getString(1);
-                cmbCreate.append(" <option value=" + key + ">" + VIS.Utility.encodeText(value) + "</option>");
-            }
-            dr.close();
-
-            LoadDocTypeCombo();
-            //cmbCart.val(cart);
-        };
-
         function LoadDocTypeCombo() {
             cmbDocType.empty();
-            var qry = "SELECT C_DocType_ID, Name, DocBaseType, IsReleaseDocument FROM C_DocType WHERE DocBaseType IN "
-                + "(SELECT Value FROM AD_Ref_List WHERE AD_Reference_ID =(SELECT AD_Reference_ID FROM AD_Reference WHERE Name = 'M_Replenishment Create')) AND IsReturnTrx ='N' AND AD_Client_ID = " + VIS.context.getContext("#AD_Client_ID");
-            VIS.DB.executeReader(qry, null, callbackLoadCmbDocType);
+            //var qry = "SELECT C_DocType_ID, Name, DocBaseType, IsReleaseDocument FROM C_DocType WHERE DocBaseType IN "
+            //    + "(SELECT Value FROM AD_Ref_List WHERE AD_Reference_ID =(SELECT AD_Reference_ID FROM AD_Reference WHERE Name = 'M_Replenishment Create')) AND IsReturnTrx ='N' AND AD_Client_ID = " + VIS.context.getContext("#AD_Client_ID");
+            VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/GetDocType", "", callbackLoadCmbDocType);
+            //VIS.DB.executeReader(qry, null, callbackLoadCmbDocType);
         };
 
         function callbackLoadCmbDocType(dr) {
-            //cmbDocType.append(" <option value = 0></option>");
-            while (dr.read()) {
-                key = (dr.getString(0));
-                listKeyDocType.push(key);
-                value = dr.getString(1);
-                listNameDocType.push(value);
-                listValueDocType.push(dr.getString(2));
-                listValuePOType.push(dr.getString(3));
-                //cmbDocType.append(" <option value=" + key + ">" + VIS.Utility.encodeText(value) + "</option>");
+            cmbDocType.append(" <option value = 0></option>");
+            if (dr.length > 0) {
+                for (var i = 0; i < dr.length; i++) {
+                    key = dr[i]["ID"];
+                    listKeyDocType.push(key);
+                    Name = dr[i]["Name"];
+                    listNameDocType.push(value);
+                    listValueDocType.push(dr[i]["DocBaseType"]);
+                    listValuePOType.push(dr[i]["IsReleaseDocument"]);
+                    cmbDocType.append(" <option value=" + key + ">" + VIS.Utility.encodeText(Name) + "</option>");
+                }
             }
-            dr.close();
+            //if (dr.HasRows) {
+            //    while (dr.Read()) {
+            //        key = (dr.getString(0));
+            //        listKeyDocType.push(key);
+            //        value = dr.getString(1);
+            //        listNameDocType.push(value);
+            //        listValueDocType.push(dr.getString(2));
+            //        listValuePOType.push(dr.getString(3));
+            //        //cmbDocType.append(" <option value=" + key + ">" + VIS.Utility.encodeText(value) + "</option>");
+            //    }
+            //}
+            //dr.close();
             LoadDocStatusCombo();
-            //cmbCart.val(cart);
+            cmbCart.val(cart);
+        };
+
+        function LoadDocStatusCombo() {
+            cmbDocStatus.empty();
+            //var qry = "SELECT Value,  Name FROM AD_Ref_List WHERE ad_reference_ID = (SELECT AD_Reference_ID FROM AD_Reference  WHERE Name = '_Document Status') AND Value IN ('DR', 'CO', 'IP')";
+            VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/GetDocStatus", "", callbackLoadDocStatus);
+            //VIS.DB.executeReader(qry, null, callbackLoadDocStatus);
         };
 
         function callbackLoadDocStatus(dr) {
 
             cmbDocStatus.append(" <option value = 0></option>");
-            while (dr.read()) {
-                key = dr.getString(0);
-                value = dr.getString(1);
-                cmbDocStatus.append(" <option value=" + key + ">" + VIS.Utility.encodeText(value) + "</option>");
+            if (dr.length > 0) {
+                for (var i = 0; i < dr.length; i++) {
+                    Name = dr[i].Name;
+                    Key = dr[i].Key;
+                    cmbDocStatus.append(" <option value=" + key + ">" + VIS.Utility.encodeText(Name) + "</option>");
+                }
             }
-            dr.close();
+            //while (dr.read()) {
+            //    key = dr.getString(0);
+            //    value = dr.getString(1);
+            //    cmbDocStatus.append(" <option value=" + key + ">" + VIS.Utility.encodeText(value) + "</option>");
+            //}
+            //dr.close();
 
             bindProductGrid(false);
             //cmbCart.val(cart);
-        };
-
-        function LoadDocStatusCombo() {
-            cmbDocStatus.empty();
-            var qry = "SELECT Value,  Name FROM AD_Ref_List WHERE ad_reference_ID = (SELECT AD_Reference_ID FROM AD_Reference  WHERE Name = '_Document Status') AND Value IN ('DR', 'CO', 'IP')";
-            VIS.DB.executeReader(qry, null, callbackLoadDocStatus);
         };
 
         function clearRightPanel() {
@@ -5294,18 +5648,26 @@
 
         function LoadReplenishType() {
             repTypeArray = [];
-            var qry = "SELECT Value, Name FROM AD_Ref_List WHERE AD_Reference_ID = (SELECT AD_Reference_ID FROM AD_Reference WHERE Name = 'M_Replenish Type' ) AND Value IN ('1','2')";
-            VIS.DB.executeReader(qry, null, callbackReplenishType);
+            //var qry = "SELECT Value, Name FROM AD_Ref_List WHERE AD_Reference_ID = (SELECT AD_Reference_ID FROM AD_Reference WHERE Name = 'M_Replenish Type' ) AND Value IN ('1','2')";
+            VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/GetReplenishType", "", callbackReplenishType);
+            //VIS.DB.executeReader(qry, null, callbackReplenishType);
         };
 
         function callbackReplenishType(dr) {
             repTypeArray.push({ id: '-1', text: "" });
-            while (dr.read()) {
-                key = (dr.getString(0));
-                value = dr.getString(1);
-                repTypeArray.push({ id: key, text: value });
+            if (dr.length > 0) {
+                for (var i = 0; i < dr.length; i++) {
+                    Name = dr[i].Name;
+                    Key = dr[i].Key;
+                    repTypeArray.push({ id: key, text: Name });
+                }
             }
-            dr.close();
+            //while (dr.read()) {
+            //    key = (dr.getString(0));
+            //    value = dr.getString(1);
+            //    repTypeArray.push({ id: key, text: value });
+            //}
+            //dr.close();
 
             isReplenishTypeLoaded = true;
 
@@ -5319,25 +5681,54 @@
 
         function LoadCreateCombo() {
             cmbCreate.empty();
-            var qry = "SELECT Value, Name FROM AD_Ref_List WHERE ad_reference_ID = (SELECT AD_Reference_ID FROM AD_Reference  WHERE Name = 'M_Replenishment Create')";
-            VIS.DB.executeReader(qry, null, callbackLoadCmbCreate);
+            //var qry = "SELECT Value, Name FROM AD_Ref_List WHERE ad_reference_ID = (SELECT AD_Reference_ID FROM AD_Reference  WHERE Name = 'M_Replenishment Create')";
+            VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/CreateCombo", "", callbackLoadCmbCreate);
+            //VIS.DB.executeReader(qry, null, callbackLoadCmbCreate);
+        };
+        function callbackLoadCmbCreate(dr) {
+
+            //cmbCreate.append(" <option value = 0></option>");
+            if (dr.length > 0) {
+                for (var i = 0; i < dr.length; i++) {
+                    Name = dr[i].Name;
+                    Key = dr[i].Key;
+                    cmbCreate.append(" <option value=" + key + ">" + VIS.Utility.encodeText(Name) + "</option>");
+                }
+            }
+            //while (dr.read()) {
+            //    key = dr.getString(0);
+            //    value = dr.getString(1);
+            //    cmbCreate.append(" <option value=" + key + ">" + VIS.Utility.encodeText(value) + "</option>");
+            //}
+            //dr.close();
+
+            LoadDocTypeCombo();
+            //cmbCart.val(cart);
         };
 
         function LoadUOM() {
             uomArray = [];
             uomArray.push({ id: 0, text: VIS.Msg.getMsg("Select") });
-            var qry = "SELECT C_UOM_ID,Name FROM C_UOM WHERE IsActive = 'Y'";
-            var sql = VIS.MRole.getDefault().addAccessSQL(qry, "C_UOM", VIS.MRole.SQL_FULLYQUALIFIED, VIS.MRole.SQL_RO) // fully qualidfied - RO
-            VIS.DB.executeReader(sql.toString(), null, LoadUOMCallBack);
+            //var qry = "SELECT C_UOM_ID,Name FROM C_UOM WHERE IsActive = 'Y'";
+            //var sql = VIS.MRole.getDefault().addAccessSQL(qry, "C_UOM", VIS.MRole.SQL_FULLYQUALIFIED, VIS.MRole.SQL_RO) // fully qualidfied - RO
+            VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/GetUOM", "", LoadUOMCallBack);
+            //VIS.DB.executeReader(sql.toString(), null, LoadUOMCallBack);
         };
 
         function LoadUOMCallBack(dr) {
-            while (dr.read()) {
-                key = VIS.Utility.Util.getValueOfInt(dr.getString(0));
-                value = dr.getString(1);
-                uomArray.push({ id: key, text: value });
+            if (dr.length > 0) {
+                for (var i = 0; i < dr.length; i++) {
+                    key = VIS.Utility.Util.getValueOfInt(dr[i].ID);
+                    value = dr[i].Name;
+                    uomArray.push({ id: key, text: value });
+                }
             }
-            dr.close();
+            //while (dr.read()) {
+            //    key = VIS.Utility.Util.getValueOfInt(dr.getString(0));
+            //    value = dr.getString(1);
+            //    uomArray.push({ id: key, text: value });
+            //}
+            //dr.close();
             CartPanel();
         };
 
@@ -6417,14 +6808,16 @@
 
         var zoomToWindow = function (record_id, windowName) {
 
-            var sql = "select ad_window_id from ad_window where name = '" + windowName + "'";// Upper( name)=Upper('user' )
-            var ad_window_Id = 0;
+            var ad_window_Id = VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LoadWindow", { "windowName": 'windowName' });
+
+            //var sql = "select ad_window_id from ad_window where name = '" + windowName + "'";// Upper( name)=Upper('user' )
+            //var ad_window_Id = 0;
             try {
-                var dr = VIS.DB.executeDataReader(sql);
-                if (dr.read()) {
-                    ad_window_Id = dr.getInt(0);
-                }
-                dr.dispose();
+                //var dr = VIS.DB.executeDataReader(sql);
+                //if (dr.read()) {
+                //    ad_window_Id = dr.getInt(0);
+                //}
+               // dr.dispose();
                 if (ad_window_Id > 0) {
                     var zoomQuery = new VIS.Query();
                     if (windowName == "BGT01_StyleMaster")
@@ -6470,10 +6863,7 @@
                         divCartList.show();
                         txtScan.val("");
                         cart = data.result;
-                        LoadCart();
-
-
-
+                        LoadCart()
 
                         BindCartGrid();
                     }
@@ -6920,7 +7310,7 @@
             dRelatedGrid.resize();
             dSuppliersRightGrid.resize();
             dKitsGrid.resize();
-            dSubstituteGrid.resize();            
+            dSubstituteGrid.resize();
             cartGrid.resize();
         };
 

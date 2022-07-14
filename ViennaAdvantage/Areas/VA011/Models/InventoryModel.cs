@@ -20,12 +20,12 @@ namespace VA011.Models
         Tuple<String, String, String> aInfo = null;
 
         /// <summary>
-        /// 
+        /// Get Product in cart
         /// </summary>
-        /// <param name="pageNo"></param>
-        /// <param name="pageSize"></param>
-        /// <param name="ctx"></param>
-        /// <returns></returns>
+        /// <param name="pageNo">pageNo</param>
+        /// <param name="pageSize">pageSize</param>
+        /// <param name="ctx">ctx</param>
+        /// <returns>product</returns>
         public List<ProdCatInfo> GetProdCats(int pageNo, int pageSize, Ctx ctx)
         {
             List<ProdCatInfo> pInfo = new List<ProdCatInfo>();
@@ -49,10 +49,10 @@ namespace VA011.Models
         }
 
         /// <summary>
-        /// 
+        /// Get org Method
         /// </summary>
-        /// <param name="ctx"></param>
-        /// <returns></returns>
+        /// <param name="ctx">ctx</param>
+        /// <returns>Organizations</returns>
         public List<NameIDClass> GetOrganizations(Ctx ctx)
         {
             List<NameIDClass> pInfo = new List<NameIDClass>();
@@ -70,12 +70,24 @@ namespace VA011.Models
             }
             return pInfo;
         }
-
         /// <summary>
-        /// 
+        /// select cart value method
         /// </summary>
-        /// <param name="ctx"></param>
-        /// <returns></returns>
+        /// <param name="ctx">ctx</param>
+        /// <param name="M_Product_ID">M_Product_ID</param>
+        /// <returns>Data</returns>
+        public int selectGrid(Ctx ctx, int M_Product_ID)
+        {
+            //var qry = "SELECT M_AttributeSet_ID FROM M_Product WHERE M_Product_ID = " + VIS.Utility.Util.getValueOfInt(cartGrid.records[event.recid - 1]["product_ID"]);
+            var qry = "SELECT M_AttributeSet_ID FROM M_Product WHERE M_Product_ID = " + M_Product_ID;
+            int mattsetid = Util.GetValueOfInt(DB.ExecuteScalar(qry, null, null));
+            return mattsetid;
+        }
+        /// <summary>
+        /// GetOrganizations Method
+        /// </summary>
+        /// <param name="ctx">ctx</param>
+        /// <returns>Organizations in dropdown</returns>
         public List<NameIDClass> GetOrganizations(Ctx ctx, string value, bool fill)
         {
             List<NameIDClass> pInfo = new List<NameIDClass>();
@@ -106,37 +118,13 @@ namespace VA011.Models
             }
             return pInfo;
         }
-
-        public List<NameIDClass> GetSupplier(Ctx ctx, string value, bool fill)
-        {
-            List<NameIDClass> pInfo = new List<NameIDClass>();
-            string sql = @"SELECT C_BPartner_ID, Name FROM C_BPartner WHERE AD_Client_ID = " + ctx.GetAD_Client_ID() + " AND IsActive = 'Y' AND IsVendor = 'Y'";
-            if (value != "")
-            {
-                sql += " AND UPPER(Name) LIKE UPPER('%" + value + "%') ";
-            }
-            sql += " ORDER BY Name";
-            DataSet ds = DB.ExecuteDataset(sql);
-            if (ds != null && ds.Tables[0].Rows.Count > 0)
-            {
-                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
-                {
-                    NameIDClass org = new NameIDClass();
-                    if (i == 0)
-                    {
-                        org.Name = Msg.GetMsg(ctx, "VA011_All");
-                        org.ID = 9999;
-                        pInfo.Add(org);
-                        org = new NameIDClass();
-                    }
-                    org.Name = Util.GetValueOfString(ds.Tables[0].Rows[i]["Name"]);
-                    org.ID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["C_BPartner_ID"]);
-                    pInfo.Add(org);
-                }
-            }
-            return pInfo;
-        }
-
+        /// <summary>
+        /// GetPLV Method
+        /// </summary>
+        /// <param name="ctx">ctx</param>
+        /// <param name="value">value</param>
+        /// <param name="fill">fill</param>
+        /// <returns></returns>
         public List<NameIDClass> GetPLV(Ctx ctx, string value, bool fill)
         {
             List<NameIDClass> pInfo = new List<NameIDClass>();
@@ -172,7 +160,14 @@ namespace VA011.Models
             }
             return pInfo;
         }
-
+        /// <summary>
+        /// GetOrgWarehouse Method
+        /// </summary>
+        /// <param name="ctx">ctx</param>
+        /// <param name="value">value</param>
+        /// <param name="org_IDs">org_IDs</param>
+        /// <param name="fill">fill</param>
+        /// <returns>OrgWarehouse</returns>
         public List<NameIDClass> GetOrgWarehouse(Ctx ctx, string value, List<int> org_IDs, bool fill)
         {
             var orgString = "";
@@ -232,7 +227,14 @@ namespace VA011.Models
             }
             return pInfo;
         }
-
+        /// <summary>
+        /// GetOrgWarehouseAll Method
+        /// </summary>
+        /// <param name="ctx">ctx</param>
+        /// <param name="value">value</param>
+        /// <param name="org_IDs">org_IDs</param>
+        /// <param name="fill">fill</param>
+        /// <returns>OrgWarehouseAll</returns>
         public List<NameIDClass> GetOrgWarehouseAll(Ctx ctx, string value, List<int> org_IDs, bool fill)
         {
             var orgString = "";
@@ -284,7 +286,72 @@ namespace VA011.Models
             }
             return pInfo;
         }
+        /// <summary>
+        /// GetBpartnerAll Method
+        /// </summary>
+        /// <param name="ctx">ctx</param>
+        /// <param name="value">value</param>
+        /// <param name="org_IDs">org_IDs</param>
+        /// <param name="fill">fill</param>
+        /// <returns>BpartnerAll</returns>
+        public List<NameIDClass> GetBpartnerAll(Ctx ctx, string value, List<int> org_IDs, bool fill)
+        {
+            var orgString = "";
+            if (org_IDs != null)
+            {
+                if (org_IDs.Count > 0)
+                {
+                    for (var w = 0; w < org_IDs.Count; w++)
+                    {
+                        if (orgString.Length > 0)
+                        {
+                            orgString = orgString + ", " + org_IDs[w];
+                        }
+                        else
+                        {
+                            orgString += "0, ";
+                            orgString += org_IDs[w];
+                        }
+                    }
+                    //sqlDmd.Append(" AND o.AD_Org_ID IN (0, " + orgString + ")");
+                }
+            }
 
+
+            List<NameIDClass> pInfo = new List<NameIDClass>();
+            string sql = @"SELECT M_Warehouse_ID, Name FROM M_Warehouse WHERE AD_Client_ID = " + ctx.GetAD_Client_ID() + " AND IsActive = 'Y'";
+            if (value != "")
+            {
+                sql += " AND UPPER(Name) LIKE UPPER('%" + value + "%') ";
+            }
+
+            if (orgString.Length > 0)
+            {
+                sql += " AND AD_Org_ID IN (" + orgString + ")";
+            }
+
+            sql += " ORDER BY Name";
+            DataSet ds = DB.ExecuteDataset(sql);
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    NameIDClass org = new NameIDClass();
+                    org.Name = Util.GetValueOfString(ds.Tables[0].Rows[i]["Name"]);
+                    org.ID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["M_Warehouse_ID"]);
+
+                    pInfo.Add(org);
+                }
+            }
+            return pInfo;
+        }
+        /// <summary>
+        /// GetWarehouse Method
+        /// </summary>
+        /// <param name="ctx">ctx</param>
+        /// <param name="value">value</param>
+        /// <param name="fill">fill</param>
+        /// <returns>Warehouse</returns>
         public List<NameIDClass> GetWarehouse(Ctx ctx, string value, bool fill)
         {
             List<NameIDClass> pInfo = new List<NameIDClass>();
@@ -316,7 +383,13 @@ namespace VA011.Models
             }
             return pInfo;
         }
-
+        /// <summary>
+        /// GetProductCategories Method
+        /// </summary>
+        /// <param name="ctx">ctx</param>
+        /// <param name="value">value</param>
+        /// <param name="fill">fill</param>
+        /// <returns>ProductCategories</returns>
         public List<NameIDClass> GetProductCategories(Ctx ctx, string value, bool fill)
         {
             List<NameIDClass> pInfo = new List<NameIDClass>();
@@ -348,7 +421,19 @@ namespace VA011.Models
             }
             return pInfo;
         }
-
+        /// <summary>
+        /// GetProducts Method
+        /// </summary>
+        /// <param name="searchText">searchText</param>
+        /// <param name="warehouse_IDs">warehouse_IDs</param>
+        /// <param name="org_IDs">org_IDs</param>
+        /// <param name="plv_IDs">plv_IDs</param>
+        /// <param name="supp_IDs">supp_IDs</param>
+        /// <param name="prodCat_IDs">prodCat_IDs</param>
+        /// <param name="pageNo">pageNo</param>
+        /// <param name="pageSize">pageSize</param>
+        /// <param name="ct">ct</param>
+        /// <returns>Products</returns>
         public List<Products> GetProducts(string searchText, string warehouse_IDs, string org_IDs, string plv_IDs, string supp_IDs, string prodCat_IDs, int pageNo, int pageSize, Ctx ct)
         {
             List<Products> pro = new List<Products>();
@@ -531,7 +616,17 @@ namespace VA011.Models
 
             return pro;
         }
-
+        /// <summary>
+        /// GeProductCount Method
+        /// </summary>
+        /// <param name="searchText">searchText</param>
+        /// <param name="warehouse_IDs">warehouse_IDs</param>
+        /// <param name="org_IDs">org_IDs</param>
+        /// <param name="plv_IDs">plv_IDs</param>
+        /// <param name="supp_IDs">supp_IDs</param>
+        /// <param name="prodCat_IDs">prodCat_IDs</param>
+        /// <param name="ct">ct</param>
+        /// <returns>Product Count</returns>
         public int GeProductCount(string searchText, string warehouse_IDs, string org_IDs, string plv_IDs, string supp_IDs, string prodCat_IDs, Ctx ct)
         {
             int count = 0;
@@ -608,7 +703,13 @@ namespace VA011.Models
 
             return count;
         }
-
+        /// <summary>
+        /// GeReplenishment Method
+        /// </summary>
+        /// <param name="columns">columns</param>
+        /// <param name="whIDs">whIDs</param>
+        /// <param name="ct">ct</param>
+        /// <returns>Replenishment</returns>
         public List<Decimal?> GeReplenishment(List<Int32> columns, List<int> whIDs, Ctx ct)
         {
             Decimal? QtyOnHand = 0, QtyReserved = 0, QtyOrdered = 0, DTD_QtyReserved = 0, DTD_SourceReserve = 0, QtyToOrder = 0;
@@ -883,10 +984,17 @@ namespace VA011.Models
             }
             return OrderedQty;
         }
-
-        public DataSet GetReplenishments(List<int> Warehouses, int M_Product_ID, Ctx ct)
+        /// <summary>
+        /// GetReplenishments Method
+        /// </summary>
+        /// <param name="Warehouses">Warehouses</param>
+        /// <param name="M_Product_ID">M_Product_ID</param>
+        /// <param name="ct">ct</param>
+        /// <returns>Replenishments</returns>
+        public List<RepGet> GetReplenishments(List<int> Warehouses, int M_Product_ID, Ctx ct)
         {
-            DataSet dsRep = new DataSet();
+            //DataSet dsRep = new DataSet();
+            List<RepGet> repGets = new List<RepGet>();
             StringBuilder sqlRep = new StringBuilder("");
             if (Warehouses != null && Warehouses.Count > 0)
             {
@@ -900,7 +1008,16 @@ namespace VA011.Models
 
                     for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                     {
-                        dsRep.Tables[0].ImportRow(ds.Tables[0].Rows[i]);
+                        //string ab = ds.Tables[0].Rows[i]["DocumentNo"].ToString();
+                        //dsRep.Tables[0].ImportRow(ds.Tables[0].Rows[i]);
+                        RepGet obj = new RepGet();
+                        obj.RequisitionNo = Util.GetValueOfInt(ds.Tables[0].Rows[i]["DocumentNo"]);
+                        obj.Date = Util.GetValueOfDateTime(ds.Tables[0].Rows[i]["datedoc"]).Value.ToShortDateString();
+                        obj.QtyDemanded = Util.GetValueOfInt(ds.Tables[0].Rows[i]["Qty"]);
+                        obj.QtyReceived = Util.GetValueOfInt(ds.Tables[0].Rows[i]["DTD001_DeliveredQty"]);
+                        obj.QtyPending = Util.GetValueOfInt(ds.Tables[0].Rows[i]["QtyPending"]);
+                        obj.M_Product_ID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["M_Product_ID"]);
+                        repGets.Add(obj);
                     }
                 }
             }
@@ -925,15 +1042,29 @@ namespace VA011.Models
                         DataSet ds = DB.ExecuteDataset(sqlRep.ToString(), null, null);
                         for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                         {
-                            dsRep.Tables[0].ImportRow(ds.Tables[0].Rows[i]);
+                            //dsRep.Tables[0].ImportRow(ds.Tables[0].Rows[i]);
+                            RepGet obj = new RepGet();
+                            obj.RequisitionNo = Util.GetValueOfInt(ds.Tables[0].Rows[i]["DocumentNo"]);
+                            obj.Date = Util.GetValueOfDateTime(ds.Tables[0].Rows[i]["datedoc"]).Value.ToShortDateString();
+                            obj.QtyDemanded = Util.GetValueOfInt(ds.Tables[0].Rows[i]["Qty"]);
+                            obj.QtyReceived = Util.GetValueOfInt(ds.Tables[0].Rows[i]["DTD001_DeliveredQty"]);
+                            obj.QtyPending = Util.GetValueOfInt(ds.Tables[0].Rows[i]["QtyPending"]);
+                            obj.M_Product_ID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["M_Product_ID"]);
+                            repGets.Add(obj);
                         }
                     }
                 }
             }
 
-            return dsRep;
+            //return dsRep;
+            return repGets;
         }
-
+        /// <summary>
+        /// GetProductDetails Method
+        /// </summary>
+        /// <param name="M_Product_ID">M_Product_ID</param>
+        /// <param name="ct">ct</param>
+        /// <returns>Product Details</returns>
         public DataSet GetProductDetails(int M_Product_ID, Ctx ct)
         {
             string sql = @"SELECT DISTINCT img.ImageURL, p.Name, p.GUARANTEEDAYS,
@@ -963,7 +1094,19 @@ WHERE M_Product_ID = " + M_Product_ID;
             }
             return dsProd;
         }
-
+        /// <summary>
+        /// SaveReplenishment Method
+        /// </summary>
+        /// <param name="M_Product_ID">M_Product_ID</param>
+        /// <param name="M_Warehouse_ID">M_Warehouse_ID</param>
+        /// <param name="Type">Type</param>
+        /// <param name="Min">Min</param>
+        /// <param name="Max">Max</param>
+        /// <param name="Qty">Qty</param>
+        /// <param name="OrderPack">OrderPack</param>
+        /// <param name="SourceWarehoue">SourceWarehoue</param>
+        /// <param name="ct">ct</param>
+        /// <returns>Replenishment</returns>
         public string SaveReplenishment(int M_Product_ID, int M_Warehouse_ID, string Type, decimal Min, decimal Max, decimal Qty, decimal OrderPack, int SourceWarehoue, Ctx ct)
         {
             string res = "-1";
@@ -1015,7 +1158,12 @@ WHERE M_Product_ID = " + M_Product_ID;
 
             return res;
         }
-
+        /// <summary>
+        /// saveInventoryCount Method
+        /// </summary>
+        /// <param name="columnName">columnName</param>
+        /// <param name="ctx">ctx</param>
+        /// <returns>Inventory Count</returns>
         public string saveInventoryCount(string columnName, Ctx ctx)
         {
             string error = "";
@@ -1034,7 +1182,13 @@ WHERE M_Product_ID = " + M_Product_ID;
 
             return error;
         }
-
+        /// <summary>
+        /// saveInventory Method
+        /// </summary>
+        /// <param name="count_id">count_id</param>
+        /// <param name="columnName">columnName</param>
+        /// <param name="ctx">ctx</param>
+        /// <returns>Inventory</returns>
         public string saveInventory(int count_id, List<PriceInfo> columnName, Ctx ctx)
         {
             string error = "";
@@ -1081,7 +1235,12 @@ WHERE M_Product_ID = " + M_Product_ID;
             }
             return error;
         }
-
+        /// <summary>
+        /// updateInventory Method
+        /// </summary>
+        /// <param name="columnName">columnName</param>
+        /// <param name="ctx">ctx</param>
+        /// <returns>Inventory</returns>
         public string updateInventory(List<PriceInfo> columnName, Ctx ctx)
         {
             string error = "";
@@ -1108,7 +1267,12 @@ WHERE M_Product_ID = " + M_Product_ID;
             }
             return error;
         }
-
+        /// <summary>
+        /// deleteInventory Method
+        /// </summary>
+        /// <param name="columnName">columnName</param>
+        /// <param name="ctx">ctx</param>
+        /// <returns></returns>
         public string deleteInventory(List<PriceInfo> columnName, Ctx ctx)
         {
             string error = "";
@@ -1129,7 +1293,17 @@ WHERE M_Product_ID = " + M_Product_ID;
             }
             return error;
         }
-
+        /// <summary>
+        /// GenerateReplenishmentReport Method
+        /// </summary>
+        /// <param name="M_Warehouse_ID">M_Warehouse_ID</param>
+        /// <param name="C_BPartner_ID">C_BPartner_ID</param>
+        /// <param name="C_DocType_ID">C_DocType_ID</param>
+        /// <param name="DocStatus">DocStatus</param>
+        /// <param name="Create">Create</param>
+        /// <param name="OrderPack">OrderPack</param>
+        /// <param name="ct">ct</param>
+        /// <returns>Replenishment Report</returns>
         public DataSet GenerateReplenishmentReport(int M_Warehouse_ID, int C_BPartner_ID, int C_DocType_ID, string DocStatus, string Create, string OrderPack, Ctx ct)
         {
             ReplenishmentReport repR = new ReplenishmentReport();
@@ -1150,6 +1324,12 @@ WHERE M_Product_ID = " + M_Product_ID;
         int M_Warehouse_ID = 0;
         int M_WarehouseSource_ID = 0;
 
+        /// <summary>
+        /// GenerateReps Method
+        /// </summary>
+        /// <param name="Reps">Reps</param>
+        /// <param name="ct">ct</param>
+        /// <returns>Reps</returns>
         public string GenerateReps(List<RepCreateData> Reps, Ctx ct)
         {
             string storedPath = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "");
@@ -1798,7 +1978,7 @@ WHERE M_Product_ID = " + M_Product_ID;
                     if (pp != null && !String.IsNullOrEmpty(pp.GetName()))
                         sbRetMsg.Append(pp.GetName());
                     else
-                        sbRetMsg.Append(Msg.GetMsg(ct, "VA011_RequisitionNotCreated"));                    
+                        sbRetMsg.Append(Msg.GetMsg(ct, "VA011_RequisitionNotCreated"));
                     return "-99";
                 }
                 else
@@ -2020,7 +2200,11 @@ WHERE M_Product_ID = " + M_Product_ID;
             }
             return M_Locator_ID;
         }   //	getLocator_ID
-
+        /// <summary>
+        /// GetProductsAll Method
+        /// </summary>
+        /// <param name="ctx">ctx</param>
+        /// <returns>Products All</returns>
         public List<NameIDClass> GetProductsAll(Ctx ctx)
         {
             List<NameIDClass> pInfo = new List<NameIDClass>();
@@ -2041,7 +2225,12 @@ WHERE M_Product_ID = " + M_Product_ID;
             }
             return pInfo;
         }
-
+        /// <summary>
+        /// SaveRepRuleAll Method
+        /// </summary>
+        /// <param name="Reps">Reps</param>
+        /// <param name="ct">ct</param>
+        /// <returns></returns>
         public string SaveRepRuleAll(List<RepRule> Reps, Ctx ct)
         {
             string res = "";
@@ -2096,7 +2285,11 @@ WHERE M_Product_ID = " + M_Product_ID;
 
             return res;
         }
-
+        /// <summary>
+        /// GetModuleInfo Method
+        /// </summary>
+        /// <param name="_prefix">_prefix</param>
+        /// <returns></returns>
         public bool GetModuleInfo(string _prefix)
         {
             bool exist = false;
@@ -2108,6 +2301,791 @@ WHERE M_Product_ID = " + M_Product_ID;
             return exist;
 
         }
+        /// <summary>
+        /// GetSupplier Method
+        /// </summary>
+        /// <param name="ctx">ctx</param>
+        /// <returns>Supplier</returns>
+        public List<NameIDClass> GetSupplier(Ctx ctx)
+        {
+            List<NameIDClass> pInfo = new List<NameIDClass>();
+            string sql = @"SELECT C_BPartner_ID, Name FROM C_BPartner WHERE AD_Client_ID = " + ctx.GetAD_Client_ID() + " AND IsActive = 'Y' AND IsVendor = 'Y'";
+            sql += " ORDER BY Name";
+            DataSet ds = DB.ExecuteDataset(sql);
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    NameIDClass org = new NameIDClass();
+                    org.Name = Util.GetValueOfString(ds.Tables[0].Rows[i]["Name"]);
+                    org.ID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["C_BPartner_ID"]);
+                    pInfo.Add(org);
+                }
+            }
+            return pInfo;
+        }
+        /// <summary>
+        /// GetCart Method
+        /// </summary>
+        /// <param name="ctx">ctx</param>
+        /// <returns>Cart value</returns>
+        public List<NameIDClass> GetCart(Ctx ctx)
+        {
+            List<NameIDClass> pInfo = new List<NameIDClass>();
+            var qry = @"SELECT VAICNT_InventoryCount_ID,VAICNT_ScanName FROM VAICNT_InventoryCount WHERE IsActive = 'Y' AND VAICNT_TransactionType = 'OT' AND AD_Client_ID = " + ctx.GetAD_Client_ID() + " ORDER BY VAICNT_ScanName";
+            //qry += " ORDER BY Name";
+            DataSet ds = DB.ExecuteDataset(qry);
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    NameIDClass org = new NameIDClass();
+                    org.Name = Util.GetValueOfString(ds.Tables[0].Rows[i]["VAICNT_ScanName"]);
+                    org.ID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["VAICNT_InventoryCount_ID"]);
+                    pInfo.Add(org);
+                }
+            }
+            return pInfo;
+        }
+        /// <summary>
+        /// GetDocType Method
+        /// </summary>
+        /// <param name="ctx">ctx</param>
+        /// <returns>Type</returns>
+        public List<DocType> GetDocType(Ctx ctx)
+        {
+            List<DocType> docTypes = new List<DocType>();
+            var qry = @"SELECT C_DocType_ID, Name, DocBaseType, IsReleaseDocument FROM C_DocType WHERE DocBaseType IN "
+                + "(SELECT Value FROM AD_Ref_List WHERE AD_Reference_ID =(SELECT AD_Reference_ID FROM AD_Reference WHERE Name = 'M_Replenishment Create')) AND IsReturnTrx ='N' AND AD_Client_ID = " + ctx.GetAD_Client_ID();
+            //qry += " ORDER BY Name";
+            DataSet ds = DB.ExecuteDataset(qry);
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    DocType docType = new DocType();
+                    docType.Name = Util.GetValueOfString(ds.Tables[0].Rows[i]["Name"]);
+                    docType.DocBaseType = Util.GetValueOfString(ds.Tables[0].Rows[i]["DocBaseType"]);
+                    docType.IsReleaseDocument = Util.GetValueOfString(ds.Tables[0].Rows[i]["IsReleaseDocument"]);
+                    docType.ID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["C_DocType_ID"]);
+                    docTypes.Add(docType);
+                }
+            }
+            return docTypes;
+        }
+        /// <summary>
+        /// GetDocStatus Method
+        /// </summary>
+        /// <param name="ctx">ctx</param>
+        /// <returns>DocStatus</returns>
+        public List<ValueNamePair> GetDocStatus(Ctx ctx)
+        {
+            List<ValueNamePair> values = new List<ValueNamePair>();
+            var qry = @"SELECT Value,  Name FROM AD_Ref_List WHERE ad_reference_ID = (SELECT AD_Reference_ID FROM AD_Reference  WHERE Name = '_Document Status') AND Value IN ('DR', 'CO', 'IP')";
+            //qry += " ORDER BY Name";
+            DataSet ds = DB.ExecuteDataset(qry);
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    ValueNamePair obj = new ValueNamePair(Util.GetValueOfString(ds.Tables[0].Rows[i]["Value"]), Util.GetValueOfString(ds.Tables[0].Rows[i]["Name"]));
+                    //obj.Name = Util.GetValueOfString(ds.Tables[0].Rows[i]["Name"]);
+                    //obj.Key = Util.GetValueOfString(ds.Tables[0].Rows[i]["Value"]);
+                    values.Add(obj);
+                }
+            }
+            return values;
+        }
+        /// <summary>
+        /// GetReplenishType Method
+        /// </summary>
+        /// <param name="ctx">ctx</param>
+        /// <returns>Replenish Type</returns>
+        public List<ValueNamePair> GetReplenishType(Ctx ctx)
+        {
+            List<ValueNamePair> pInfo = new List<ValueNamePair>();
+            var qry = @"SELECT Value, Name FROM AD_Ref_List WHERE AD_Reference_ID = (SELECT AD_Reference_ID FROM AD_Reference WHERE Name = 'M_Replenish Type' ) AND Value IN ('1','2')";
+            //qry += " ORDER BY Name";
+            DataSet ds = DB.ExecuteDataset(qry);
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    ValueNamePair obj = new ValueNamePair(Util.GetValueOfString(ds.Tables[0].Rows[i]["Value"]), Util.GetValueOfString(ds.Tables[0].Rows[i]["Name"]));
+                    //obj.Name = Util.GetValueOfString(ds.Tables[0].Rows[i]["Name"]);
+                    //obj.Key = Util.GetValueOfString(ds.Tables[0].Rows[i]["Value"]);
+                    pInfo.Add(obj);
+                }
+            }
+            return pInfo;
+        }
+        /// <summary>
+        /// CreateCombo Method
+        /// </summary>
+        /// <param name="ctx">ctx</param>
+        /// <returns>Combo</returns>
+        public List<ValueNamePair> CreateCombo(Ctx ctx)
+        {
+            List<ValueNamePair> values = new List<ValueNamePair>();
+            var qry = @"SELECT Value, Name FROM AD_Ref_List WHERE ad_reference_ID = (SELECT AD_Reference_ID FROM AD_Reference  WHERE Name = 'M_Replenishment Create')";
+            //qry += " ORDER BY Name";
+            DataSet ds = DB.ExecuteDataset(qry);
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    ValueNamePair obj = new ValueNamePair(Util.GetValueOfString(ds.Tables[0].Rows[i]["Value"]), Util.GetValueOfString(ds.Tables[0].Rows[i]["Name"]));
+                    //obj.Name = Util.GetValueOfString(ds.Tables[0].Rows[i]["Name"]);
+                    //obj.Key = Util.GetValueOfString(ds.Tables[0].Rows[i]["Value"]);
+                    values.Add(obj);
+                }
+            }
+            return values;
+        }
+        /// <summary>
+        /// GetUOM Method
+        /// </summary>
+        /// <param name="ctx">ctx</param>
+        /// <returns>UOM</returns>
+        public List<NameIDClass> GetUOM(Ctx ctx)
+        {
+            List<NameIDClass> objUOM = new List<NameIDClass>();
+            string sql = @"SELECT C_UOM_ID,Name FROM C_UOM WHERE IsActive = 'Y'";
+            sql += " ORDER BY Name";
+            DataSet ds = DB.ExecuteDataset(sql);
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    NameIDClass obj = new NameIDClass();
+                    obj.Name = Util.GetValueOfString(ds.Tables[0].Rows[i]["Name"]);
+                    obj.ID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["C_UOM_ID"]);
+                    objUOM.Add(obj);
+                }
+            }
+            return objUOM;
+        }
+        /// <summary>
+        /// LoadBindcart Method
+        /// </summary>
+        /// <param name="ctx">ctx</param>
+        /// <param name="VAICNT_InventoryCount_ID">VAICNT_InventoryCount_ID</param>
+        /// <returns>Bindcart</returns>
+        public List<PriceInfo> LoadBindcart(Ctx ctx, int VAICNT_InventoryCount_ID)
+        {
+            List<PriceInfo> infos = new List<PriceInfo>();
+            string sql = @"SELECT po.VAICNT_InventoryCountLine_ID,po.M_Product_ID,prd.Name, po.C_UOM_ID, u.Name AS UOM, po.UPC, po.M_AttributeSetInstance_ID, ats.Description, po.VAICNT_Quantity," +
+                " prd.M_AttributeSet_ID FROM VAICNT_InventoryCountLine po LEFT JOIN C_UOM u ON po.C_UOM_ID = u.C_UOM_ID LEFT JOIN M_Product prd" +
+                " ON po.M_Product_ID= prd.M_Product_ID LEFT JOIN M_AttributeSetInstance ats ON po.M_AttributeSetInstance_ID = ats.M_AttributeSetInstance_ID" +
+                " WHERE po.VAICNT_InventoryCount_ID = " + VAICNT_InventoryCount_ID;
+
+            DataSet ds = DB.ExecuteDataset(sql);
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    PriceInfo priceInfo = new PriceInfo();
+                    priceInfo.LineID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["VAICNT_InventoryCountLine_ID"]);
+                    priceInfo.product_ID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["M_Product_ID"]);
+                    priceInfo.Product = Util.GetValueOfString(ds.Tables[0].Rows[i]["Name"]);
+                    priceInfo.C_Uom_ID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["C_UOM_ID"]);
+                    priceInfo.attribute_ID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["M_AttributeSetInstance_ID"]);
+                    priceInfo.Attribute = Util.GetValueOfString(ds.Tables[0].Rows[i]["Description"]);
+                    priceInfo.UPC = Util.GetValueOfString(ds.Tables[0].Rows[i]["UPC"]);
+                    priceInfo.Qty = Util.GetValueOfDecimal(ds.Tables[0].Rows[i]["VAICNT_Quantity"]);
+                    infos.Add(priceInfo);
+                }
+            }
+            return infos;
+        }
+        /// <summary>
+        /// LoadSubstituteGrid Method
+        /// </summary>
+        /// <param name="ctx">ctx</param>
+        /// <param name="M_Product_ID">M_Product_ID</param>
+        /// <returns>Substitute value</returns>
+
+        public List<Substitute> LoadSubstituteGrid(Ctx ctx, int M_Product_ID)
+        {
+            List<Substitute> objSub = new List<Substitute>();
+            string sql = @"SELECT DISTINCT p.Name as Product, p.M_Product_ID, u.Name AS UOM , (bomQtyOnHand(p.M_Product_ID,w.M_Warehouse_ID,0)) AS QtyOnHand,"
+                    + " bomQtyAvailable(p.M_Product_ID,w.M_Warehouse_ID,0) AS QtyAvailable, (bomQtyReserved(p.M_Product_ID,w.M_Warehouse_ID,0))  AS QtyReserved"
+                    + " FROM M_Substitute s INNER JOIN M_Product p ON (p.M_Product_ID = s.SUBSTITUTE_ID) INNER JOIN C_UOM u ON (p.C_UOM_ID = u.C_UOM_ID) LEFT OUTER JOIN M_Storage st "
+                    + " ON (st.M_Product_ID = p.M_Product_ID) LEFT OUTER JOIN M_Locator l ON (st.M_Locator_ID = l.M_Locator_ID) LEFT OUTER JOIN M_Warehouse w ON (w.M_Warehouse_ID = l.M_Warehouse_ID)"
+                    + " WHERE s.IsActive='Y' AND s.M_Product_ID = " + M_Product_ID;
+
+            DataSet ds = DB.ExecuteDataset(sql);
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    Substitute obj = new Substitute();
+                    obj.Product = Util.GetValueOfString(ds.Tables[0].Rows[i]["product"]);
+                    obj.QtyOnHand = Util.GetValueOfString(ds.Tables[0].Rows[i]["qtyonhand"]);
+                    obj.UOM = Util.GetValueOfString(ds.Tables[0].Rows[i]["uom"]);
+                    obj.Reserved = Util.GetValueOfString(ds.Tables[0].Rows[i]["qtyreserved"]);
+                    obj.ATP = Util.GetValueOfString(ds.Tables[0].Rows[i]["qtyavailable"]);
+                    obj.M_Product_ID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["m_product_id"]);
+                    objSub.Add(obj);
+                }
+            }
+            return objSub;
+        }
+        /// <summary>
+        /// LoadSuppliersRightGrid Method
+        /// </summary>
+        /// <param name="ctx">ctx</param>
+        /// <param name="M_Product_ID">M_Product_ID</param>
+        /// <returns>Suppliers value</returns>
+        public List<PriceInfo> LoadSuppliersRightGrid(Ctx ctx, int M_Product_ID)
+        {
+            List<PriceInfo> priceInfos = new List<PriceInfo>();
+            string sql = @"SELECT bp.name  AS Supplier, po.order_pack AS QtyOrderPack, u.Name AS UOM, po.order_min AS MinOrder, po.deliverytime_promised AS DeliveryTime, po.M_Product_ID"
+                        + " FROM M_Product_PO po INNER JOIN C_BPartner bp  ON (bp.C_BPartner_ID = po.C_BPartner_ID) Left outer join C_UOM u on (u.C_UOM_ID = po.C_UOM_ID)"
+                        + " WHERE po.IsActive = 'Y' AND po.M_Product_ID = " + M_Product_ID;
+
+            DataSet ds = DB.ExecuteDataset(sql);
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    PriceInfo obj = new PriceInfo();
+                    obj.Supplier = Util.GetValueOfString(ds.Tables[0].Rows[i]["Supplier"]);
+                    obj.Qty = Util.GetValueOfDecimal(ds.Tables[0].Rows[i]["QtyOrderPack"]);
+                    obj.UOM = Util.GetValueOfString(ds.Tables[0].Rows[i]["UOM"]);
+                    obj.OrderMin = Util.GetValueOfInt(ds.Tables[0].Rows[i]["MinOrder"]);
+                    obj.DeliveryTime = Util.GetValueOfInt(ds.Tables[0].Rows[i]["DeliveryTime"]);
+                    obj.product_ID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["M_Product_ID"]);
+                    priceInfos.Add(obj);
+                }
+            }
+            return priceInfos;
+        }
+        /// <summary>
+        /// LoadKitsGrid Method
+        /// </summary>
+        /// <param name="ctx">ctx</param>
+        /// <param name="M_ProductBOM_ID">M_ProductBOM_ID</param>
+        /// <returns>Kits value</returns>
+        public List<Kits> LoadKitsGrid(Ctx ctx, int M_ProductBOM_ID)
+        {
+            List<Kits> kits = new List<Kits>();
+            string sql = @"SELECT DISTINCT p.Name as Product, u.Name as UOM, bomQtyOnHand(b.M_Product_ID,w.M_Warehouse_ID,0) AS QtyOnHand, bomQtyAvailable(b.M_Product_ID,w.M_Warehouse_ID,0) AS QtyAvailable,"
+                    + " b.BOMQty AS Factor FROM M_Product_BOM b INNER JOIN M_Product p ON p.M_Product_ID = b.M_Product_ID INNER JOIN C_UOM u ON (p.C_UOM_ID = u.C_UOM_ID) "
+                    + " LEFT OUTER JOIN M_Storage st ON (st.M_Product_ID = p.M_Product_ID) LEFT OUTER JOIN M_Locator l ON (st.M_Locator_ID = l.M_Locator_ID) LEFT OUTER JOIN M_Warehouse w "
+                    + " ON (w.M_Warehouse_ID    = l.M_Warehouse_ID) WHERE b.IsActive='Y' AND b.M_ProductBOM_ID = " + M_ProductBOM_ID;
+
+            DataSet ds = DB.ExecuteDataset(sql);
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    Kits obj = new Kits();
+                    obj.Product = Util.GetValueOfString(ds.Tables[0].Rows[i]["Product"]);
+                    obj.Factor = Util.GetValueOfString(ds.Tables[0].Rows[i]["Factor"]);
+                    obj.UOM = Util.GetValueOfString(ds.Tables[0].Rows[i]["UOM"]);
+                    obj.QtyOnHand = Util.GetValueOfString(ds.Tables[0].Rows[i]["QtyOnHand"]);
+                    obj.ATP = Util.GetValueOfString(ds.Tables[0].Rows[i]["QtyAvailable"]);
+                    obj.M_Product_ID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["M_Product_ID"]);
+                    kits.Add(obj);
+                }
+            }
+            return kits;
+        }
+        /// <summary>
+        /// LoadOrderedGrid method
+        /// </summary>
+        /// <param name="ctx">ctx</param>
+        /// <param name="M_Product_ID">M_Product_ID</param>
+        /// <param name="selWh">selWh</param>
+        /// <returns></returns>
+        public List<Order> LoadOrderedGrid(Ctx ctx, int M_Product_ID, List<int> selWh)
+        {
+            List<Order> objOrder = new List<Order>();
+            StringBuilder sqlOrd = new StringBuilder("");
+            var whString = "";
+            for (var w = 0; w < selWh.Count; w++)
+            {
+                if (whString.Length > 0)
+                {
+                    whString = whString + ", " + selWh[w];
+                }
+                else
+                {
+                    whString = whString + selWh[w];
+                }
+            }
+            sqlOrd.Append("SELECT ol.datepromised, o.dateordered, ol.m_product_ID, ol.qtyordered, ol.qtyentered, ol.qtyreserved, bp.name as supplier FROM c_order o INNER JOIN c_Orderline ol ON (ol.c_ORder_ID = o.C_Order_ID) "
+                    + " inner join c_bpartner bp on (bp.c_BPartner_ID = o.C_Bpartner_ID) WHERE o.IsSOTrx = 'N' AND o.IsReturnTrx = 'N' AND ol.QtyReserved > 0 AND o.DocStatus IN ('CO', 'CL') AND ol.M_Product_ID = " + M_Product_ID);
+            if (whString.Length > 0)
+            {
+                sqlOrd.Append(" AND o.M_Warehouse_ID IN (" + whString + ")");
+            }
+
+            sqlOrd.Append(" ORDER BY o.Created DESC");
+            DataSet ds = DB.ExecuteDataset(sqlOrd.ToString());
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    Order obj = new Order();
+                    obj.DatePromised = Util.GetValueOfDateTime(ds.Tables[0].Rows[i]["datepromised"]).Value.ToShortDateString();
+                    obj.Quantity = Util.GetValueOfString(ds.Tables[0].Rows[i]["qtyordered"]);
+                    obj.DateOrdered = Util.GetValueOfDateTime(ds.Tables[0].Rows[i]["dateordered"]).Value.ToShortDateString();
+                    obj.Supplier = Util.GetValueOfString(ds.Tables[0].Rows[i]["supplier"]);
+                    obj.QtyReserved = Util.GetValueOfString(ds.Tables[0].Rows[i]["qtyreserved"]);
+                    objOrder.Add(obj);
+                }
+            }
+            return objOrder;
+        }
+        /// <summary>
+        /// TransactionsGrid Method
+        /// </summary>
+        /// <param name="ctx">ctx</param>
+        /// <param name="M_Product_ID">M_Product_ID</param>
+        /// <param name="selWh">selWh</param>
+        /// <returns>Selected value</returns>
+        public List<Transaction> LoadTransactionsGrid(Ctx ctx, int M_Product_ID, List<int> selWh)
+        {
+            List<Transaction> objTran = new List<Transaction>();
+            StringBuilder sqlTrx = new StringBuilder("");
+
+            sqlTrx.Append("SELECT t.M_Product_ID, t.M_AttributeSetInstance_ID, asi.description, t.MOVEMENTQTY , t.MOVEMENTTYPE, t.CurrentQty, t.MovementDate, lc.Value AS Locator, t.M_Transaction_ID, iol.M_InOutLine_ID, ivl.M_InventoryLine_ID, mvl.M_MovementLine_ID, "
+                   + " Case when t.MovementQty > 0 Then t.movementQty else 0 end as InventoryIn, Case when t.MovementQty < 0 Then t.movementQty else 0 end as InventoryOut, "
+                   + " CASE WHEN NVL(iol.M_InOutLine_ID,0) > 0 THEN iol.M_InoutLine_ID WHEN NVL(ivl.M_InventoryLine_ID,0) > 0 THEN ivl.M_InventoryLine_ID WHEN NVL(mvl.M_MovementLine_ID,0) > 0 THEN mvl.M_MovementLine_ID END AS ID, "
+                   + " CASE WHEN NVL(iol.M_InOutLine_ID,0) > 0 THEN io.DocumentNo WHEN NVL(ivl.M_InventoryLine_ID,0) > 0 THEN iv.DocumentNo WHEN NVL(mvl.M_MovementLine_ID,0) > 0 THEN mv.DocumentNo END AS DocumentNo,"
+                   + " CASE WHEN NVL(iol.M_InOutLine_ID,0) > 0 THEN dtio.Name WHEN NVL(ivl.M_InventoryLine_ID,0) > 0 THEN dtiv.Name WHEN NVL(mvl.M_MovementLine_ID,0) > 0 THEN dtmv.Name END AS DocType "
+                   + " FROM M_Transaction t LEFT OUTER JOIN M_InoutLine iol ON (iol.M_InOutLine_ID = t.M_InOutLine_ID) LEFT OUTER JOIN M_Inout io ON (iol.M_InOut_ID = io.M_InOut_ID) LEFT OUTER JOIN C_DocType dtio "
+                   + " ON (dtio.C_DocType_ID = io.C_DocType_ID) LEFT OUTER JOIN M_inventoryLine ivl ON (ivl.M_inventoryLine_ID = t.M_inventoryLine_ID) LEFT OUTER JOIN M_Inventory iv ON (ivl.M_Inventory_ID = iv.M_Inventory_ID) "
+                   + " LEFT OUTER JOIN C_DocType dtiv ON (dtiv.C_DocType_ID = iv.C_DocType_ID) LEFT OUTER JOIN M_MovementLine mvl ON (mvl.M_MovementLine_ID = t.M_MovementLine_ID) LEFT OUTER JOIN M_Movement mv "
+                   + " ON (mvl.M_Movement_ID = mv.M_Movement_ID) LEFT OUTER JOIN C_DocType dtmv ON (dtmv.C_DocType_ID = mv.C_DocType_ID) LEFT OUTER JOIN M_AttributeSetInstance asi  ON (t.M_AttributeSetInstance_ID = asi.M_AttributeSetInstance_ID) LEFT OUTER JOIN M_Locator lc ON (lc.M_Locator_ID = t.M_Locator_ID) WHERE t.M_Product_ID = " + M_Product_ID);
+            if (selWh.Count > 0)
+            {
+                var whString = "";
+                for (var w = 0; w < selWh.Count; w++)
+                {
+                    if (whString.Length > 0)
+                    {
+                        whString = whString + ", " + selWh[w];
+                    }
+                    else
+                    {
+                        whString = whString + selWh[w];
+                    }
+                }
+                sqlTrx.Append(" AND t.M_Locator_ID IN (Select loc.M_Locator_ID from m_warehouse wh inner join m_locator loc on (loc.m_warehouse_ID = wh.M_Warehouse_ID) where wh.m_warehouse_ID in (" + whString + ")) ");
+            }
+
+            sqlTrx.Append(" ORDER BY t.MovementDate DESC");
+
+
+            DataSet ds = DB.ExecuteDataset(sqlTrx.ToString());
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    Transaction obj = new Transaction();
+                    obj.DocumentType = Util.GetValueOfString(ds.Tables[0].Rows[i]["DocType"]);
+                    obj.DocumentNo = Util.GetValueOfString(ds.Tables[0].Rows[i]["DocumentNo"]);
+                    obj.Locator = Util.GetValueOfString(ds.Tables[0].Rows[i]["Locator"]);
+                    obj.Date = Util.GetValueOfDateTime(ds.Tables[0].Rows[i]["MovementDate"]).Value.ToShortDateString();
+                    obj.InventoryIn = Util.GetValueOfString(ds.Tables[0].Rows[i]["InventoryIn"]);
+                    obj.InventoryOut = Util.GetValueOfString(ds.Tables[0].Rows[i]["InventoryOut"]);
+                    obj.Attribute = Util.GetValueOfString(ds.Tables[0].Rows[i]["description"]);
+                    obj.Balance = Util.GetValueOfString(ds.Tables[0].Rows[i]["CurrentQty"]);
+                    objTran.Add(obj);
+                }
+            }
+            return objTran;
+        }
+        /// <summary>
+        /// VariantGrid Method
+        /// </summary>
+        /// <param name="ctx">ctx</param>
+        /// <param name="M_Product_ID">M_Product_ID</param>
+        /// <param name="selWh">selWh</param>
+        /// <param name="orgString">orgString</param>
+        /// <returns>selected value</returns>
+        public List<Variant> LoadVariantGrid(Ctx ctx, int M_Product_ID, List<int> selWh, string orgString)
+        {
+            List<Variant> objVariant = new List<Variant>();
+            StringBuilder sqlVar = new StringBuilder("");
+
+            sqlVar.Append(@"SELECT Name,  M_Product_ID,  UOM,  lot,  serno,  guaranteedate,  SUM(QtyOnHand) AS QtyOnHand,  M_AttributeSetInstance_ID,  Description FROM  ( ");
+            if (selWh != null && selWh.Count > 0)
+            {
+                //var whString = "";
+                for (var w = 0; w < selWh.Count; w++)
+                {
+                    if (w == 0)
+                    {
+                        sqlVar.Append(" SELECT distinct p.Name, p.M_Product_ID, u.Name as UOM, ats.lot, ats.serno, ats.guaranteedate, bomQtyOnHandAttr(p.M_Product_ID, s.M_AttributeSetInstance_ID ,w.M_Warehouse_ID,0) AS QtyOnHand, "
+                            + " s.M_AttributeSetInstance_ID, ats.Description FROM M_Storage s INNER JOIN M_AttributeSetInstance ats ON (s.M_AttributeSetInstance_ID = ats.M_AttributeSetInstance_ID) "
+                            + " INNER JOIN M_LOcator l ON (l.M_Locator_ID = s.M_Locator_ID) INNER JOIN M_Warehouse w ON (w.M_Warehouse_ID = l.M_Warehouse_ID) "
+                            + " INNER JOIN M_Product p ON (p.M_Product_ID = s.M_Product_ID) INNER JOIN C_UOM u ON (p.C_UOM_ID = u.C_UOM_ID) WHERE w.M_Warehouse_ID = " + selWh[w] + " AND s.M_Product_ID = " + M_Product_ID);
+                        //+ " AND bomQtyOnHandAttr(p.M_Product_ID, s.M_AttributeSetInstance_ID ,w.M_Warehouse_ID,0) > 0";
+                    }
+                    else
+                    {
+                        sqlVar.Append("  UNION SELECT distinct p.Name, p.M_Product_ID, u.Name as UOM, ats.lot, ats.serno, ats.guaranteedate, bomQtyOnHandAttr(p.M_Product_ID, s.M_AttributeSetInstance_ID ,w.M_Warehouse_ID,0) AS QtyOnHand, "
+                            + " s.M_AttributeSetInstance_ID, ats.Description FROM M_Storage s INNER JOIN M_AttributeSetInstance ats ON (s.M_AttributeSetInstance_ID = ats.M_AttributeSetInstance_ID) "
+                            + " INNER JOIN M_LOcator l ON (l.M_Locator_ID = s.M_Locator_ID) INNER JOIN M_Warehouse w ON (w.M_Warehouse_ID = l.M_Warehouse_ID) "
+                            + " INNER JOIN M_Product p ON (p.M_Product_ID = s.M_Product_ID) INNER JOIN C_UOM u ON (p.C_UOM_ID = u.C_UOM_ID) WHERE w.M_Warehouse_ID = " + selWh[w] + " AND s.M_Product_ID = " + M_Product_ID);
+                        // + " AND bomQtyOnHandAttr(p.M_Product_ID, s.M_AttributeSetInstance_ID ,w.M_Warehouse_ID,0) > 0";
+                    }
+                    if (orgString.Length > 0)
+                        sqlVar.Append(" AND w.AD_Org_ID IN (" + orgString + ")");
+                    sqlVar.Append(" ) t GROUP BY Name,  M_Product_ID,  UOM,  lot,  serno,  M_AttributeSetInstance_ID,  guaranteedate,  Description");
+                }
+            }
+            else
+            {
+                sqlVar.Append("SELECT distinct p.Name, p.M_Product_ID, u.Name as UOM, ats.lot, ats.serno, ats.guaranteedate, bomQtyOnHandAttr(p.M_Product_ID, s.M_AttributeSetInstance_ID ,w.M_Warehouse_ID,0) AS QtyOnHand, "
+                    + " s.M_AttributeSetInstance_ID, ats.Description FROM M_Storage s INNER JOIN M_AttributeSetInstance ats ON (s.M_AttributeSetInstance_ID = ats.M_AttributeSetInstance_ID) "
+                    + " INNER JOIN M_LOcator l ON (l.M_Locator_ID = s.M_Locator_ID) INNER JOIN M_Warehouse w ON (w.M_Warehouse_ID = l.M_Warehouse_ID) "
+                    + " INNER JOIN M_Product p ON (p.M_Product_ID = s.M_Product_ID) INNER JOIN C_UOM u ON (p.C_UOM_ID = u.C_UOM_ID) WHERE s.M_Product_ID = " + M_Product_ID);
+                // + " AND bomQtyOnHandAttr(p.M_Product_ID, s.M_AttributeSetInstance_ID ,w.M_Warehouse_ID,0) > 0";
+
+
+                if (orgString.Length > 0)
+                    sqlVar.Append(" AND w.AD_Org_ID IN (" + orgString + ")");
+                sqlVar.Append(") t GROUP BY Name,  M_Product_ID,  UOM,  lot,  serno,  M_AttributeSetInstance_ID,  guaranteedate,  Description");
+            }
+
+            DataSet ds = DB.ExecuteDataset(sqlVar.ToString());
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    Variant obj = new Variant();
+                    obj.Attribute = Util.GetValueOfString(ds.Tables[0].Rows[i]["Description"]);
+                    obj.QtyOnHand = Util.GetValueOfString(ds.Tables[0].Rows[i]["QtyOnHand"]);
+                    obj.UOM = Util.GetValueOfString(ds.Tables[0].Rows[i]["UOM"]);
+                    obj.SerialNo = Util.GetValueOfString(ds.Tables[0].Rows[i]["serno"]);
+                    obj.LotNo = Util.GetValueOfString(ds.Tables[0].Rows[i]["lot"]);
+                    obj.ExpDate = Util.GetValueOfString(ds.Tables[0].Rows[i]["guaranteedate"]);
+                    obj.M_Product_ID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["m_product_id"]);
+                    objVariant.Add(obj);
+                }
+            }
+            return objVariant;
+        }
+        /// <summary>
+        /// LocatorGrid method
+        /// </summary>
+        /// <param name="ctx">ctx</param>
+        /// <param name="M_Product_ID">M_Product_ID</param>
+        /// <param name="selWh">selWh</param>
+        /// <param name="orgString">orgString</param>
+        /// <returns></returns>
+        public List<Transaction> LocatorGrid(Ctx ctx, int M_Product_ID, List<int> selWh, string orgString)
+        {
+            List<Transaction> objTran = new List<Transaction>();
+
+            var selQuery = "SELECT p.Name, p.M_Product_ID, l.M_Locator_ID, p.Value, w.Name as Warehouse, l.Value as Locator, s.M_AttributeSetInstance_ID, asi.Description, (SELECT MAX(io.DateAcct) FROM M_InoutLine iol "
+                 + " INNER JOIN M_Inout io ON (io.M_Inout_ID      = iol.M_Inout_ID) WHERE iol.M_Product_ID = p.M_Product_ID  AND io.IsSOTrx = 'N' AND iol.M_Locator_ID = l.M_Locator_ID) as LastReceipt, "
+                 + " (SELECT NVL(SUM(lc.targetqty),0) FROM m_inoutlineconfirm lc INNER JOIN m_inoutconfirm ioc ON (ioc.M_InoutConfirm_ID = lc.M_InoutConfirm_ID) INNER JOIN m_inoutline iol ON (iol.M_Inoutline_ID = lc.m_inoutLine_ID) INNER JOIN m_inout io ON (iol.M_Inout_ID = io.m_inout_ID) "
+                 + " WHERE ioc.docstatus NOT IN  ('CO', 'CL')  AND io.IsSOTrx = 'N'  AND iol.M_Locator_ID  = l.M_Locator_ID) as QtyUnconfirmed, "
+                 + " SUM(s.QtyOnHand) AS QtyOnHand "
+                 + " FROM M_Product p INNER JOIN M_Storage s  ON (s.M_Product_ID = p.M_Product_ID) INNER JOIN M_Locator l ON (l.M_Locator_ID = s.M_Locator_ID) INNER JOIN M_Warehouse w "
+                 + " ON (l.M_Warehouse_ID = w.M_Warehouse_ID) LEFT OUTER JOIN M_AttributeSetInstance asi  ON (s.M_AttributeSetInstance_ID = asi.M_AttributeSetInstance_ID) WHERE p.M_Product_ID = " + M_Product_ID + " AND p.AD_Client_ID = " + ctx.GetAD_Client_ID();
+            var groupBySec = " GROUP BY p.Name, p.M_Product_ID, l.M_Locator_ID, p.Value, w.Name, l.Value, s.M_AttributeSetInstance_ID, asi.Description, "
+                + " w.M_Warehouse_ID  ";
+            selQuery = selQuery + groupBySec;
+
+            DataSet ds = DB.ExecuteDataset(selQuery);
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    Transaction obj = new Transaction();
+                    obj.Warehouse = Util.GetValueOfString(ds.Tables[0].Rows[i]["Warehouse"]);
+                    obj.Locator = Util.GetValueOfString(ds.Tables[0].Rows[i]["Locator"]);
+                    obj.Quantity = Util.GetValueOfString(ds.Tables[0].Rows[i]["QtyOnHand"]);
+                    obj.Unconfirmed = Util.GetValueOfString(ds.Tables[0].Rows[i]["QtyUnconfirmed"]);
+                    obj.Attribute = Util.GetValueOfString(ds.Tables[0].Rows[i]["description"]);
+                    if (Util.GetValueOfDateTime(ds.Tables[0].Rows[i]["LastReceipt"]) != null)
+                    {
+                        obj.LastReceipt = Util.GetValueOfDateTime(ds.Tables[0].Rows[i]["LastReceipt"]).Value.ToShortDateString();
+                    }
+                    obj.M_Product_ID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["M_Product_ID"]);
+                    objTran.Add(obj);
+                }
+            }
+            return objTran;
+        }
+        /// <summary>
+        /// LoadDemandGrid Method
+        /// </summary>
+        /// <param name="ctx">ctx</param>
+        /// <param name="M_Product_ID">M_Product_ID</param>
+        /// <param name="selWh">selWh</param>
+        /// <param name="orgString">orgString</param>
+        /// <returns>select value</returns>
+        public List<Transaction> LoadDemandGrid(Ctx ctx, int M_Product_ID, List<int> selWh, string orgString)
+        {
+            List<Transaction> objTran = new List<Transaction>();
+            StringBuilder sqlDmd = new StringBuilder("");
+
+            sqlDmd.Append("SELECT * FROM ( SELECT o.Created, o.documentno, ol.QtyReserved AS qtyentered, dt.name as DocType, o.datepromised, bp.name as demandedby FROM C_Order o INNER JOIN c_orderline ol ON (ol.C_Order_ID = o.C_Order_ID) "
+                   + " INNER JOIN C_DocType dt ON (o.C_DocTypeTarget_ID = dt.C_DocType_ID) INNER JOIN C_BPartner bp ON (bp.C_BPartner_ID = o.C_BPartner_ID) WHERE o.IsSOTrx = 'Y' AND o.IsReturnTrx = 'N' AND o.DocStatus IN ('CO', 'CL') AND ol.QtyReserved >0 AND ol.M_Product_ID = " + M_Product_ID);
+
+            var selOrgs = "";
+            if (selOrgs.Length > 0)
+            {
+                for (var w = 0; w < selOrgs.Length; w++)
+                {
+                    if (orgString.Length > 0)
+                    {
+                        orgString = orgString + ", " + selOrgs[w];
+                    }
+                    else
+                    {
+                        orgString += "0, ";
+                        orgString += selOrgs[w];
+                    }
+                }
+                sqlDmd.Append(" AND o.AD_Org_ID IN (0, " + orgString + ")");
+            }
+
+            var whString = "";
+            if (selWh.Count > 0)
+            {
+                for (var w = 0; w < selWh.Count; w++)
+                {
+                    if (whString.Length > 0)
+                    {
+                        whString = whString + ", " + selWh[w];
+                    }
+                    else
+                    {
+                        whString = whString + selWh[w];
+                    }
+                }
+                sqlDmd.Append(" AND o.M_Warehouse_ID IN (" + whString + ")");
+            }
+
+            sqlDmd.Append(" UNION SELECT r.Created, r.DocumentNo, rl.DTD001_ReservedQty as qtyentered, dt.name AS DocType, r.daterequired as datepromised, w.name AS demandedby  FROM m_requisitionline rl "
+                + " INNER JOIN M_Requisition r ON (r.M_Requisition_ID = rl.M_Requisition_ID) INNER JOIN C_DocType dt ON (r.C_DocType_ID = dt.C_DocType_ID) INNER JOIN M_Warehouse w "
+                + " ON (r.M_Warehouse_ID = w.M_Warehouse_ID) INNER JOIN m_product p ON (p.M_Product_ID = rl.M_Product_ID) WHERE r.DocStatus IN ('CO', 'CL') AND rl.DTD001_ReservedQty > 0 AND r.IsActive = 'Y' AND rl.M_Product_ID = " + M_Product_ID);
+            if (orgString.Length > 0)
+            {
+                sqlDmd.Append(" AND r.AD_Org_ID IN (0, " + orgString + ")");
+            }
+
+            if (whString.Length > 0)
+            {
+                sqlDmd.Append(" AND r.M_Warehouse_ID IN (0, " + whString + ")");
+            }
+
+            if (Env.IsModuleInstalled("VAMFG_"))
+            {
+                sqlDmd.Append(" UNION SELECT wo.Created, wo.documentno, wo.vamfg_qtyentered AS qtyentered, dt.Name AS doctype, wo.VAMFG_DateScheduleTo as datepromised, bp.name as demandedby FROM vamfg_M_workorder wo "
+                    + " INNER JOIN c_doctype dt ON (dt.C_DocType_ID = wo.C_DocType_ID) LEFT OUTER JOIN C_BPartner bp ON (bp.C_BPartner_ID = wo.C_BPartner_ID) INNER JOIN m_product p "
+                    + " ON (p.M_Product_ID = wo.M_Product_ID) WHERE wo.DocStatus IN ('CO', 'CL') AND wo.IsActive   = 'Y' AND wo.M_Product_ID = " + M_Product_ID);
+                if (orgString.Length > 0)
+                {
+                    sqlDmd.Append(" AND wo.AD_Org_ID IN (0, " + orgString + ")");
+                }
+
+                if (whString.Length > 0)
+                {
+                    sqlDmd.Append(" AND wo.M_Warehouse_ID IN (0, " + whString + ")");
+                }
+            }
+
+            sqlDmd.Append(") ORDER BY Created DESC");
+
+            DataSet ds = DB.ExecuteDataset(sqlDmd.ToString());
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    Transaction obj = new Transaction();
+                    obj.DocumentType = Util.GetValueOfString(ds.Tables[0].Rows[i]["DocType"]);
+                    obj.DocumentNo = Util.GetValueOfString(ds.Tables[0].Rows[i]["DocumentNo"]);
+                    obj.Quantity = Util.GetValueOfString(ds.Tables[0].Rows[i]["qtyentered"]);
+                    obj.DatePromised = Util.GetValueOfDateTime(ds.Tables[0].Rows[i]["datepromised"]).Value.ToShortDateString();
+                    obj.DemandedBy = Util.GetValueOfString(ds.Tables[0].Rows[i]["demandedby"]);
+                    obj.AvailabilityStatus = "";
+                    obj.M_Product_ID = 0;
+                    objTran.Add(obj);
+                }
+            }
+            return objTran;
+        }
+        /// <summary>
+        /// ReplenishmentPopGrid Method
+        /// </summary>
+        /// <param name="ctx">ctx</param>
+        /// <param name="M_Warehouse_ID">M_Warehouse_ID</param>
+        /// <param name="sqlWhere">sqlWhere</param>
+        /// <returns>Value in pop</returns>
+        public List<RepRule> LoadReplenishmentPopGrid(Ctx ctx, int M_Warehouse_ID, string sqlWhere)
+        {
+            List<RepRule> repRules = new List<RepRule>();
+            StringBuilder sqlRep = new StringBuilder("");
+            if (Env.IsModuleInstalled("DTD001_"))
+            {
+                sqlRep.Append("SELECT p.Name AS Product, w.Name      AS Warehouse, w.M_Warehouse_ID, NVL(rep.Level_Max,0) AS Maxi, NVL(rep.Level_Min,0) AS Mini, rep.ReplenishType AS rtype, "
+                    + " NVL(DTD001_MinOrderQty,0)       AS Qty,  NVL(DTD001_OrderPackQty,0)      AS OrderPack,  rep.M_WarehouseSource_ID AS SourceWarehouse,  p.M_Product_ID FROM M_Product p "
+                    + " Left Outer Join M_Replenish rep ON (p.M_Product_ID = rep.M_Product_ID) Left JOIN M_Warehouse w ON (w.M_Warehouse_ID = rep.M_Warehouse_ID) LEFT JOIN M_Warehouse w1 "
+                    + " ON (w1.M_Warehouse_ID   = rep.M_WarehouseSource_ID) WHERE w.M_Warehouse_ID = " + M_Warehouse_ID + " AND p.IsActive      = 'Y' AND p.AD_Client_ID        = " + ctx.GetAD_Client_ID());
+            }
+            else
+            {
+                sqlRep.Append("SELECT p.Name as Product, w.Name AS Warehouse, w.M_Warehouse_ID, NVL(rep.Level_Max,0) AS Maxi, NVL(rep.Level_Min,0) AS Mini, rep.ReplenishType AS rtype, 0 AS Qty, 0 AS OrderPack,"
+                    + " rep.M_WarehouseSource_ID AS SourceWarehouse, p.M_Product_ID FROM M_Product p LEFT JOIN M_Replenish rep ON (p.M_Product_ID = rep.M_Product_ID) LEFT JOIN M_Warehouse w "
+                    + " ON (w.M_Warehouse_ID = rep.M_Warehouse_ID) LEFT JOIN M_Warehouse w1 ON (w1.M_Warehouse_ID = rep.M_WarehouseSource_ID) WHERE w.M_Warehouse_ID = " + M_Warehouse_ID + " AND p.IsActive = 'Y' AND p.AD_Client_ID = " + ctx.GetAD_Client_ID());
+            }
+            sqlRep.Append(" AND p.M_Product_ID IN (" + sqlWhere + "");
+
+            DataSet ds = DB.ExecuteDataset(sqlRep.ToString());
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    RepRule obj = new RepRule();
+                    obj.Product = Util.GetValueOfString(ds.Tables[0].Rows[i]["Product"]);
+                    obj.Warehouse = Util.GetValueOfString(ds.Tables[0].Rows[i]["Warehouse"]);
+                    obj.RepType = Util.GetValueOfString(ds.Tables[0].Rows[i]["rtype"]);
+                    obj.Min = Util.GetValueOfDecimal(ds.Tables[0].Rows[i]["Mini"]);
+                    obj.Max = Util.GetValueOfDecimal(ds.Tables[0].Rows[i]["Maxi"]);
+                    obj.Qty = Util.GetValueOfDecimal(ds.Tables[0].Rows[i]["Qty"]);
+                    obj.OrderPack = Util.GetValueOfDecimal(ds.Tables[0].Rows[i]["OrderPack"]);
+                    obj.SourceWarehouse = Util.GetValueOfInt(ds.Tables[0].Rows[i]["SourceWarehouse"]);
+                    obj.M_Warehouse_ID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["M_Warehouse_ID"]);
+                    obj.M_Product_ID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["M_Product_ID"]);
+                    repRules.Add(obj);
+                }
+            }
+            return repRules;
+        }
+        /// <summary>
+        /// ReplenishmentBGrid Method
+        /// </summary>
+        /// <param name="ct">ct</param>
+        /// <param name="M_Product_ID">M_Product_ID</param>
+        /// <param name="selWh">selWh</param>
+        /// <returns></returns>
+        public List<RepRule> LoadReplenishmentBGrid(Ctx ct, int M_Product_ID, List<int> selWh)
+        {
+            //DTD001_
+            List<RepRule> repRules = new List<RepRule>();
+            StringBuilder sqlRep = new StringBuilder();
+
+            if (Env.IsModuleInstalled("DTD001_"))
+            {
+                sqlRep.Append( "SELECT w.Name AS Warehouse, w.M_Warehouse_ID, rep.Level_Max AS Maxi, rep.Level_Min AS Mini, rep.ReplenishType AS rtype, DTD001_MinOrderQty AS Qty, DTD001_OrderPackQty AS OrderPack,"
+                    + " rep.M_WarehouseSource_ID AS SourceWarehouse, p.M_Product_ID FROM M_Replenish rep INNER JOIN M_Product p ON (p.M_Product_ID = rep.M_Product_ID) INNER JOIN M_Warehouse w "
+                    + " ON (w.M_Warehouse_ID = rep.M_Warehouse_ID) LEFT JOIN M_Warehouse w1 ON (w1.M_Warehouse_ID = rep.M_WarehouseSource_ID) WHERE rep.IsActive = 'Y' AND p.M_Product_ID    = " + M_Product_ID);
+            }
+            else
+            {
+                sqlRep.Append( "SELECT w.Name AS Warehouse, w.M_Warehouse_ID, rep.Level_Max AS Maxi, rep.Level_Min AS Mini, rep.ReplenishType AS rtype, 0 AS Qty, 0 AS OrderPack,"
+                    + " rep.M_WarehouseSource_ID AS SourceWarehouse, p.M_Product_ID FROM M_Replenish rep INNER JOIN M_Product p ON (p.M_Product_ID = rep.M_Product_ID) INNER JOIN M_Warehouse w "
+                    + " ON (w.M_Warehouse_ID = rep.M_Warehouse_ID) LEFT JOIN M_Warehouse w1 ON (w1.M_Warehouse_ID = rep.M_WarehouseSource_ID) WHERE rep.IsActive = 'Y' AND p.M_Product_ID    = " + M_Product_ID);
+            }
+
+            if (selWh != null && selWh.Count > 0)
+            {
+                var whString = "";
+                for (var w = 0; w < selWh.Count; w++)
+                {
+                    if (whString.Length > 0)
+                    {
+                        whString = whString + ", " + selWh[w];
+                    }
+                    else
+                    {
+                        whString = whString + selWh[w];
+                    }
+                }
+                sqlRep.Append( " AND w.M_Warehouse_ID IN (" + whString + ")");
+            }
+
+            DataSet ds = DB.ExecuteDataset(sqlRep.ToString());
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    RepRule obj = new RepRule();
+                    obj.Warehouse = Util.GetValueOfString(ds.Tables[0].Rows[i]["Warehouse"]);
+                    obj.RepType = Util.GetValueOfString(ds.Tables[0].Rows[i]["rtype"]);
+                    obj.Min = Util.GetValueOfDecimal(ds.Tables[0].Rows[i]["Mini"]);
+                    obj.Max = Util.GetValueOfDecimal(ds.Tables[0].Rows[i]["Maxi"]);
+                    obj.Qty = Util.GetValueOfDecimal(ds.Tables[0].Rows[i]["Qty"]);
+                    obj.OrderPack = Util.GetValueOfDecimal(ds.Tables[0].Rows[i]["OrderPack"]);
+                    obj.SourceWarehouse = Util.GetValueOfInt(ds.Tables[0].Rows[i]["SourceWarehouse"]);
+                    obj.M_Warehouse_ID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["M_Warehouse_ID"]);
+                    obj.M_Product_ID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["M_Product_ID"]);
+                    repRules.Add(obj);
+                }
+            }
+            return repRules;
+        }
+        /// <summary>
+        /// Zoom Method
+        /// </summary>
+        /// <param name="windowName">windowName</param>
+        /// <returns>window</returns>
+        public int LoadWindow(string windowName)
+        {
+            string sql = "SELECT ad_window_id FROM ad_window WHERE name = '" + windowName + "'";
+            int rule = Util.GetValueOfInt(DB.ExecuteScalar(sql, null, null));
+            return rule;
+        }
+    }
+
+    public class Variant
+    {
+        public string Attribute { get; set; }
+        public string QtyOnHand { get; set; }
+        public string UOM { get; set; }
+        public string SerialNo { get; set; }
+        public string LotNo { get; set; }
+        public string ExpDate { get; set; }
+        public int M_Product_ID { get; set; }
+
+    }
+    public class Transaction
+    {
+        public string DocumentType { get; set; }
+        public string DocumentNo { get; set; }
+        public string Locator { get; set; }
+        public string Date { get; set; }
+        public string InventoryIn { get; set; }
+        public string InventoryOut { get; set; }
+        public string Attribute { get; set; }
+        public string Balance { get; set; }
+        public string Warehouse { get; set; }
+        public string Quantity { get; set; }
+        public string Unconfirmed { get; set; }
+        public string LastReceipt { get; set; }
+        public string DemandedBy { get; set; }
+        public string DatePromised { get; set; }
+        public string AvailabilityStatus { get; set; }
+        public int M_Product_ID { get; set; }
+
+    }
+    public class Order
+    {
+        public string DatePromised { get; set; }
+        public string Quantity { get; set; }
+        public string DateOrdered { get; set; }
+        public string Supplier { get; set; }
+        public string QtyReserved { get; set; }
+    }
+
+    public class Kits
+    {
+        public string Product { get; set; }
+        public string Factor { get; set; }
+        public string UOM { get; set; }
+        public string QtyOnHand { get; set; }
+        public string ATP { get; set; }
+        public int M_Product_ID { get; set; }
     }
 
     public class ProdCatInfo
@@ -2123,6 +3101,23 @@ WHERE M_Product_ID = " + M_Product_ID;
         public int ID { get; set; }
     }
 
+    public class DocType
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public string DocBaseType { get; set; }
+        public string IsReleaseDocument { get; set; }
+    }
+
+    public class Substitute
+    {
+        public string Product { get; set; }
+        public string QtyOnHand { get; set; }
+        public string UOM { get; set; }
+        public string Reserved { get; set; }
+        public string ATP { get; set; }
+        public int M_Product_ID { get; set; }
+    }
     public class PriceInfo
     {
         public int recid { get; set; }
@@ -2144,6 +3139,7 @@ WHERE M_Product_ID = " + M_Product_ID;
         public decimal OrderPack { get; set; }
         public int C_Currency_ID { get; set; }
         public int DeliveryTime { get; set; }
+        public string Supplier { get; set; }
     }
 
     public class RepCreateData
@@ -2171,6 +3167,7 @@ WHERE M_Product_ID = " + M_Product_ID;
 
     public class RepRule
     {
+        public string Product { get; set; }
         public int M_Product_ID { get; set; }
         public int M_Warehouse_ID { get; set; }
         public string RepType { get; set; }
@@ -2179,5 +3176,17 @@ WHERE M_Product_ID = " + M_Product_ID;
         public decimal Qty { get; set; }
         public decimal OrderPack { get; set; }
         public int SourceWarehouse { get; set; }
+        public string Warehouse { get; set; }
+    }
+
+    public class RepGet
+    {
+        public int RequisitionNo { get; set; }
+        public string Date { get; set; }
+        public int QtyDemanded { get; set; }
+        public int QtyReceived { get; set; }
+        public int QtyPending { get; set; }
+        public int M_Product_ID { get; set; }
+
     }
 }
