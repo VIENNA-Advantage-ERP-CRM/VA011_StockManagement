@@ -70,11 +70,16 @@ namespace VA011.Controllers
             List<NameIDClass> prods = model.GetOrganizations(ct, value, fill);
             return Json(JsonConvert.SerializeObject(prods), JsonRequestBehavior.AllowGet);
         }
-        public JsonResult selectGrid(int M_Product_ID)
+        /// <summary>
+        /// selectCartGrid Method
+        /// </summary>
+        /// <param name="M_Product_ID">M_Product_ID</param>
+        /// <returns>pop window</returns>
+        public JsonResult selectCartGrid(int M_Product_ID)
         {
             Ctx ct = Session["ctx"] as Ctx;
             InventoryModel model = new InventoryModel();
-            int prodCount = model.selectGrid( ct, M_Product_ID);
+            int prodCount = model.selectCartGrid( ct, M_Product_ID);
             return Json(JsonConvert.SerializeObject(prodCount), JsonRequestBehavior.AllowGet);
         }
         /// <summary>

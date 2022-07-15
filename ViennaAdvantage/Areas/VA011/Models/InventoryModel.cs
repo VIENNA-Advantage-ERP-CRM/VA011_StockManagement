@@ -76,9 +76,8 @@ namespace VA011.Models
         /// <param name="ctx">ctx</param>
         /// <param name="M_Product_ID">M_Product_ID</param>
         /// <returns>Data</returns>
-        public int selectGrid(Ctx ctx, int M_Product_ID)
+        public int selectCartGrid(Ctx ctx, int M_Product_ID)
         {
-            //var qry = "SELECT M_AttributeSet_ID FROM M_Product WHERE M_Product_ID = " + VIS.Utility.Util.getValueOfInt(cartGrid.records[event.recid - 1]["product_ID"]);
             var qry = "SELECT M_AttributeSet_ID FROM M_Product WHERE M_Product_ID = " + M_Product_ID;
             int mattsetid = Util.GetValueOfInt(DB.ExecuteScalar(qry, null, null));
             return mattsetid;
@@ -171,26 +170,24 @@ namespace VA011.Models
         public List<NameIDClass> GetOrgWarehouse(Ctx ctx, string value, List<int> org_IDs, bool fill)
         {
             var orgString = "";
-            if (org_IDs != null)
+            //if (org_IDs != null)
+            //{
+            if (org_IDs != null && org_IDs.Count > 0)
             {
-                if (org_IDs.Count > 0)
+                for (var w = 0; w < org_IDs.Count; w++)
                 {
-                    for (var w = 0; w < org_IDs.Count; w++)
+                    if (orgString.Length > 0)
                     {
-                        if (orgString.Length > 0)
-                        {
-                            orgString = orgString + ", " + org_IDs[w];
-                        }
-                        else
-                        {
-                            orgString += "0, ";
-                            orgString += org_IDs[w];
-                        }
+                        orgString = orgString + ", " + org_IDs[w];
                     }
-                    //sqlDmd.Append(" AND o.AD_Org_ID IN (0, " + orgString + ")");
+                    else
+                    {
+                        orgString += "0, ";
+                        orgString += org_IDs[w];
+                    }
                 }
+                //sqlDmd.Append(" AND o.AD_Org_ID IN (0, " + orgString + ")");
             }
-
 
             List<NameIDClass> pInfo = new List<NameIDClass>();
             string sql = @"SELECT M_Warehouse_ID, Name FROM M_Warehouse WHERE AD_Client_ID = " + ctx.GetAD_Client_ID() + " AND IsActive = 'Y'";
@@ -2309,8 +2306,8 @@ WHERE M_Product_ID = " + M_Product_ID;
         public List<NameIDClass> GetSupplier(Ctx ctx)
         {
             List<NameIDClass> pInfo = new List<NameIDClass>();
-            string sql = @"SELECT C_BPartner_ID, Name FROM C_BPartner WHERE AD_Client_ID = " + ctx.GetAD_Client_ID() + " AND IsActive = 'Y' AND IsVendor = 'Y'";
-            sql += " ORDER BY Name";
+            string sql = @"SELECT C_BPartner_ID, Name FROM C_BPartner WHERE AD_Client_ID = " + ctx.GetAD_Client_ID() + " AND IsActive = 'Y' AND IsVendor = 'Y'  ORDER BY Name";
+            //sql += " ORDER BY Name";
             DataSet ds = DB.ExecuteDataset(sql);
             if (ds != null && ds.Tables[0].Rows.Count > 0)
             {
@@ -2450,8 +2447,8 @@ WHERE M_Product_ID = " + M_Product_ID;
         public List<NameIDClass> GetUOM(Ctx ctx)
         {
             List<NameIDClass> objUOM = new List<NameIDClass>();
-            string sql = @"SELECT C_UOM_ID,Name FROM C_UOM WHERE IsActive = 'Y'";
-            sql += " ORDER BY Name";
+            string sql = @"SELECT C_UOM_ID,Name FROM C_UOM WHERE IsActive = 'Y'ORDER BY Name";
+            //sql += " ORDER BY Name";
             DataSet ds = DB.ExecuteDataset(sql);
             if (ds != null && ds.Tables[0].Rows.Count > 0)
             {
@@ -2520,12 +2517,12 @@ WHERE M_Product_ID = " + M_Product_ID;
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                 {
                     Substitute obj = new Substitute();
-                    obj.Product = Util.GetValueOfString(ds.Tables[0].Rows[i]["product"]);
-                    obj.QtyOnHand = Util.GetValueOfString(ds.Tables[0].Rows[i]["qtyonhand"]);
-                    obj.UOM = Util.GetValueOfString(ds.Tables[0].Rows[i]["uom"]);
-                    obj.Reserved = Util.GetValueOfString(ds.Tables[0].Rows[i]["qtyreserved"]);
-                    obj.ATP = Util.GetValueOfString(ds.Tables[0].Rows[i]["qtyavailable"]);
-                    obj.M_Product_ID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["m_product_id"]);
+                    obj.Product = Util.GetValueOfString(ds.Tables[0].Rows[i]["Product"]);
+                    obj.QtyOnHand = Util.GetValueOfString(ds.Tables[0].Rows[i]["QtyOnHand"]);
+                    obj.UOM = Util.GetValueOfString(ds.Tables[0].Rows[i]["UOM"]);
+                    obj.Reserved = Util.GetValueOfString(ds.Tables[0].Rows[i]["QtyReserved"]);
+                    obj.ATP = Util.GetValueOfString(ds.Tables[0].Rows[i]["QtyAvailable"]);
+                    obj.M_Product_ID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["M_Product_ID"]);
                     objSub.Add(obj);
                 }
             }
@@ -2615,8 +2612,8 @@ WHERE M_Product_ID = " + M_Product_ID;
                     whString = whString + selWh[w];
                 }
             }
-            sqlOrd.Append("SELECT ol.datepromised, o.dateordered, ol.m_product_ID, ol.qtyordered, ol.qtyentered, ol.qtyreserved, bp.name as supplier FROM c_order o INNER JOIN c_Orderline ol ON (ol.c_ORder_ID = o.C_Order_ID) "
-                    + " inner join c_bpartner bp on (bp.c_BPartner_ID = o.C_Bpartner_ID) WHERE o.IsSOTrx = 'N' AND o.IsReturnTrx = 'N' AND ol.QtyReserved > 0 AND o.DocStatus IN ('CO', 'CL') AND ol.M_Product_ID = " + M_Product_ID);
+            sqlOrd.Append("SELECT OL.DatePromised, O.DateOrdered, OL.M_Product_ID, OL.QtyOrdered, OL.QtyEntered, OL.QtyReserved, BP.Name AS Supplier FROM C_Order O INNER JOIN C_OrderLine OL ON (OL.C_Order_ID = O.C_Order_ID) "
+                    + " INNER JOIN C_BPartner BP ON (BP.C_BPartner_ID = O.C_BPartner_ID) WHERE O.IsSOTrx = 'N' AND O.IsReturnTrx = 'N' AND OL.QtyReserved > 0 AND O.DocStatus IN ('CO', 'CL') AND OL.M_Product_ID = " + M_Product_ID);
             if (whString.Length > 0)
             {
                 sqlOrd.Append(" AND o.M_Warehouse_ID IN (" + whString + ")");
@@ -2629,11 +2626,11 @@ WHERE M_Product_ID = " + M_Product_ID;
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                 {
                     Order obj = new Order();
-                    obj.DatePromised = Util.GetValueOfDateTime(ds.Tables[0].Rows[i]["datepromised"]).Value.ToShortDateString();
-                    obj.Quantity = Util.GetValueOfString(ds.Tables[0].Rows[i]["qtyordered"]);
-                    obj.DateOrdered = Util.GetValueOfDateTime(ds.Tables[0].Rows[i]["dateordered"]).Value.ToShortDateString();
-                    obj.Supplier = Util.GetValueOfString(ds.Tables[0].Rows[i]["supplier"]);
-                    obj.QtyReserved = Util.GetValueOfString(ds.Tables[0].Rows[i]["qtyreserved"]);
+                    obj.DatePromised = Util.GetValueOfDateTime(ds.Tables[0].Rows[i]["DatePromised"]).Value.ToShortDateString();
+                    obj.Quantity = Util.GetValueOfString(ds.Tables[0].Rows[i]["QtyOrdered"]);
+                    obj.DateOrdered = Util.GetValueOfDateTime(ds.Tables[0].Rows[i]["DateOrdered"]).Value.ToShortDateString();
+                    obj.Supplier = Util.GetValueOfString(ds.Tables[0].Rows[i]["Supplier"]);
+                    obj.QtyReserved = Util.GetValueOfString(ds.Tables[0].Rows[i]["QtyReserved"]);
                     objOrder.Add(obj);
                 }
             }
@@ -2782,7 +2779,21 @@ WHERE M_Product_ID = " + M_Product_ID;
         public List<Transaction> LocatorGrid(Ctx ctx, int M_Product_ID, List<int> selWh, string orgString)
         {
             List<Transaction> objTran = new List<Transaction>();
-
+            //string qryLoc = "";
+            var selOrgs = "";
+            for (var w = 0; w < selOrgs.Length; w++)
+            {
+                if (orgString.Length > 0)
+                {
+                    orgString = orgString + ", " + selOrgs[w];
+                }
+                else
+                {
+                    orgString += "0, ";
+                    orgString += selOrgs[w];
+                }
+            }
+            var qryLoc = "";
             var selQuery = "SELECT p.Name, p.M_Product_ID, l.M_Locator_ID, p.Value, w.Name as Warehouse, l.Value as Locator, s.M_AttributeSetInstance_ID, asi.Description, (SELECT MAX(io.DateAcct) FROM M_InoutLine iol "
                  + " INNER JOIN M_Inout io ON (io.M_Inout_ID      = iol.M_Inout_ID) WHERE iol.M_Product_ID = p.M_Product_ID  AND io.IsSOTrx = 'N' AND iol.M_Locator_ID = l.M_Locator_ID) as LastReceipt, "
                  + " (SELECT NVL(SUM(lc.targetqty),0) FROM m_inoutlineconfirm lc INNER JOIN m_inoutconfirm ioc ON (ioc.M_InoutConfirm_ID = lc.M_InoutConfirm_ID) INNER JOIN m_inoutline iol ON (iol.M_Inoutline_ID = lc.m_inoutLine_ID) INNER JOIN m_inout io ON (iol.M_Inout_ID = io.m_inout_ID) "
@@ -2790,11 +2801,38 @@ WHERE M_Product_ID = " + M_Product_ID;
                  + " SUM(s.QtyOnHand) AS QtyOnHand "
                  + " FROM M_Product p INNER JOIN M_Storage s  ON (s.M_Product_ID = p.M_Product_ID) INNER JOIN M_Locator l ON (l.M_Locator_ID = s.M_Locator_ID) INNER JOIN M_Warehouse w "
                  + " ON (l.M_Warehouse_ID = w.M_Warehouse_ID) LEFT OUTER JOIN M_AttributeSetInstance asi  ON (s.M_AttributeSetInstance_ID = asi.M_AttributeSetInstance_ID) WHERE p.M_Product_ID = " + M_Product_ID + " AND p.AD_Client_ID = " + ctx.GetAD_Client_ID();
-            var groupBySec = " GROUP BY p.Name, p.M_Product_ID, l.M_Locator_ID, p.Value, w.Name, l.Value, s.M_AttributeSetInstance_ID, asi.Description, "
+           var groupBySec = " GROUP BY p.Name, p.M_Product_ID, l.M_Locator_ID, p.Value, w.Name, l.Value, s.M_AttributeSetInstance_ID, asi.Description, "
                 + " w.M_Warehouse_ID  ";
-            selQuery = selQuery + groupBySec;
+            //qryLoc = selQuery + groupBySec;
 
-            DataSet ds = DB.ExecuteDataset(selQuery);
+            //var groupBySec = "";
+
+            if (orgString.Length > 0)
+                selQuery += " AND w.AD_Org_ID IN (" + orgString + ")";
+
+            if (selWh.Count > 0)
+            {
+                for (var w = 0; w < selWh.Count; w++)
+                {
+                    if (w == 0)
+                    {
+                        qryLoc += " ( " + selQuery + " AND w.M_Warehouse_ID = " + selWh[w] + groupBySec;
+                        //qryLoc += " ( " + selQuery + " AND w.M_Warehouse_ID = " + selWh[w];
+                    }
+                    else
+                    {
+                        qryLoc += " UNION " + selQuery + " AND w.M_Warehouse_ID = " + selWh[w] + groupBySec;
+                        //qryLoc += " UNION " + selQuery + " AND w.M_Warehouse_ID = " + selWh[w];
+                    }
+                }
+                qryLoc += "  ) ORDER BY Name";
+            }
+            else
+            {
+                qryLoc += selQuery + groupBySec + " Order by p.name ";
+            }
+
+            DataSet ds = DB.ExecuteDataset(qryLoc);
             if (ds != null && ds.Tables[0].Rows.Count > 0)
             {
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
@@ -2977,13 +3015,13 @@ WHERE M_Product_ID = " + M_Product_ID;
 
             if (Env.IsModuleInstalled("DTD001_"))
             {
-                sqlRep.Append( "SELECT w.Name AS Warehouse, w.M_Warehouse_ID, rep.Level_Max AS Maxi, rep.Level_Min AS Mini, rep.ReplenishType AS rtype, DTD001_MinOrderQty AS Qty, DTD001_OrderPackQty AS OrderPack,"
+                sqlRep.Append("SELECT w.Name AS Warehouse, w.M_Warehouse_ID, rep.Level_Max AS Maxi, rep.Level_Min AS Mini, rep.ReplenishType AS rtype, DTD001_MinOrderQty AS Qty, DTD001_OrderPackQty AS OrderPack,"
                     + " rep.M_WarehouseSource_ID AS SourceWarehouse, p.M_Product_ID FROM M_Replenish rep INNER JOIN M_Product p ON (p.M_Product_ID = rep.M_Product_ID) INNER JOIN M_Warehouse w "
                     + " ON (w.M_Warehouse_ID = rep.M_Warehouse_ID) LEFT JOIN M_Warehouse w1 ON (w1.M_Warehouse_ID = rep.M_WarehouseSource_ID) WHERE rep.IsActive = 'Y' AND p.M_Product_ID    = " + M_Product_ID);
             }
             else
             {
-                sqlRep.Append( "SELECT w.Name AS Warehouse, w.M_Warehouse_ID, rep.Level_Max AS Maxi, rep.Level_Min AS Mini, rep.ReplenishType AS rtype, 0 AS Qty, 0 AS OrderPack,"
+                sqlRep.Append("SELECT w.Name AS Warehouse, w.M_Warehouse_ID, rep.Level_Max AS Maxi, rep.Level_Min AS Mini, rep.ReplenishType AS rtype, 0 AS Qty, 0 AS OrderPack,"
                     + " rep.M_WarehouseSource_ID AS SourceWarehouse, p.M_Product_ID FROM M_Replenish rep INNER JOIN M_Product p ON (p.M_Product_ID = rep.M_Product_ID) INNER JOIN M_Warehouse w "
                     + " ON (w.M_Warehouse_ID = rep.M_Warehouse_ID) LEFT JOIN M_Warehouse w1 ON (w1.M_Warehouse_ID = rep.M_WarehouseSource_ID) WHERE rep.IsActive = 'Y' AND p.M_Product_ID    = " + M_Product_ID);
             }
@@ -3002,7 +3040,7 @@ WHERE M_Product_ID = " + M_Product_ID;
                         whString = whString + selWh[w];
                     }
                 }
-                sqlRep.Append( " AND w.M_Warehouse_ID IN (" + whString + ")");
+                sqlRep.Append(" AND w.M_Warehouse_ID IN (" + whString + ")");
             }
 
             DataSet ds = DB.ExecuteDataset(sqlRep.ToString());

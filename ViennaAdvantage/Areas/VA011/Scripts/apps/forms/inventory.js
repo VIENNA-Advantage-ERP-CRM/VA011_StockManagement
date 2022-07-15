@@ -360,7 +360,7 @@
 
         function LoadWarehouseCallBack(dr) {
 
-            //cmbWarehouses.append(" <option value = 0></option>");
+            cmbWarehouses.append(" <option value = 0></option>");
             if (dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     key = VIS.Utility.Util.getValueOfInt(dr[i].ID);
@@ -390,7 +390,7 @@
 
         function ReLoadWarehouseCallBack(dr) {
 
-            //cmbWarehouses.append(" <option value = 0></option>");
+            cmbWarehouses.append(" <option value = 0></option>");
             if (dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     key = VIS.Utility.Util.getValueOfInt(dr[i].ID);
@@ -402,15 +402,14 @@
         };
 
         function LoadSrcWarehouses() {
-            //cmbWarehouses.empty();
+            cmbWarehouses.empty();
             //var qry = "SELECT M_Warehouse_ID, Name FROM M_Warehouse WHERE AD_Client_ID = " + VIS.context.getContext("#AD_Client_ID") + " AND IsActive = 'Y'";
             VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/GetOrgWarehouseAll", { "value": "", "orgs": srcOrgs, "fill": false }, LoadSrcWarehousesCallBack);
             //VIS.DB.executeReader(qry, null, LoadWarehouseCallBack);
         };
 
         function LoadSrcWarehousesCallBack(dr) {
-
-            //cmbWarehouses.append(" <option value = 0></option>");
+            cmbWarehouses.append(" <option value = 0></option>");
             if (dr.length > 0) {
                 listSrcWarehouses.push({ id: 0, text: "" });
                 listCopyWarehouses.push({ id: 0, text: "" });
@@ -438,6 +437,7 @@
         };
 
         function LoadSuppliersCallBack(dr) {
+            cmbSuppliers.append(" <option value = 0></option>");
             if (dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     key = VIS.Utility.Util.getValueOfInt(dr[i].ID);
@@ -1121,7 +1121,7 @@
                         //var qry = "SELECT M_AttributeSet_ID FROM M_Product WHERE M_Product_ID = " + VIS.Utility.Util.getValueOfInt(cartGrid.records[event.recid - 1]["product_ID"]);
                         var product_ID = VIS.Utility.Util.getValueOfInt(cartGrid.records[event.recid - 1]["product_ID"]);
                         //var mattsetid = VIS.Utility.Util.getValueOfInt(VIS.DB.executeScalar(qry));
-                        var mattsetid = VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/cartGrid", { "M_Product_ID": product_ID });
+                        var mattsetid = VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/selectCartGrid", { "M_Product_ID": product_ID });
                         if (mattsetid != 0) {
                             var productWindow = AD_Column_ID == 8418;		//	HARDCODED
                             var M_Locator_ID = VIS.context.getContextAsInt($self.windowNo, "M_Locator_ID");
@@ -1273,7 +1273,7 @@
                 $bsyDiv[0].style.visibility = "visible";
                 multiValues = [];
                 cartGrid.clear();
-                if (cmbCart.length > 0) {
+                if (cmbCart.val() > 0) {
                     //var sqlaa = "";
                     //var ds = null;
                     //var sqlaa = "SELECT po.VAICNT_InventoryCountLine_ID,po.M_Product_ID,prd.Name, po.C_UOM_ID, u.Name AS UOM, po.UPC, po.M_AttributeSetInstance_ID, ats.Description, po.VAICNT_Quantity," +
@@ -1336,7 +1336,7 @@
                 $("#grid_gridcart_" + $self.windowNo + "_rec_" + cartGrid.records[k].recid).find("input[type=text]").val(multiValues[k].Attribute);
                 //var qry = "SELECT M_AttributeSet_ID FROM M_Product WHERE M_Product_ID = " + multiValues[k].product_ID;
                 var product_ID = multiValues[k].product_ID;
-                var mattsetid = VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/selectGrid", { "M_Product_ID": product_ID });
+                var mattsetid = VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/selectCartGrid", { "M_Product_ID": product_ID });
                 if (mattsetid <= 0) {
                     $("#grid_gridcart_" + $self.windowNo + "_rec_" + cartGrid.records[k].recid).find("input:not([type='checkbox'])").hide();
                     $("#grid_gridcart_" + $self.windowNo + "_rec_" + cartGrid.records[k].recid).find("i").hide();
@@ -2453,17 +2453,17 @@
                 Recid = Recid + 1;
 
                 var orgString = "";
-                for (var w = 0; w < selOrgs.length; w++) {
-                    if (orgString.length > 0) {
-                        orgString = orgString + ", " + selOrgs[w];
-                    }
-                    else {
-                        orgString += "0, ";
-                        orgString += selOrgs[w];
-                    }
-                }
+                //for (var w = 0; w < selOrgs.length; w++) {
+                //    if (orgString.length > 0) {
+                //        orgString = orgString + ", " + selOrgs[w];
+                //    }
+                //    else {
+                //        orgString += "0, ";
+                //        orgString += selOrgs[w];
+                //    }
+                //}
 
-                var qryLoc = "";
+                //var qryLoc = "";
                 //var selQuery = "SELECT p.Name, p.M_Product_ID, l.M_Locator_ID, p.Value, w.Name as Warehouse, l.Value as Locator, s.M_AttributeSetInstance_ID, asi.Description, (SELECT MAX(io.DateAcct) FROM M_InoutLine iol "
                 //    + " INNER JOIN M_Inout io ON (io.M_Inout_ID      = iol.M_Inout_ID) WHERE iol.M_Product_ID = p.M_Product_ID  AND io.IsSOTrx = 'N' AND iol.M_Locator_ID = l.M_Locator_ID) as LastReceipt, "
                 //    + " (SELECT NVL(SUM(lc.targetqty),0) FROM m_inoutlineconfirm lc INNER JOIN m_inoutconfirm ioc ON (ioc.M_InoutConfirm_ID = lc.M_InoutConfirm_ID) INNER JOIN m_inoutline iol ON (iol.M_Inoutline_ID = lc.m_inoutLine_ID) INNER JOIN m_inout io ON (iol.M_Inout_ID = io.m_inout_ID) "
@@ -2476,30 +2476,30 @@
 
                 //+ " w.M_Warehouse_ID Having bomQtyOnHand(p.M_Product_ID,w.M_Warehouse_ID,l.M_Locator_ID) > 0 AND SUM(s.QtyOnHand) > 0 ";
 
-                var groupBySec = "";
+                //var groupBySec = "";
 
-                if (orgString.length > 0)
-                    selQuery += " AND w.AD_Org_ID IN (" + orgString + ")";
+                //if (orgString.length > 0)
+                //    selQuery += " AND w.AD_Org_ID IN (" + orgString + ")";
 
-                if (selWh.length > 0) {
-                    for (var w = 0; w < selWh.length; w++) {
-                        if (w == 0) {
-                            //qryLoc += " ( " + selQuery + " AND w.M_Warehouse_ID = " + selWh[w] + groupBySec;
-                            qryLoc += " ( " + selQuery + " AND w.M_Warehouse_ID = " + selWh[w];
-                        }
-                        else {
-                            /*qryLoc += " UNION " + selQuery + " AND w.M_Warehouse_ID = " + selWh[w] + groupBySec;*/
-                            qryLoc += " UNION " + selQuery + " AND w.M_Warehouse_ID = " + selWh[w];
-                        }
-                    }
-                    qryLoc += "  ) ORDER BY Name";
-                }
-                else {
-                    qryLoc += selQuery + groupBySec + " Order by p.name ";
-                }
+                //if (selWh.length > 0) {
+                //    for (var w = 0; w < selWh.length; w++) {
+                //        if (w == 0) {
+                //            //qryLoc += " ( " + selQuery + " AND w.M_Warehouse_ID = " + selWh[w] + groupBySec;
+                //            qryLoc += " ( " + selQuery + " AND w.M_Warehouse_ID = " + selWh[w];
+                //        }
+                //        else {
+                //            /*qryLoc += " UNION " + selQuery + " AND w.M_Warehouse_ID = " + selWh[w] + groupBySec;*/
+                //            qryLoc += " UNION " + selQuery + " AND w.M_Warehouse_ID = " + selWh[w];
+                //        }
+                //    }
+                //    qryLoc += "  ) ORDER BY Name";
+                //}
+                //else {
+                //    qryLoc += selQuery + groupBySec + " Order by p.name ";
+                //}
 
                 //VIS.DB.executeDataSet(qryLoc.toString(), null, callbackLocatorGrid);
-                var selQuery = VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LocatorGrid", { "M_Product_ID": _product_ID, "Warehouses": selWh, "orgS": orgString }, callbackLocatorGrid);
+                VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LocatorGrid", { "M_Product_ID": _product_ID, "Warehouses": selWh, "orgS": orgString}, callbackLocatorGrid);
 
             }
         };
@@ -5687,7 +5687,7 @@
         };
         function callbackLoadCmbCreate(dr) {
 
-            //cmbCreate.append(" <option value = 0></option>");
+            cmbCreate.append(" <option value = 0></option>");
             if (dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     Name = dr[i].Name;
