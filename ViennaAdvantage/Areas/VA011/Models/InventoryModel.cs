@@ -1022,7 +1022,7 @@ namespace VA011.Models
             {
                 sqlRep.Clear();
                 sqlRep.Append("SELECT M_Warehouse_ID FROM M_Warehouse WHERE AD_Client_ID = " + ct.GetAD_Client_ID() + " AND IsActive = 'Y'");
-
+                Warehouses = new List<int>();
                 DataSet dsWH = DB.ExecuteDataset(sqlRep.ToString(), null, null);
                 if (dsWH != null && dsWH.Tables[0].Rows.Count > 0)
                 {
@@ -2601,15 +2601,18 @@ WHERE M_Product_ID = " + M_Product_ID;
             List<Order> objOrder = new List<Order>();
             StringBuilder sqlOrd = new StringBuilder("");
             var whString = "";
-            for (var w = 0; w < selWh.Count; w++)
+            if (selWh != null && selWh.Count > 0)
             {
-                if (whString.Length > 0)
+                for (var w = 0; w < selWh.Count; w++)
                 {
-                    whString = whString + ", " + selWh[w];
-                }
-                else
-                {
-                    whString = whString + selWh[w];
+                    if (whString.Length > 0)
+                    {
+                        whString = whString + ", " + selWh[w];
+                    }
+                    else
+                    {
+                        whString = whString + selWh[w];
+                    }
                 }
             }
             sqlOrd.Append("SELECT OL.DatePromised, O.DateOrdered, OL.M_Product_ID, OL.QtyOrdered, OL.QtyEntered, OL.QtyReserved, BP.Name AS Supplier FROM C_Order O INNER JOIN C_OrderLine OL ON (OL.C_Order_ID = O.C_Order_ID) "
@@ -2657,7 +2660,7 @@ WHERE M_Product_ID = " + M_Product_ID;
                    + " ON (dtio.C_DocType_ID = io.C_DocType_ID) LEFT OUTER JOIN M_inventoryLine ivl ON (ivl.M_inventoryLine_ID = t.M_inventoryLine_ID) LEFT OUTER JOIN M_Inventory iv ON (ivl.M_Inventory_ID = iv.M_Inventory_ID) "
                    + " LEFT OUTER JOIN C_DocType dtiv ON (dtiv.C_DocType_ID = iv.C_DocType_ID) LEFT OUTER JOIN M_MovementLine mvl ON (mvl.M_MovementLine_ID = t.M_MovementLine_ID) LEFT OUTER JOIN M_Movement mv "
                    + " ON (mvl.M_Movement_ID = mv.M_Movement_ID) LEFT OUTER JOIN C_DocType dtmv ON (dtmv.C_DocType_ID = mv.C_DocType_ID) LEFT OUTER JOIN M_AttributeSetInstance asi  ON (t.M_AttributeSetInstance_ID = asi.M_AttributeSetInstance_ID) LEFT OUTER JOIN M_Locator lc ON (lc.M_Locator_ID = t.M_Locator_ID) WHERE t.M_Product_ID = " + M_Product_ID);
-            if (selWh.Count > 0)
+            if (selWh != null && selWh.Count > 0)
             {
                 var whString = "";
                 for (var w = 0; w < selWh.Count; w++)
@@ -2762,7 +2765,7 @@ WHERE M_Product_ID = " + M_Product_ID;
                     obj.SerialNo = Util.GetValueOfString(ds.Tables[0].Rows[i]["serno"]);
                     obj.LotNo = Util.GetValueOfString(ds.Tables[0].Rows[i]["lot"]);
                     obj.ExpDate = Util.GetValueOfString(ds.Tables[0].Rows[i]["guaranteedate"]);
-                    obj.M_Product_ID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["m_product_id"]);
+                    obj.M_Product_ID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["M_Product_ID"]);
                     objVariant.Add(obj);
                 }
             }
@@ -2810,7 +2813,7 @@ WHERE M_Product_ID = " + M_Product_ID;
             if (orgString.Length > 0)
                 selQuery += " AND w.AD_Org_ID IN (" + orgString + ")";
 
-            if (selWh.Count > 0)
+            if (selWh != null && selWh.Count > 0)
             {
                 for (var w = 0; w < selWh.Count; w++)
                 {
@@ -2842,7 +2845,7 @@ WHERE M_Product_ID = " + M_Product_ID;
                     obj.Locator = Util.GetValueOfString(ds.Tables[0].Rows[i]["Locator"]);
                     obj.Quantity = Util.GetValueOfString(ds.Tables[0].Rows[i]["QtyOnHand"]);
                     obj.Unconfirmed = Util.GetValueOfString(ds.Tables[0].Rows[i]["QtyUnconfirmed"]);
-                    obj.Attribute = Util.GetValueOfString(ds.Tables[0].Rows[i]["description"]);
+                    obj.Attribute = Util.GetValueOfString(ds.Tables[0].Rows[i]["Description"]);
                     if (Util.GetValueOfDateTime(ds.Tables[0].Rows[i]["LastReceipt"]) != null)
                     {
                         obj.LastReceipt = Util.GetValueOfDateTime(ds.Tables[0].Rows[i]["LastReceipt"]).Value.ToShortDateString();
@@ -2888,7 +2891,7 @@ WHERE M_Product_ID = " + M_Product_ID;
             }
 
             var whString = "";
-            if (selWh.Count > 0)
+            if (selWh != null && selWh.Count > 0)
             {
                 for (var w = 0; w < selWh.Count; w++)
                 {

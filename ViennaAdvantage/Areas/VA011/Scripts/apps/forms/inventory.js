@@ -339,7 +339,7 @@
         };
 
         function LoadProductsCallBack(dr) {
-            if (dr.length > 0) {
+            if (dr != null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     key = VIS.Utility.Util.getValueOfInt(dr[i].ID);
                     value = dr[i].Name;
@@ -361,7 +361,7 @@
         function LoadWarehouseCallBack(dr) {
 
             cmbWarehouses.append(" <option value = 0></option>");
-            if (dr.length > 0) {
+            if (dr != null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     key = VIS.Utility.Util.getValueOfInt(dr[i].ID);
                     value = dr[i].Name;
@@ -391,7 +391,7 @@
         function ReLoadWarehouseCallBack(dr) {
 
             cmbWarehouses.append(" <option value = 0></option>");
-            if (dr.length > 0) {
+            if (dr != null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     key = VIS.Utility.Util.getValueOfInt(dr[i].ID);
                     value = dr[i].Name;
@@ -410,7 +410,7 @@
 
         function LoadSrcWarehousesCallBack(dr) {
             cmbWarehouses.append(" <option value = 0></option>");
-            if (dr.length > 0) {
+            if (dr != null && dr.length > 0) {
                 listSrcWarehouses.push({ id: 0, text: "" });
                 listCopyWarehouses.push({ id: 0, text: "" });
                 for (var i = 0; i < dr.length; i++) {
@@ -438,7 +438,7 @@
 
         function LoadSuppliersCallBack(dr) {
             cmbSuppliers.append(" <option value = 0></option>");
-            if (dr.length > 0) {
+            if (dr !=null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     key = VIS.Utility.Util.getValueOfInt(dr[i].ID);
                     value = dr[i].Name;
@@ -1208,7 +1208,7 @@
 
         function LoadcartCallBack(dr) {
             cmbCart.append(" <option value = 0></option>");
-            if (dr.length > 0) {
+            if (dr != null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     key = VIS.Utility.Util.getValueOfInt(dr[i].ID);
                     value = dr[i].Name;
@@ -1292,7 +1292,7 @@
 
         function BindCartCallBack(dr) {
             var Recid = 0;
-            if (dr.length > 0) {
+            if (dr != null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     Recid = Recid + 1;
                     multiValues.push(
@@ -1493,7 +1493,7 @@
 
         function callbackSubstituteGrid(dr) {
             var Recid = 0;
-            if (dr.length > 0) {
+            if (dr != null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     Recid = Recid + 1;
                     grdSubstituteProdValues.push(
@@ -1682,7 +1682,7 @@
         function callbackRelatedGrid(dr) {
 
             var Recid = 0;
-            if (dr.length > 0) {
+            if (dr != null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     Recid = Recid + 1;
                     grdRelatedProdValues.push(
@@ -1851,7 +1851,7 @@
         function callbackSuppliersRightGrid(dr) {
 
             var Recid = 0;
-            if (dr.length > 0) {
+            if (dr != null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     Recid = Recid + 1;
                     grdSuppliersRightProdValues.push(
@@ -2034,7 +2034,7 @@
         function callbackKitsGrid(dr) {
 
             var Recid = 0;
-            if (dr.length > 0) {
+            if (dr != null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     Recid = Recid + 1;
                     grdKitsProdValues.push(
@@ -2251,7 +2251,7 @@
 
             var Recid = 0;
             var expDate = null;
-            if (dr.length > 0) {
+            if (dr != null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     Recid = Recid + 1;
                     if (dr[i]["guaranteedate"] == null) {
@@ -2507,7 +2507,7 @@
         function callbackLocatorGrid(dr) {
             var Recid = 0;
             var lastReceipt = null;
-            if (dr.length > 0) {
+            if (dr != null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     Recid = Recid + 1;
                     if (dr[i]["LastReceipt"] == null) {
@@ -2945,7 +2945,7 @@
         function callbackReplenishGrid(dr) {
 
             var Recid = 0;
-            if (dr.length > 0) {
+            if (dr != null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     Recid = Recid + 1;
 
@@ -3178,7 +3178,7 @@
 
         function callbackDemandGrid(dr) {
             var Recid = 0;
-            if (dr.length > 0) {
+            if (dr != null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     Recid = Recid + 1;
 
@@ -3413,7 +3413,7 @@
 
         function callbackBindTransactionsGrid(dr) {
             var Recid = 0;
-            if (dr.length > 0) {
+            if (dr !=null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     Recid = Recid + 1;
                     var invIn = 0;
@@ -3441,9 +3441,9 @@
                             DocumentType: dr[i]["DocumentType"],
                             DocumentNo: dr[i]["DocumentNo"],
                             Locator: dr[i]["Locator"],
-                            Date: dr[i]["Date"],
-                            InventoryIn: dr[i]["InventoryIn"],
-                            InventoryOut: dr[i]["InventoryOut"],
+                            Date: date,
+                            InventoryIn: invIn,
+                            InventoryOut: InvOut,
                             Attribute: dr[i]["Attribute"],
                             Balance: dr[i]["Balance"],
                             M_Product_ID: 0,
@@ -3961,7 +3961,7 @@
             repProducts = [];
             grdReplenishmentPopValues = [];
 
-            if (dr.length > 0) {
+            if (dr != null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     Recid = Recid + 1;
                     grdReplenishmentPopValues.push(
@@ -4425,7 +4425,7 @@
 
         function callbackBindReplenishmentBGrid(dr) {
             var Recid = 0;
-            if (dr.length > 0) {
+            if (dr != null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     Recid = Recid + 1;
                     grdReplenishmentBValues.push(
@@ -5568,7 +5568,7 @@
 
         function callbackLoadCmbDocType(dr) {
             cmbDocType.append(" <option value = 0></option>");
-            if (dr.length > 0) {
+            if (dr != null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     key = dr[i]["ID"];
                     listKeyDocType.push(key);
@@ -5576,7 +5576,7 @@
                     listNameDocType.push(value);
                     listValueDocType.push(dr[i]["DocBaseType"]);
                     listValuePOType.push(dr[i]["IsReleaseDocument"]);
-                    cmbDocType.append(" <option value=" + key + ">" + VIS.Utility.encodeText(Name) + "</option>");
+                    //cmbDocType.append(" <option value=" + key + ">" + VIS.Utility.encodeText(Name) + "</option>");
                 }
             }
             //if (dr.HasRows) {
@@ -5605,7 +5605,7 @@
         function callbackLoadDocStatus(dr) {
 
             cmbDocStatus.append(" <option value = 0></option>");
-            if (dr.length > 0) {
+            if (dr != null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     Name = dr[i].Name;
                     Key = dr[i].Key;
@@ -5655,7 +5655,7 @@
 
         function callbackReplenishType(dr) {
             repTypeArray.push({ id: '-1', text: "" });
-            if (dr.length > 0) {
+            if (dr != null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     Name = dr[i].Name;
                     Key = dr[i].Key;
@@ -5688,7 +5688,7 @@
         function callbackLoadCmbCreate(dr) {
 
             cmbCreate.append(" <option value = 0></option>");
-            if (dr.length > 0) {
+            if (dr != null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     Name = dr[i].Name;
                     Key = dr[i].Key;
@@ -5716,7 +5716,7 @@
         };
 
         function LoadUOMCallBack(dr) {
-            if (dr.length > 0) {
+            if (dr != null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     key = VIS.Utility.Util.getValueOfInt(dr[i].ID);
                     value = dr[i].Name;
