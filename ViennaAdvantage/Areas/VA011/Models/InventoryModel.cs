@@ -254,8 +254,6 @@ namespace VA011.Models
                     //sqlDmd.Append(" AND o.AD_Org_ID IN (0, " + orgString + ")");
                 }
             }
-
-
             List<NameIDClass> pInfo = new List<NameIDClass>();
             string sql = @"SELECT M_Warehouse_ID, Name FROM M_Warehouse WHERE AD_Client_ID = " + ctx.GetAD_Client_ID() + " AND IsActive = 'Y'";
             if (value != "")
@@ -2502,16 +2500,33 @@ WHERE M_Product_ID = " + M_Product_ID;
         /// <param name="M_Product_ID">M_Product_ID</param>
         /// <returns>Substitute value</returns>
 
-        public List<Substitute> LoadSubstituteGrid(Ctx ctx, int M_Product_ID)
+        public List<Substitute> LoadSubstituteGrid(Ctx ctx, int M_Product_ID, List<int> selWh)
         {
             List<Substitute> objSub = new List<Substitute>();
-            string sql = @"SELECT DISTINCT p.Name as Product, p.M_Product_ID, u.Name AS UOM , (bomQtyOnHand(p.M_Product_ID,w.M_Warehouse_ID,0)) AS QtyOnHand,"
+            StringBuilder sql = new StringBuilder();
+            sql.Append(@"SELECT DISTINCT p.Name as Product, p.M_Product_ID, u.Name AS UOM , (bomQtyOnHand(p.M_Product_ID,w.M_Warehouse_ID,0)) AS QtyOnHand,"
                     + " bomQtyAvailable(p.M_Product_ID,w.M_Warehouse_ID,0) AS QtyAvailable, (bomQtyReserved(p.M_Product_ID,w.M_Warehouse_ID,0))  AS QtyReserved"
                     + " FROM M_Substitute s INNER JOIN M_Product p ON (p.M_Product_ID = s.SUBSTITUTE_ID) INNER JOIN C_UOM u ON (p.C_UOM_ID = u.C_UOM_ID) LEFT OUTER JOIN M_Storage st "
                     + " ON (st.M_Product_ID = p.M_Product_ID) LEFT OUTER JOIN M_Locator l ON (st.M_Locator_ID = l.M_Locator_ID) LEFT OUTER JOIN M_Warehouse w ON (w.M_Warehouse_ID = l.M_Warehouse_ID)"
-                    + " WHERE s.IsActive='Y' AND s.M_Product_ID = " + M_Product_ID;
+                    + " WHERE s.IsActive='Y' AND s.M_Product_ID = " + M_Product_ID);
+            if (selWh != null && selWh.Count > 0)
+            {
+                var whString = "";
+                for (var w = 0; w < selWh.Count; w++)
+                {
+                    if (whString.Length > 0)
+                    {
+                        whString = whString + ", " + selWh[w];
+                    }
+                    else
+                    {
+                        whString = whString + selWh[w];
+                    }
+                }
+                sql.Append(" AND w.M_Warehouse_ID IN (" + whString + ")");
+            }
 
-            DataSet ds = DB.ExecuteDataset(sql);
+            DataSet ds = DB.ExecuteDataset(sql.ToString(),null,null);
             if (ds != null && ds.Tables[0].Rows.Count > 0)
             {
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
@@ -2564,15 +2579,32 @@ WHERE M_Product_ID = " + M_Product_ID;
         /// <param name="ctx">ctx</param>
         /// <param name="M_ProductBOM_ID">M_ProductBOM_ID</param>
         /// <returns>Kits value</returns>
-        public List<Kits> LoadKitsGrid(Ctx ctx, int M_ProductBOM_ID)
+        public List<Kits> LoadKitsGrid(Ctx ctx, int M_ProductBOM_ID, List<int> selWh)
         {
             List<Kits> kits = new List<Kits>();
-            string sql = @"SELECT DISTINCT p.Name as Product, u.Name as UOM, bomQtyOnHand(b.M_Product_ID,w.M_Warehouse_ID,0) AS QtyOnHand, bomQtyAvailable(b.M_Product_ID,w.M_Warehouse_ID,0) AS QtyAvailable,"
+            StringBuilder sql = new StringBuilder();
+            sql.Append(@"SELECT DISTINCT p.Name as Product, u.Name as UOM, bomQtyOnHand(b.M_Product_ID,w.M_Warehouse_ID,0) AS QtyOnHand, bomQtyAvailable(b.M_Product_ID,w.M_Warehouse_ID,0) AS QtyAvailable,"
                     + " b.BOMQty AS Factor FROM M_Product_BOM b INNER JOIN M_Product p ON p.M_Product_ID = b.M_Product_ID INNER JOIN C_UOM u ON (p.C_UOM_ID = u.C_UOM_ID) "
                     + " LEFT OUTER JOIN M_Storage st ON (st.M_Product_ID = p.M_Product_ID) LEFT OUTER JOIN M_Locator l ON (st.M_Locator_ID = l.M_Locator_ID) LEFT OUTER JOIN M_Warehouse w "
-                    + " ON (w.M_Warehouse_ID    = l.M_Warehouse_ID) WHERE b.IsActive='Y' AND b.M_ProductBOM_ID = " + M_ProductBOM_ID;
+                    + " ON (w.M_Warehouse_ID    = l.M_Warehouse_ID) WHERE b.IsActive='Y' AND b.M_ProductBOM_ID = " + M_ProductBOM_ID);
+            if (selWh != null && selWh.Count > 0)
+            {
+                var whString = "";
+                for (var w = 0; w < selWh.Count; w++)
+                {
+                    if (whString.Length > 0)
+                    {
+                        whString = whString + ", " + selWh[w];
+                    }
+                    else
+                    {
+                        whString = whString + selWh[w];
+                    }
+                }
+                sql.Append(" AND w.M_Warehouse_ID IN (" + whString + ")");
+            }
 
-            DataSet ds = DB.ExecuteDataset(sql);
+            DataSet ds = DB.ExecuteDataset(sql.ToString(),null,null);
             if (ds != null && ds.Tables[0].Rows.Count > 0)
             {
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
@@ -3076,6 +3108,57 @@ WHERE M_Product_ID = " + M_Product_ID;
             string sql = "SELECT ad_window_id FROM ad_window WHERE name = '" + windowName + "'";
             int rule = Util.GetValueOfInt(DB.ExecuteScalar(sql, null, null));
             return rule;
+        }
+
+        /// <summary>
+        /// Load Related Grid Method
+        /// </summary>
+        /// <param name="ctx">ctx</param>
+        /// <param name="M_Product_ID">M_Product_ID</param>
+        /// <returns>Related value</returns>
+
+        public List<Substitute> LoadRelatedGrid(Ctx ct, int M_Product_ID, List<int> selWh)
+        {
+            List<Substitute> objRelated = new List<Substitute>();
+            StringBuilder sql = new StringBuilder();
+            sql.Append(@"SELECT DISTINCT p.Name as Product, p.M_Product_ID, u.Name AS UOM , (bomQtyOnHand(p.M_Product_ID,w.M_Warehouse_ID,0)) AS QtyOnHand,"
+                    + " bomQtyAvailable(p.M_Product_ID,w.M_Warehouse_ID,0) AS QtyAvailable, (bomQtyReserved(p.M_Product_ID,w.M_Warehouse_ID,0))  AS QtyReserved"
+                    + " FROM M_RelatedProduct s INNER JOIN M_Product p ON (p.M_Product_ID = s.RelatedProduct_ID) INNER JOIN C_UOM u ON (p.C_UOM_ID = u.C_UOM_ID) LEFT OUTER JOIN M_Storage st "
+                    + " ON (st.M_Product_ID = p.M_Product_ID) LEFT OUTER JOIN M_Locator l ON (st.M_Locator_ID = l.M_Locator_ID) LEFT OUTER JOIN M_Warehouse w ON (w.M_Warehouse_ID = l.M_Warehouse_ID)"
+                    + " WHERE s.IsActive='Y' AND s.M_Product_ID = " + M_Product_ID);
+            if (selWh != null && selWh.Count > 0)
+            {
+                var whString = "";
+                for (var w = 0; w < selWh.Count; w++)
+                {
+                    if (whString.Length > 0)
+                    {
+                        whString = whString + ", " + selWh[w];
+                    }
+                    else
+                    {
+                        whString = whString + selWh[w];
+                    }
+                }
+                sql.Append(" AND w.M_Warehouse_ID IN (" + whString + ")");
+            }
+
+            DataSet ds = DB.ExecuteDataset(sql.ToString(),null,null);
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    Substitute obj = new Substitute();
+                    obj.Product = Util.GetValueOfString(ds.Tables[0].Rows[i]["Product"]);
+                    obj.QtyOnHand = Util.GetValueOfString(ds.Tables[0].Rows[i]["QtyOnHand"]);
+                    obj.UOM = Util.GetValueOfString(ds.Tables[0].Rows[i]["UOM"]);
+                    obj.Reserved = Util.GetValueOfString(ds.Tables[0].Rows[i]["QtyReserved"]);
+                    obj.ATP = Util.GetValueOfString(ds.Tables[0].Rows[i]["QtyAvailable"]);
+                    obj.M_Product_ID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["M_Product_ID"]);
+                    objRelated.Add(obj);
+                }
+            }
+            return objRelated;
         }
     }
 

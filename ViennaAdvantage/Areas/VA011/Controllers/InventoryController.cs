@@ -462,11 +462,11 @@ namespace VA011.Controllers
         /// <param name="M_Product_ID">M_Product_ID</param>
         /// <returns>data</returns>
 
-        public JsonResult LoadSubstituteGrid(int M_Product_ID)
+        public JsonResult LoadSubstituteGrid(int M_Product_ID, List<int> selWH)
         {
             Ctx ct = Session["ctx"] as Ctx;
             InventoryModel model = new InventoryModel();
-            List<Substitute> prods = model.LoadSubstituteGrid(ct, M_Product_ID);
+            List<Substitute> prods = model.LoadSubstituteGrid(ct, M_Product_ID, selWH);
             return Json(JsonConvert.SerializeObject(prods), JsonRequestBehavior.AllowGet);
         }
         /// <summary>
@@ -486,11 +486,11 @@ namespace VA011.Controllers
         /// </summary>
         /// <param name="M_ProductBOM_ID">M_ProductBOM_ID</param>
         /// <returns>value</returns>
-        public JsonResult LoadKitsGrid(int M_ProductBOM_ID)
+        public JsonResult LoadKitsGrid(int M_ProductBOM_ID, List<int> selWH)
         {
             Ctx ct = Session["ctx"] as Ctx;
             InventoryModel model = new InventoryModel();
-            List<Kits> prods = model.LoadKitsGrid(ct, M_ProductBOM_ID);
+            List<Kits> prods = model.LoadKitsGrid(ct, M_ProductBOM_ID, selWH);
             return Json(JsonConvert.SerializeObject(prods), JsonRequestBehavior.AllowGet);
         }
         /// <summary>
@@ -595,5 +595,18 @@ namespace VA011.Controllers
             return Json(JsonConvert.SerializeObject(model.LoadWindow(windowName)), JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// Load Related Grid
+        /// </summary>
+        /// <param name="M_Product_ID">Product ID</param>
+        /// <param name="selWH">Selected Warehouse</param>
+        /// <returns>Result</returns>
+        public JsonResult LoadRelatedGrid(int M_Product_ID, List<int> selWH)
+        {
+            Ctx ct = Session["ctx"] as Ctx;
+            InventoryModel model = new InventoryModel();
+            List<Substitute> prods = model.LoadRelatedGrid(ct, M_Product_ID, selWH);
+            return Json(JsonConvert.SerializeObject(prods), JsonRequestBehavior.AllowGet);
+        }
     }
 }
