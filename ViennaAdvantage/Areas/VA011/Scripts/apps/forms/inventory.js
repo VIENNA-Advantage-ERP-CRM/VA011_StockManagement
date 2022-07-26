@@ -360,7 +360,7 @@
 
         function LoadWarehouseCallBack(dr) {
 
-            cmbWarehouses.append(" <option value = 0></option>");
+            //cmbWarehouses.append(" <option value = 0></option>");
             if (dr != null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     key = VIS.Utility.Util.getValueOfInt(dr[i].ID);
@@ -390,7 +390,7 @@
 
         function ReLoadWarehouseCallBack(dr) {
 
-            cmbWarehouses.append(" <option value = 0></option>");
+            //cmbWarehouses.append(" <option value = 0></option>");
             if (dr != null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     key = VIS.Utility.Util.getValueOfInt(dr[i].ID);
@@ -402,14 +402,14 @@
         };
 
         function LoadSrcWarehouses() {
-            cmbWarehouses.empty();
+            //cmbWarehouses.empty();
             //var qry = "SELECT M_Warehouse_ID, Name FROM M_Warehouse WHERE AD_Client_ID = " + VIS.context.getContext("#AD_Client_ID") + " AND IsActive = 'Y'";
             VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/GetOrgWarehouseAll", { "value": "", "orgs": srcOrgs, "fill": false }, LoadSrcWarehousesCallBack);
             //VIS.DB.executeReader(qry, null, LoadWarehouseCallBack);
         };
 
         function LoadSrcWarehousesCallBack(dr) {
-            cmbWarehouses.append(" <option value = 0></option>");
+            //cmbWarehouses.append(" <option value = 0></option>");
             if (dr != null && dr.length > 0) {
                 listSrcWarehouses.push({ id: 0, text: "" });
                 listCopyWarehouses.push({ id: 0, text: "" });
@@ -1465,7 +1465,7 @@
                 dSubstituteGrid.clear();
                 Recid = Recid + 1;
 
-                var sqlVar = "";
+                //var sqlVar = "";
 
                 //sqlVar = "SELECT DISTINCT p.Name as Product, p.M_Product_ID, u.Name AS UOM , (bomQtyOnHand(p.M_Product_ID,w.M_Warehouse_ID,0)) AS QtyOnHand,"
                 //    + " bomQtyAvailable(p.M_Product_ID,w.M_Warehouse_ID,0) AS QtyAvailable, (bomQtyReserved(p.M_Product_ID,w.M_Warehouse_ID,0))  AS QtyReserved"
@@ -1473,20 +1473,20 @@
                 //    + " ON (st.M_Product_ID = p.M_Product_ID) LEFT OUTER JOIN M_Locator l ON (st.M_Locator_ID = l.M_Locator_ID) LEFT OUTER JOIN M_Warehouse w ON (w.M_Warehouse_ID = l.M_Warehouse_ID)"
                 //    + " WHERE s.IsActive='Y' AND s.M_Product_ID = " + _product_ID;
 
-                var whString = "";
-                for (var w = 0; w < selWh.length; w++) {
-                    if (whString.length > 0) {
-                        whString = whString + ", " + selWh[w];
-                    }
-                    else {
-                        whString = whString + selWh[w];
-                    }
-                }
+                //var whString = "";
+                //for (var w = 0; w < selWh.length; w++) {
+                //    if (whString.length > 0) {
+                //        whString = whString + ", " + selWh[w];
+                //    }
+                //    else {
+                //        whString = whString + selWh[w];
+                //    }
+                //}
 
-                if (whString.length > 0) {
-                    sqlVar += " AND w.M_Warehouse_ID IN (" + whString + ")";
-                }
-                VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LoadSubstituteGrid", { "M_Product_ID": _product_ID }, callbackSubstituteGrid);
+                //if (whString.length > 0) {
+                //    sqlVar += " AND w.M_Warehouse_ID IN (" + whString + ")";
+                //}
+                VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LoadSubstituteGrid", { "M_Product_ID": _product_ID, "selWH": selWh }, callbackSubstituteGrid);
                 //    VIS.DB.executeReader(sqlVar.toString(), null, callbackSubstituteGrid);
             }
         };
@@ -1652,7 +1652,7 @@
                 dRelatedGrid.clear();
                 Recid = Recid + 1;
 
-                var sqlVar = "";
+                //var sqlVar = "";
 
                 //sqlVar = "SELECT DISTINCT p.Name as Product, p.M_Product_ID, u.Name AS UOM , (bomQtyOnHand(p.M_Product_ID,w.M_Warehouse_ID,0)) AS QtyOnHand,"
                 //    + " bomQtyAvailable(p.M_Product_ID,w.M_Warehouse_ID,0) AS QtyAvailable, (bomQtyReserved(p.M_Product_ID,w.M_Warehouse_ID,0))  AS QtyReserved"
@@ -1660,20 +1660,20 @@
                 //    + " ON (st.M_Product_ID = p.M_Product_ID) LEFT OUTER JOIN M_Locator l ON (st.M_Locator_ID = l.M_Locator_ID) LEFT OUTER JOIN M_Warehouse w ON (w.M_Warehouse_ID = l.M_Warehouse_ID)"
                 //    + " WHERE s.IsActive='Y' AND s.M_Product_ID = " + _product_ID;
 
-                var whString = "";
-                for (var w = 0; w < selWh.length; w++) {
-                    if (whString.length > 0) {
-                        whString = whString + ", " + selWh[w];
-                    }
-                    else {
-                        whString = whString + selWh[w];
-                    }
-                }
+                //var whString = "";
+                //for (var w = 0; w < selWh.length; w++) {
+                //    if (whString.length > 0) {
+                //        whString = whString + ", " + selWh[w];
+                //    }
+                //    else {
+                //        whString = whString + selWh[w];
+                //    }
+                //}
 
-                if (whString.length > 0) {
-                    sqlVar += " AND w.M_Warehouse_ID IN (" + whString + ")";
-                }
-                VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LoadSubstituteGrid", { "M_Product_ID": _product_ID }, callbackRelatedGrid);
+                //if (whString.length > 0) {
+                //    sqlVar += " AND w.M_Warehouse_ID IN (" + whString + ")";
+                //}
+                VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LoadRelatedGrid", { "M_Product_ID": _product_ID, "selWH": selWh }, callbackRelatedGrid);
 
                 //VIS.DB.executeReader(sqlVar.toString(), null, callbackRelatedGrid);
             }
@@ -2005,27 +2005,27 @@
                 dKitsGrid.clear();
                 Recid = Recid + 1;
 
-                var sqlVar = "";
+                //var sqlVar = "";
 
                 //sqlVar = "SELECT DISTINCT p.Name as Product, u.Name as UOM, bomQtyOnHand(b.M_Product_ID,w.M_Warehouse_ID,0) AS QtyOnHand, bomQtyAvailable(b.M_Product_ID,w.M_Warehouse_ID,0) AS QtyAvailable,"
                 //    + " b.BOMQty AS Factor FROM M_Product_BOM b INNER JOIN M_Product p ON p.M_Product_ID = b.M_Product_ID INNER JOIN C_UOM u ON (p.C_UOM_ID = u.C_UOM_ID) "
                 //    + " LEFT OUTER JOIN M_Storage st ON (st.M_Product_ID = p.M_Product_ID) LEFT OUTER JOIN M_Locator l ON (st.M_Locator_ID = l.M_Locator_ID) LEFT OUTER JOIN M_Warehouse w "
                 //    + " ON (w.M_Warehouse_ID    = l.M_Warehouse_ID) WHERE b.IsActive='Y' AND b.M_ProductBOM_ID = " + _product_ID;
 
-                var whString = "";
-                for (var w = 0; w < selWh.length; w++) {
-                    if (whString.length > 0) {
-                        whString = whString + ", " + selWh[w];
-                    }
-                    else {
-                        whString = whString + selWh[w];
-                    }
-                }
+                //var whString = "";
+                //for (var w = 0; w < selWh.length; w++) {
+                //    if (whString.length > 0) {
+                //        whString = whString + ", " + selWh[w];
+                //    }
+                //    else {
+                //        whString = whString + selWh[w];
+                //    }
+                //}
 
-                if (whString.length > 0) {
-                    sqlVar += " AND w.M_Warehouse_ID IN (" + whString + ")";
-                }
-                VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LoadKitsGrid", { "M_ProductBOM_ID": _product_ID }, callbackKitsGrid);
+                //if (whString.length > 0) {
+                //    sqlVar += " AND w.M_Warehouse_ID IN (" + whString + ")";
+                //}
+                VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LoadKitsGrid", { "M_ProductBOM_ID": _product_ID,"selWH": selWh }, callbackKitsGrid);
 
                 //VIS.DB.executeReader(sqlVar.toString(), null, callbackKitsGrid);
             }
@@ -5567,13 +5567,13 @@
         };
 
         function callbackLoadCmbDocType(dr) {
-            cmbDocType.append(" <option value = 0></option>");
+            //cmbDocType.append(" <option value = 0></option>");
             if (dr != null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     key = dr[i]["ID"];
                     listKeyDocType.push(key);
                     Name = dr[i]["Name"];
-                    listNameDocType.push(value);
+                    listNameDocType.push(Name);
                     listValueDocType.push(dr[i]["DocBaseType"]);
                     listValuePOType.push(dr[i]["IsReleaseDocument"]);
                     //cmbDocType.append(" <option value=" + key + ">" + VIS.Utility.encodeText(Name) + "</option>");
@@ -5592,7 +5592,7 @@
             //}
             //dr.close();
             LoadDocStatusCombo();
-            cmbCart.val(cart);
+            //cmbCart.val(cart);
         };
 
         function LoadDocStatusCombo() {
@@ -5687,12 +5687,12 @@
         };
         function callbackLoadCmbCreate(dr) {
 
-            cmbCreate.append(" <option value = 0></option>");
+            //cmbCreate.append(" <option value = 0></option>");
             if (dr != null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     Name = dr[i].Name;
                     Key = dr[i].Key;
-                    cmbCreate.append(" <option value=" + key + ">" + VIS.Utility.encodeText(Name) + "</option>");
+                    cmbCreate.append(" <option value=" + Key + ">" + VIS.Utility.encodeText(Name) + "</option>");
                 }
             }
             //while (dr.read()) {
@@ -5757,8 +5757,6 @@
 
         function ReplenishEvents() {
             ch.onOkClick = function (e) {
-
-
                 var warehouse_ID = cmbWarehouses.val();
                 var bp_ID = cmbSuppliers.val();
                 var docType = cmbDocType.val();
