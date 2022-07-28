@@ -5609,7 +5609,7 @@
                 for (var i = 0; i < dr.length; i++) {
                     Name = dr[i].Name;
                     Key = dr[i].Key;
-                    cmbDocStatus.append(" <option value=" + key + ">" + VIS.Utility.encodeText(Name) + "</option>");
+                    cmbDocStatus.append(" <option value=" + Key + ">" + VIS.Utility.encodeText(Name) + "</option>");
                 }
             }
             //while (dr.read()) {
