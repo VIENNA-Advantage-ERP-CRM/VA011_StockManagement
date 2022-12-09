@@ -3146,7 +3146,7 @@
                     sqlTrx += " AND t.M_Locator_ID IN (Select loc.M_Locator_ID from m_warehouse wh inner join m_locator loc on (loc.m_warehouse_ID = wh.M_Warehouse_ID) where wh.m_warehouse_ID in (" + whString + ")) ";
                 }
 
-                sqlTrx += " ORDER BY t.MovementDate DESC";
+                sqlTrx += " ORDER BY t.MovementDate DESC, t.M_Transaction_ID DESC";
 
                 /*Left outer join M_ProductionLine pdl
                 on (pdl.M_ProductionLine_ID = t.M_ProductionLine_ID)
