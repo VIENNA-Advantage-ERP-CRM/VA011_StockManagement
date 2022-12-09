@@ -2708,8 +2708,8 @@ WHERE M_Product_ID = " + M_Product_ID;
                 }
                 sqlTrx.Append(" AND t.M_Locator_ID IN (Select loc.M_Locator_ID from m_warehouse wh inner join m_locator loc on (loc.m_warehouse_ID = wh.M_Warehouse_ID) where wh.m_warehouse_ID in (" + whString + ")) ");
             }
-
-            sqlTrx.Append(" ORDER BY t.MovementDate DESC");
+            // VIS0060: Work done to show Product transaction data based on newest to oldest records.
+            sqlTrx.Append(" ORDER BY t.MovementDate DESC, t.M_Transaction_ID DESC");
 
 
             DataSet ds = DB.ExecuteDataset(sqlTrx.ToString());
