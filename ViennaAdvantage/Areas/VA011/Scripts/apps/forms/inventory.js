@@ -3419,20 +3419,20 @@
                     var invIn = 0;
                     var InvOut = 0;
                     var date = null;
-                    if (dr[i]["inventoryin"] > 0) {
-                        invIn = dr[i]["inventoryin"];
+                    if (dr[i]["InventoryIn"] > 0) {
+                        invIn = dr[i]["InventoryIn"];
                     }
 
-                    if (dr[i]["inventoryout"] < 0) {
-                        InvOut = dr[i]["inventoryout"];
+                    if (dr[i]["InventoryOut"] < 0) {
+                        InvOut = dr[i]["InventoryOut"];
                     }
 
 
-                    if (dr[i]["movementdate"] == null) {
+                    if (dr[i]["Date"] == null) {
 
                     }
                     else {
-                        date = getDate(dr[i]["movementdate"]);
+                        date = getDate(dr[i]["Date"]);
                     }
 
                     grdTransactionsProdValues.push(
