@@ -377,9 +377,9 @@
           <AutoAssignPort>False</AutoAssignPort>
           <DevelopmentServerPort>3972</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/VA011_WarehouseForm</IISUrl>
+          <IISUrl>http://localhost/VA011_WarehouseForm_5.0</IISUrl>
           <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
-          <IISAppRootUrl>http://localhost/VA011_WarehouseForm</IISAppRootUrl>
+          <IISAppRootUrl>http://localhost/VA011_WarehouseForm_5.0</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
