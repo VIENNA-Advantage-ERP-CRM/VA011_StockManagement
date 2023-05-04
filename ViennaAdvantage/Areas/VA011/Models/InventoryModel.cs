@@ -1498,8 +1498,8 @@ WHERE M_Product_ID = " + M_Product_ID;
                     if (line.Get_ColumnIndex("PrintDescription") >= 0)
                         line.Set_Value("PrintDescription", Util.GetValueOfString(prodDs.Tables[0].Rows[0]["DocumentNote"]));
                 }
-                UOM = Util.GetValueOfInt(DB.ExecuteScalar("SELECT C_UOM_ID  FROM  M_Product_PO prdct WHERE prdct.isactive='Y' AND prdct.M_Product_ID=" + Rep.M_Product_ID));
-
+                UOM = Util.GetValueOfInt(DB.ExecuteScalar(@"SELECT C_UOM_ID FROM M_Product_PO WHERE IsActive='Y' AND M_Product_ID=" + Rep.M_Product_ID +
+                                        " AND C_BPartner_ID = " + Rep.C_BPartner_ID));
                 if (UOM == 0)
                 {
                     UOM = prdUOM;
