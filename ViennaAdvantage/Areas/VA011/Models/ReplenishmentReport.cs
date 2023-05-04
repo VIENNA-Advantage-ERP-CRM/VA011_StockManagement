@@ -939,7 +939,8 @@ namespace VA011.Models
                 decimal? OrdQty = 0, OrignlQty = 0;
                 double Discount = 0;
                 prdUOM = Util.GetValueOfInt(DB.ExecuteScalar("SELECT C_UOM_ID  FROM  M_Product    prdct WHERE prdct.isactive='Y' AND prdct.M_Product_ID=" + replenish.GetM_Product_ID()));
-                UOM = Util.GetValueOfInt(DB.ExecuteScalar("SELECT C_UOM_ID  FROM  M_Product_PO prdct WHERE prdct.isactive='Y' AND prdct.M_Product_ID=" + replenish.GetM_Product_ID()));
+                UOM = Util.GetValueOfInt(DB.ExecuteScalar(@"SELECT C_UOM_ID FROM M_Product_PO WHERE IsActive='Y' AND M_Product_ID=" + replenish.GetM_Product_ID() +
+                                        " AND C_BPartner_ID = " + replenish.GetC_BPartner_ID()));
                 #region Calculate Quantity
                 OrdQty = replenish.GetQtyToOrder();
                 if (prdUOM != UOM)
