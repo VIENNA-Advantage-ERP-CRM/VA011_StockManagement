@@ -6916,11 +6916,12 @@
             dReplenishedGrid.resize();
             dDemandGrid.resize();
             dTransactionsGrid.resize();
-            dReplenishmentBGrid.resize();
+            if (dReplenishmentBGrid != null)
+                dReplenishmentBGrid.resize();
             dRelatedGrid.resize();
             dSuppliersRightGrid.resize();
             dKitsGrid.resize();
-            dSubstituteGrid.resize();            
+            dSubstituteGrid.resize();
             cartGrid.resize();
         };
 
