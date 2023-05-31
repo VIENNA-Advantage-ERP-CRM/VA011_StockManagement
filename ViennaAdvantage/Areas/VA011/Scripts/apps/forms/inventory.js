@@ -6922,7 +6922,8 @@
             dSuppliersRightGrid.resize();
             dKitsGrid.resize();
             dSubstituteGrid.resize();
-            cartGrid.resize();
+            if (cartGrid != null)
+                cartGrid.resize();
         };
 
         this.disposeComponent = function () {
