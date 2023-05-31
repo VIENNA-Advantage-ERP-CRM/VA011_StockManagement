@@ -92,6 +92,8 @@
         var dRepTopGrid = null;
         var grdRepTopValues = [];
 
+        var cartGrid = null;
+
         // Bottom Div
         // Variant
         var $divVariantGrid = null;
