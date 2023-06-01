@@ -92,6 +92,8 @@
         var dRepTopGrid = null;
         var grdRepTopValues = [];
 
+        var cartGrid = null;
+
         // Bottom Div
         // Variant
         var $divVariantGrid = null;
@@ -6916,12 +6918,14 @@
             dReplenishedGrid.resize();
             dDemandGrid.resize();
             dTransactionsGrid.resize();
-            dReplenishmentBGrid.resize();
+            if (dReplenishmentBGrid != null)
+                dReplenishmentBGrid.resize();
             dRelatedGrid.resize();
             dSuppliersRightGrid.resize();
             dKitsGrid.resize();
-            dSubstituteGrid.resize();            
-            cartGrid.resize();
+            dSubstituteGrid.resize();
+            if (cartGrid != null)
+                cartGrid.resize();
         };
 
         this.disposeComponent = function () {
