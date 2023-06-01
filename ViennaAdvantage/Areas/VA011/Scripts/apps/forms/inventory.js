@@ -92,6 +92,8 @@
         var dRepTopGrid = null;
         var grdRepTopValues = [];
 
+        var cartGrid = null;
+
         // Bottom Div
         // Variant
         var $divVariantGrid = null;
@@ -438,7 +440,7 @@
 
         function LoadSuppliersCallBack(dr) {
             cmbSuppliers.append(" <option value = 0></option>");
-            if (dr !=null && dr.length > 0) {
+            if (dr != null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     key = VIS.Utility.Util.getValueOfInt(dr[i].ID);
                     value = dr[i].Name;
@@ -2025,7 +2027,7 @@
                 //if (whString.length > 0) {
                 //    sqlVar += " AND w.M_Warehouse_ID IN (" + whString + ")";
                 //}
-                VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LoadKitsGrid", { "M_ProductBOM_ID": _product_ID,"selWH": selWh }, callbackKitsGrid);
+                VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LoadKitsGrid", { "M_ProductBOM_ID": _product_ID, "selWH": selWh }, callbackKitsGrid);
 
                 //VIS.DB.executeReader(sqlVar.toString(), null, callbackKitsGrid);
             }
@@ -2499,7 +2501,7 @@
                 //}
 
                 //VIS.DB.executeDataSet(qryLoc.toString(), null, callbackLocatorGrid);
-                VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LocatorGrid", { "M_Product_ID": _product_ID, "Warehouses": selWh, "orgS": orgString}, callbackLocatorGrid);
+                VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LocatorGrid", { "M_Product_ID": _product_ID, "Warehouses": selWh, "orgS": orgString }, callbackLocatorGrid);
 
             }
         };
@@ -3413,7 +3415,7 @@
 
         function callbackBindTransactionsGrid(dr) {
             var Recid = 0;
-            if (dr !=null && dr.length > 0) {
+            if (dr != null && dr.length > 0) {
                 for (var i = 0; i < dr.length; i++) {
                     Recid = Recid + 1;
                     var invIn = 0;
@@ -6815,7 +6817,7 @@
                 //if (dr.read()) {
                 //    ad_window_Id = dr.getInt(0);
                 //}
-               // dr.dispose();
+                // dr.dispose();
                 if (ad_window_Id > 0) {
                     var zoomQuery = new VIS.Query();
                     if (windowName == "BGT01_StyleMaster")
@@ -7304,12 +7306,14 @@
             dReplenishedGrid.resize();
             dDemandGrid.resize();
             dTransactionsGrid.resize();
-            dReplenishmentBGrid.resize();
+            if (dReplenishmentBGrid != null)
+                dReplenishmentBGrid.resize();
             dRelatedGrid.resize();
             dSuppliersRightGrid.resize();
             dKitsGrid.resize();
             dSubstituteGrid.resize();
-            cartGrid.resize();
+            if (cartGrid != null)
+                cartGrid.resize();
         };
 
         this.disposeComponent = function () {
