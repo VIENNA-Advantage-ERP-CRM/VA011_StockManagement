@@ -249,7 +249,6 @@
         var listCopyWarehouses = [];
         var listProductsAll = [];
         // Right Panel Section
-        var _countBGT01 = 0;
 
 
         this.initalize = function () {
@@ -278,7 +277,6 @@
 
         this.initalLoad = function () {
             initLoad = false;
-            _countBGT01 = 0;
             window.setTimeout(function () {
                 imgUsrImage = $('<img>');
                 $(".VA011_image-wrap").append(imgUsrImage);
@@ -287,14 +285,7 @@
                 btnZoomProduct.on("click touchstart", function (e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    if (_countBGT01 > 0) {
-                        zoomToWindow(_product_ID, "BGT01_StyleMaster");
-                    }
-                    else {
-                        zoomToWindow(_product_ID, "Product");
-                    }
-
-
+                    zoomToWindow(_product_ID, "Product");
                 });
 
                 calculateReplenishLI = $("#VA011_calculateReplenishLI" + $self.windowNo);
@@ -6808,7 +6799,7 @@
 
         var zoomToWindow = function (record_id, windowName) {
 
-            var ad_window_Id = VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LoadWindow", { "windowName": 'windowName' });
+            var ad_window_Id = VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/LoadWindow", { "windowName": windowName });
 
             //var sql = "select ad_window_id from ad_window where name = '" + windowName + "'";// Upper( name)=Upper('user' )
             //var ad_window_Id = 0;
@@ -6820,9 +6811,7 @@
                 // dr.dispose();
                 if (ad_window_Id > 0) {
                     var zoomQuery = new VIS.Query();
-                    if (windowName == "BGT01_StyleMaster")
-                        zoomQuery.addRestriction("M_Product_ID", VIS.Query.prototype.EQUAL, record_id);
-                    else if (windowName == "Product")
+                    if (windowName == "Product")
                         zoomQuery.addRestriction("M_Product_ID", VIS.Query.prototype.EQUAL, record_id);
                     else if (windowName == "Attribute Set")
                         zoomQuery.addRestriction("M_AttributeSet_ID", VIS.Query.prototype.EQUAL, record_id);
