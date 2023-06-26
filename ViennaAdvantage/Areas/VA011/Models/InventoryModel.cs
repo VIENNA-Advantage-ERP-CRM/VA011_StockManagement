@@ -537,7 +537,7 @@ namespace VA011.Models
             if (searchText.Length > 0)
             {
                 // JID_1296 Should be able search product by using Searchkey and UPC And Name
-                sbWhere.Append(" AND UPPER(p.Name) LIKE UPPER('%" + searchText + "%') OR UPPER(p.Value) LIKE UPPER('%" + searchText + "%') OR UPPER(p.UPC) LIKE UPPER('%" + searchText + "%')");
+                sbWhere.Append(" AND (UPPER(p.Name) LIKE UPPER('%" + searchText + "%') OR UPPER(p.Value) LIKE UPPER('%" + searchText + "%') OR UPPER(p.UPC) LIKE UPPER('%" + searchText + "%'))");
             }
 
             sbSql.Append(sbWhere.ToString());
