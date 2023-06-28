@@ -2350,7 +2350,7 @@ WHERE M_Product_ID = " + M_Product_ID;
         public List<DocType> GetDocType(Ctx ctx)
         {
             List<DocType> docTypes = new List<DocType>();
-            var qry = @"SELECT C_DocType_ID, Name, DocBaseType, IsReleaseDocument FROM C_DocType WHERE DocBaseType IN "
+            var qry = @"SELECT C_DocType_ID, Name, DocBaseType, IsReleaseDocument, VAS_IsVariationOrder FROM C_DocType WHERE DocBaseType IN "
                 + "(SELECT Value FROM AD_Ref_List WHERE AD_Reference_ID =(SELECT AD_Reference_ID FROM AD_Reference WHERE Name = 'M_Replenishment Create')) AND IsReturnTrx ='N' AND AD_Client_ID = " + ctx.GetAD_Client_ID();
             //qry += " ORDER BY Name";
             DataSet ds = DB.ExecuteDataset(qry);
@@ -2362,6 +2362,8 @@ WHERE M_Product_ID = " + M_Product_ID;
                     docType.Name = Util.GetValueOfString(ds.Tables[0].Rows[i]["Name"]);
                     docType.DocBaseType = Util.GetValueOfString(ds.Tables[0].Rows[i]["DocBaseType"]);
                     docType.IsReleaseDocument = Util.GetValueOfString(ds.Tables[0].Rows[i]["IsReleaseDocument"]);
+                    // DevOps Task ID: 2185 - Handle case of Variation Order
+                    docType.IsVariationOrder = Util.GetValueOfString(ds.Tables[0].Rows[i]["VAS_IsVariationOrder"]);
                     docType.ID = Util.GetValueOfInt(ds.Tables[0].Rows[i]["C_DocType_ID"]);
                     docTypes.Add(docType);
                 }
@@ -3231,6 +3233,7 @@ WHERE M_Product_ID = " + M_Product_ID;
         public string Name { get; set; }
         public string DocBaseType { get; set; }
         public string IsReleaseDocument { get; set; }
+        public string IsVariationOrder { get; set; }
     }
 
     public class Substitute
