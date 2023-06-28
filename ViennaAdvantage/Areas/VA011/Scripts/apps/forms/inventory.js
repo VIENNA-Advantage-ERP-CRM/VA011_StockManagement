@@ -199,7 +199,7 @@
         var listNameDocType = [];
         var listValueDocType = [];
         var listValuePOType = [];
-
+        var listValueVOType = [];
         var listSelProducts = [];
 
         var zoomIcon = null;
@@ -5569,6 +5569,7 @@
                     listNameDocType.push(Name);
                     listValueDocType.push(dr[i]["DocBaseType"]);
                     listValuePOType.push(dr[i]["IsReleaseDocument"]);
+                    listValueVOType.push(dr[i]["IsVariationOrder"]);
                     //cmbDocType.append(" <option value=" + key + ">" + VIS.Utility.encodeText(Name) + "</option>");
                 }
             }
@@ -5789,6 +5790,12 @@
                         if (cmbCreate.val() == "POO" && listValuePOType[i] == "Y") {
                             continue;
                         }
+
+                        // DevOps Task ID: 2185 - Handle case of Variation Order
+                        if (cmbCreate.val() == "POO" && listValueVOType[i] == "Y") {
+                            continue;
+                        }
+                        
                         cmbDocType.append(" <option value=" + listKeyDocType[i] + ">" + VIS.Utility.encodeText(listNameDocType[i]) + "</option>");
                     }
                 }
