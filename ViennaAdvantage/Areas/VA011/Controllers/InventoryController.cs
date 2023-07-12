@@ -371,11 +371,11 @@ namespace VA011.Controllers
         /// GetSupplier Method
         /// </summary>
         /// <returns>Vender</returns>
-        public JsonResult GetSupplier()
+        public JsonResult GetSupplier(string value, bool fill)
         {
             Ctx ct = Session["ctx"] as Ctx;
             InventoryModel model = new InventoryModel();
-            List<NameIDClass> prods = model.GetSupplier(ct);
+            List<NameIDClass> prods = model.GetSupplier(ct, value, fill);
             return Json(JsonConvert.SerializeObject(prods), JsonRequestBehavior.AllowGet);
         }
         /// <summary>
