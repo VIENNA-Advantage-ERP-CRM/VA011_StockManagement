@@ -425,7 +425,10 @@
         function LoadSuppliers() {
             cmbSuppliers.empty();
             //var qry = "SELECT C_BPartner_ID, Name FROM C_BPartner WHERE AD_Client_ID = " + VIS.context.getContext("#AD_Client_ID") + " AND IsActive = 'Y' AND IsVendor = 'Y'";
-            VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/GetSupplier", "", LoadSuppliersCallBack);
+            VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/GetSupplier", {
+                value: "",
+                fill: false
+            }, LoadSuppliersCallBack);
             //VIS.DB.executeReader(qry, null, LoadSuppliersCallBack);
         };
 
@@ -5795,7 +5798,7 @@
                         if (cmbCreate.val() == "POO" && listValueVOType[i] == "Y") {
                             continue;
                         }
-                        
+
                         cmbDocType.append(" <option value=" + listKeyDocType[i] + ">" + VIS.Utility.encodeText(listNameDocType[i]) + "</option>");
                     }
                 }

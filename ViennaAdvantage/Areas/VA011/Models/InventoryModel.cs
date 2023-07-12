@@ -2307,12 +2307,17 @@ WHERE M_Product_ID = " + M_Product_ID;
         /// </summary>
         /// <param name="ctx">ctx</param>
         /// <returns>Supplier</returns>
-        public List<NameIDClass> GetSupplier(Ctx ctx)
+        public List<NameIDClass> GetSupplier(Ctx ctx, string value, bool fill)
         {
             List<NameIDClass> pInfo = new List<NameIDClass>();
             StringBuilder sql = new StringBuilder(@"SELECT C_BPartner_ID, Name FROM C_BPartner WHERE AD_Client_ID = "
-                    + ctx.GetAD_Client_ID() + " AND IsActive = 'Y' AND IsVendor = 'Y'  ORDER BY Name");
-            //sql += " ORDER BY Name";
+                    + ctx.GetAD_Client_ID() + " AND IsActive = 'Y' AND IsVendor = 'Y'");
+            if (value != "")
+            {
+                sql.Append(" AND UPPER(Name) LIKE UPPER('%" + value + "%') ");
+            }
+            sql.Append(" ORDER BY Name");
+
             DataSet ds = DB.ExecuteDataset(MRole.GetDefault(ctx).AddAccessSQL(sql.ToString(), "C_BPartner", true, false));
             if (ds != null && ds.Tables[0].Rows.Count > 0)
             {
