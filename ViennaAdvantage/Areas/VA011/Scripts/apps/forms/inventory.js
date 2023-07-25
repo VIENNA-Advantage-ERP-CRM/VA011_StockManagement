@@ -199,7 +199,7 @@
         var listNameDocType = [];
         var listValueDocType = [];
         var listValuePOType = [];
-
+        var listValueVOType = [];
         var listSelProducts = [];
 
         var zoomIcon = null;
@@ -425,7 +425,10 @@
         function LoadSuppliers() {
             cmbSuppliers.empty();
             //var qry = "SELECT C_BPartner_ID, Name FROM C_BPartner WHERE AD_Client_ID = " + VIS.context.getContext("#AD_Client_ID") + " AND IsActive = 'Y' AND IsVendor = 'Y'";
-            VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/GetSupplier", "", LoadSuppliersCallBack);
+            VIS.dataContext.getJSONData(VIS.Application.contextUrl + "Inventory/GetSupplier", {
+                value: "",
+                fill: false
+            }, LoadSuppliersCallBack);
             //VIS.DB.executeReader(qry, null, LoadSuppliersCallBack);
         };
 
@@ -5569,6 +5572,7 @@
                     listNameDocType.push(Name);
                     listValueDocType.push(dr[i]["DocBaseType"]);
                     listValuePOType.push(dr[i]["IsReleaseDocument"]);
+                    listValueVOType.push(dr[i]["IsVariationOrder"]);
                     //cmbDocType.append(" <option value=" + key + ">" + VIS.Utility.encodeText(Name) + "</option>");
                 }
             }
@@ -5789,6 +5793,12 @@
                         if (cmbCreate.val() == "POO" && listValuePOType[i] == "Y") {
                             continue;
                         }
+
+                        // DevOps Task ID: 2185 - Handle case of Variation Order
+                        if (cmbCreate.val() == "POO" && listValueVOType[i] == "Y") {
+                            continue;
+                        }
+
                         cmbDocType.append(" <option value=" + listKeyDocType[i] + ">" + VIS.Utility.encodeText(listNameDocType[i]) + "</option>");
                     }
                 }
