@@ -2739,7 +2739,7 @@ WHERE M_Product_ID = " + M_Product_ID;
                         whString = whString + selWh[w];
                     }
                 }
-                sqlTrx.Append(sql.ToString() + @" AND t.M_Locator_ID IN (SELECY loc.M_Locator_ID FROM M_Warehouse wh 
+                sqlTrx.Append(sql.ToString() + @" AND t.M_Locator_ID IN (SELECT loc.M_Locator_ID FROM M_Warehouse wh 
                 INNER JOIN M_Locator loc ON (loc.M_Warehouse_ID = wh.M_Warehouse_ID) WHERE wh.M_Warehouse_ID IN (" + whString + ")) ");
             }
             else
