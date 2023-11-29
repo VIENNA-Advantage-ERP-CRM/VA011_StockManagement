@@ -1045,7 +1045,7 @@ namespace VA011.Models
                         {
                             SqlUom.Clear();
                             SqlUom.Append(SQL);
-                            SqlUom.Append("AND C_UOM_ID=" + prdUOM);
+                            SqlUom.Append(" AND C_UOM_ID=" + prdUOM);
                             DsPrice = DB.ExecuteDataset(SqlUom.ToString());
                             if (DsPrice.Tables[0].Rows.Count > 0)
                             {
@@ -1107,7 +1107,7 @@ namespace VA011.Models
                     {
                         SqlUom.Clear();
                         SqlUom.Append(SQL);
-                        SqlUom.Append("AND C_UOM_ID=" + prdUOM);
+                        SqlUom.Append(" AND C_UOM_ID=" + prdUOM);
                         DsPrice = DB.ExecuteDataset(SqlUom.ToString());
                         if (DsPrice.Tables[0].Rows.Count > 0)
                         {
