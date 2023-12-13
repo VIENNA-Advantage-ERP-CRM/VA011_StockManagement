@@ -1792,7 +1792,7 @@ WHERE M_Product_ID = " + M_Product_ID;
                         {
                             SqlUom.Clear();
                             SqlUom.Append(SQL);
-                            SqlUom.Append("AND C_UOM_ID=" + prdUOM);
+                            SqlUom.Append(" AND C_UOM_ID=" + prdUOM);
                             DsPrice = DB.ExecuteDataset(SqlUom.ToString());
                             if (DsPrice.Tables[0].Rows.Count > 0)
                             {
@@ -1855,7 +1855,7 @@ WHERE M_Product_ID = " + M_Product_ID;
                     {
                         SqlUom.Clear();
                         SqlUom.Append(SQL);
-                        SqlUom.Append("AND C_UOM_ID=" + prdUOM);
+                        SqlUom.Append(" AND C_UOM_ID=" + prdUOM);
                         DsPrice = DB.ExecuteDataset(SqlUom.ToString());
                         if (DsPrice.Tables[0].Rows.Count > 0)
                         {
