@@ -969,3 +969,7 @@ html[dir="rtl"] .VA011-middle-left-main {
     border-right: none;
     border-left: 1px solid rgba(var(--v-c-on-secondary), .2);
 }
+html[dir="rtl"] ul.VA011-tabs > li:last-child {
+    margin-right: auto;
+    margin-left: 0;
+}
