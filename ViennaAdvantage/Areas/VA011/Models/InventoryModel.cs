@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 
@@ -18,6 +19,20 @@ namespace VA011.Models
     public class InventoryModel
     {
         Tuple<String, String, String> aInfo = null;
+
+        // Validates a comma-separated string as a list of ints; drops non-numeric tokens.
+        // Used to neutralize SQL injection on string params that are supposed to carry int CSV.
+        private static string SafeIntCsv(string csv)
+        {
+            if (string.IsNullOrEmpty(csv)) return "";
+            List<int> ints = new List<int>();
+            foreach (string tok in csv.Split(','))
+            {
+                int n;
+                if (int.TryParse(tok.Trim(), out n)) ints.Add(n);
+            }
+            return string.Join(",", ints);
+        }
 
         /// <summary>
         /// Get Product in cart
@@ -93,12 +108,14 @@ namespace VA011.Models
             //JID_0549 added IsCostCenter and IsProfitCenter check 
             StringBuilder sql = new StringBuilder(@"SELECT AD_Org_ID, Name FROM AD_Org WHERE AD_Client_ID = " + ctx.GetAD_Client_ID()
                 + " AND IsActive = 'Y' AND IsSummary='N' AND AD_Org_ID != 0 AND IsCostCenter='N' AND IsProfitCenter ='N' ");
+            SqlParameter[] param = null;
             if (value != "")
             {
-                sql.Append(" AND UPPER(Name) LIKE UPPER('%" + value + "%') ");
+                sql.Append(" AND UPPER(Name) LIKE UPPER(@value) ");
+                param = new SqlParameter[] { new SqlParameter("@value", "%" + value + "%") };
             }
             sql.Append("ORDER BY Name");
-            DataSet ds = DB.ExecuteDataset(MRole.GetDefault(ctx).AddAccessSQL(sql.ToString(), "AD_Org", true, false));
+            DataSet ds = DB.ExecuteDataset(MRole.GetDefault(ctx).AddAccessSQL(sql.ToString(), "AD_Org", true, false), param, null);
             if (ds != null && ds.Tables[0].Rows.Count > 0)
             {
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
@@ -135,12 +152,14 @@ namespace VA011.Models
                             WHERE pl.IsActive   ='Y'
                             AND pv.IsActive     ='Y'
                             AND pv.AD_Client_ID =" + ctx.GetAD_Client_ID());
+            SqlParameter[] param = null;
             if (value != "")
             {
-                sql.Append(" AND UPPER(pv.Name) LIKE UPPER('%" + value + "%') ");
+                sql.Append(" AND UPPER(pv.Name) LIKE UPPER(@value) ");
+                param = new SqlParameter[] { new SqlParameter("@value", "%" + value + "%") };
             }
             sql.Append(" ORDER BY pv.Name");
-            DataSet ds = DB.ExecuteDataset(MRole.GetDefault(ctx).AddAccessSQL(sql.ToString(), "pv", true, false));
+            DataSet ds = DB.ExecuteDataset(MRole.GetDefault(ctx).AddAccessSQL(sql.ToString(), "pv", true, false), param, null);
             if (ds != null && ds.Tables[0].Rows.Count > 0)
             {
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
@@ -194,9 +213,11 @@ namespace VA011.Models
             List<NameIDClass> pInfo = new List<NameIDClass>();
             StringBuilder sql = new StringBuilder(@"SELECT M_Warehouse_ID, Name FROM M_Warehouse WHERE AD_Client_ID = "
                     + ctx.GetAD_Client_ID() + " AND IsActive = 'Y'");
+            SqlParameter[] param = null;
             if (value != "")
             {
-                sql.Append(" AND UPPER(Name) LIKE UPPER('%" + value + "%') ");
+                sql.Append(" AND UPPER(Name) LIKE UPPER(@value) ");
+                param = new SqlParameter[] { new SqlParameter("@value", "%" + value + "%") };
             }
 
             if (orgString.Length > 0)
@@ -205,7 +226,7 @@ namespace VA011.Models
             }
 
             sql.Append(" ORDER BY Name");
-            DataSet ds = DB.ExecuteDataset(MRole.GetDefault(ctx).AddAccessSQL(sql.ToString(), "M_Warehouse", true, false));
+            DataSet ds = DB.ExecuteDataset(MRole.GetDefault(ctx).AddAccessSQL(sql.ToString(), "M_Warehouse", true, false), param, null);
             if (ds != null && ds.Tables[0].Rows.Count > 0)
             {
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
@@ -260,9 +281,11 @@ namespace VA011.Models
             List<NameIDClass> pInfo = new List<NameIDClass>();
             StringBuilder sql = new StringBuilder(@"SELECT M_Warehouse_ID, Name FROM M_Warehouse WHERE AD_Client_ID = "
                 + ctx.GetAD_Client_ID() + " AND IsActive = 'Y'");
+            SqlParameter[] param = null;
             if (value != "")
             {
-                sql.Append(" AND UPPER(Name) LIKE UPPER('%" + value + "%') ");
+                sql.Append(" AND UPPER(Name) LIKE UPPER(@value) ");
+                param = new SqlParameter[] { new SqlParameter("@value", "%" + value + "%") };
             }
 
             if (orgString.Length > 0)
@@ -271,7 +294,7 @@ namespace VA011.Models
             }
 
             sql.Append(" ORDER BY Name");
-            DataSet ds = DB.ExecuteDataset(MRole.GetDefault(ctx).AddAccessSQL(sql.ToString(), "M_Warehouse", true, false));
+            DataSet ds = DB.ExecuteDataset(MRole.GetDefault(ctx).AddAccessSQL(sql.ToString(), "M_Warehouse", true, false), param, null);
             if (ds != null && ds.Tables[0].Rows.Count > 0)
             {
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
@@ -319,9 +342,11 @@ namespace VA011.Models
 
             List<NameIDClass> pInfo = new List<NameIDClass>();
             string sql = @"SELECT M_Warehouse_ID, Name FROM M_Warehouse WHERE AD_Client_ID = " + ctx.GetAD_Client_ID() + " AND IsActive = 'Y'";
+            SqlParameter[] param = null;
             if (value != "")
             {
-                sql += " AND UPPER(Name) LIKE UPPER('%" + value + "%') ";
+                sql += " AND UPPER(Name) LIKE UPPER(@value) ";
+                param = new SqlParameter[] { new SqlParameter("@value", "%" + value + "%") };
             }
 
             if (orgString.Length > 0)
@@ -330,7 +355,7 @@ namespace VA011.Models
             }
 
             sql += " ORDER BY Name";
-            DataSet ds = DB.ExecuteDataset(sql);
+            DataSet ds = DB.ExecuteDataset(sql, param, null);
             if (ds != null && ds.Tables[0].Rows.Count > 0)
             {
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
@@ -356,12 +381,14 @@ namespace VA011.Models
             List<NameIDClass> pInfo = new List<NameIDClass>();
             StringBuilder sql = new StringBuilder(@"SELECT M_Warehouse_ID, Name FROM M_Warehouse WHERE AD_Client_ID = "
                 + ctx.GetAD_Client_ID() + " AND IsActive = 'Y'");
+            SqlParameter[] param = null;
             if (value != "")
             {
-                sql.Append(" AND UPPER(Name) LIKE UPPER('%" + value + "%') ");
+                sql.Append(" AND UPPER(Name) LIKE UPPER(@value) ");
+                param = new SqlParameter[] { new SqlParameter("@value", "%" + value + "%") };
             }
             sql.Append(" ORDER BY Name");
-            DataSet ds = DB.ExecuteDataset(MRole.GetDefault(ctx).AddAccessSQL(sql.ToString(), "M_Warehouse", true, false));
+            DataSet ds = DB.ExecuteDataset(MRole.GetDefault(ctx).AddAccessSQL(sql.ToString(), "M_Warehouse", true, false), param, null);
             if (ds != null && ds.Tables[0].Rows.Count > 0)
             {
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
@@ -395,12 +422,14 @@ namespace VA011.Models
             List<NameIDClass> pInfo = new List<NameIDClass>();
             StringBuilder sql = new StringBuilder(@"SELECT M_Product_Category_ID, Name FROM M_Product_Category WHERE AD_Client_ID = "
                     + ctx.GetAD_Client_ID() + " AND IsActive = 'Y'");
+            SqlParameter[] param = null;
             if (value != "")
             {
-                sql.Append(" AND UPPER(Name) LIKE UPPER('%" + value + "%') ");
+                sql.Append(" AND UPPER(Name) LIKE UPPER(@value) ");
+                param = new SqlParameter[] { new SqlParameter("@value", "%" + value + "%") };
             }
             sql.Append(" ORDER BY Name");
-            DataSet ds = DB.ExecuteDataset(MRole.GetDefault(ctx).AddAccessSQL(sql.ToString(), "M_Product_Category", true, false));
+            DataSet ds = DB.ExecuteDataset(MRole.GetDefault(ctx).AddAccessSQL(sql.ToString(), "M_Product_Category", true, false), param, null);
             if (ds != null && ds.Tables[0].Rows.Count > 0)
             {
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
@@ -462,10 +491,15 @@ namespace VA011.Models
 
             //**********************************//
 
+            string warehouseIdsSafe = SafeIntCsv(warehouse_IDs);
+            string orgIdsSafe = SafeIntCsv(org_IDs);
+            string plvIdsSafe = SafeIntCsv(plv_IDs);
+            string suppIdsSafe = SafeIntCsv(supp_IDs);
+            string prodCatIdsSafe = SafeIntCsv(prodCat_IDs);
             string minLevelSQL = "";
-            if (warehouse_IDs.Length > 0)
+            if (warehouseIdsSafe.Length > 0)
             {
-                minLevelSQL = "(SELECT NVL(SUM(LEVEL_MIN),0) FROM  M_Replenish WHERE M_Product_ID = prd.M_Product_ID AND M_Warehouse_ID IN (" + warehouse_IDs + ")) as MinLevel ";
+                minLevelSQL = "(SELECT NVL(SUM(LEVEL_MIN),0) FROM  M_Replenish WHERE M_Product_ID = prd.M_Product_ID AND M_Warehouse_ID IN (" + warehouseIdsSafe + ")) as MinLevel ";
             }
             else
             {
@@ -512,39 +546,41 @@ namespace VA011.Models
 
             StringBuilder sbGroup = new StringBuilder("GROUP BY M_Product_ID,C_UOM_ID, UOM, Value, Name,UPC");
             StringBuilder sbWhere = new StringBuilder();
-            if (org_IDs.Length > 0)
+            if (orgIdsSafe.Length > 0)
             {
-                sbWhere.Append(" AND w.AD_Org_ID IN (" + org_IDs + ")");
+                sbWhere.Append(" AND w.AD_Org_ID IN (" + orgIdsSafe + ")");
                 //sbGroup.Append(",AD_Org_ID");
             }
 
-            if (warehouse_IDs.Length > 0)
+            if (warehouseIdsSafe.Length > 0)
             {
-                sbWhere.Append(" AND w.M_Warehouse_ID IN (" + warehouse_IDs + ")");
+                sbWhere.Append(" AND w.M_Warehouse_ID IN (" + warehouseIdsSafe + ")");
                 //sbGroup.Append(",M_Warehouse_ID");
             }
 
-            if (plv_IDs.Length > 0)
+            if (plvIdsSafe.Length > 0)
             {
-                sbWhere.Append(" AND pr.M_PriceList_Version_ID IN (" + plv_IDs + ")");
+                sbWhere.Append(" AND pr.M_PriceList_Version_ID IN (" + plvIdsSafe + ")");
                 //sbGroup.Append(",M_PriceList_Version_ID");
             }
 
-            if (supp_IDs.Length > 0)
+            if (suppIdsSafe.Length > 0)
             {
-                sbWhere.Append(" AND pu.C_BPartner_ID IN (" + supp_IDs + ")");
+                sbWhere.Append(" AND pu.C_BPartner_ID IN (" + suppIdsSafe + ")");
                 //sbGroup.Append(",C_BPartner_ID");
             }
 
-            if (prodCat_IDs.Length > 0)
+            if (prodCatIdsSafe.Length > 0)
             {
-                sbWhere.Append(" AND p.M_Product_Category_ID IN (" + prodCat_IDs + ")");
+                sbWhere.Append(" AND p.M_Product_Category_ID IN (" + prodCatIdsSafe + ")");
                 //sbGroup.Append(",M_Product_Category_ID");
             }
+            SqlParameter[] searchParam = null;
             if (searchText.Length > 0)
             {
                 // JID_1296 Should be able search product by using Searchkey and UPC And Name
-                sbWhere.Append(" AND (UPPER(p.Name) LIKE UPPER('%" + searchText + "%') OR UPPER(p.Value) LIKE UPPER('%" + searchText + "%') OR UPPER(p.UPC) LIKE UPPER('%" + searchText + "%'))");
+                sbWhere.Append(" AND (UPPER(p.Name) LIKE UPPER(@searchText) OR UPPER(p.Value) LIKE UPPER(@searchText) OR UPPER(p.UPC) LIKE UPPER(@searchText))");
+                searchParam = new SqlParameter[] { new SqlParameter("@searchText", "%" + searchText + "%") };
             }
 
             sbSql.Append(sbWhere.ToString());
@@ -554,7 +590,7 @@ namespace VA011.Models
             DataSet dsPro = null;
             try
             {
-                dsPro = VIS.DBase.DB.ExecuteDatasetPaging(qry.ToString(), pageNo, pageSize);
+                dsPro = VIS.DBase.DB.ExecuteDatasetPaging(qry.ToString(), searchParam, null, pageNo, pageSize);
                 if (dsPro != null)
                 {
                     if (dsPro.Tables[0].Rows.Count > 0)
@@ -572,14 +608,14 @@ namespace VA011.Models
                             + " ON s.M_Locator_ID=l.M_Locator_ID  INNER JOIN M_Warehouse w ON l.M_Warehouse_ID = w.M_Warehouse_ID WHERE p.AD_Client_ID = " + ct.GetAD_Client_ID() +
                             " AND p.IsActive='Y' AND p.IsSummary ='N' AND p.M_Product_ID = " + Util.GetValueOfInt(dsPro.Tables[0].Rows[i]["M_Product_ID"]));
                             //sbSql.Append(sbWhere.ToString());
-                            if (org_IDs.Length > 0)
+                            if (orgIdsSafe.Length > 0)
                             {
-                                sbSql.Append(" AND w.AD_Org_ID IN (" + org_IDs + ")");
+                                sbSql.Append(" AND w.AD_Org_ID IN (" + orgIdsSafe + ")");
                                 //sbGroup.Append(",AD_Org_ID");
                             }
-                            if (warehouse_IDs.Length > 0)
+                            if (warehouseIdsSafe.Length > 0)
                             {
-                                sbSql.Append(" AND w.M_Warehouse_ID IN (" + warehouse_IDs + ")");
+                                sbSql.Append(" AND w.M_Warehouse_ID IN (" + warehouseIdsSafe + ")");
                                 //sbGroup.Append(",M_Warehouse_ID");
                             }
                             sbSql.Append(") t");
@@ -654,39 +690,47 @@ namespace VA011.Models
 
             StringBuilder sbGroup = new StringBuilder("GROUP BY M_Product_ID,C_UOM_ID, UOM, Value, Name)");
 
-            if (org_IDs.Length > 0)
+            string orgIdsSafe = SafeIntCsv(org_IDs);
+            string warehouseIdsSafe = SafeIntCsv(warehouse_IDs);
+            string plvIdsSafe = SafeIntCsv(plv_IDs);
+            string suppIdsSafe = SafeIntCsv(supp_IDs);
+            string prodCatIdsSafe = SafeIntCsv(prodCat_IDs);
+
+            if (orgIdsSafe.Length > 0)
             {
-                sbSql.Append(" AND w.AD_Org_ID IN (" + org_IDs + ")");
+                sbSql.Append(" AND w.AD_Org_ID IN (" + orgIdsSafe + ")");
                 //sbGroup.Append(",AD_Org_ID");
             }
 
-            if (warehouse_IDs.Length > 0)
+            if (warehouseIdsSafe.Length > 0)
             {
-                sbSql.Append(" AND w.M_Warehouse_ID IN (" + warehouse_IDs + ")");
+                sbSql.Append(" AND w.M_Warehouse_ID IN (" + warehouseIdsSafe + ")");
                 //sbGroup.Append(",M_Warehouse_ID");
             }
 
-            if (plv_IDs.Length > 0)
+            if (plvIdsSafe.Length > 0)
             {
-                sbSql.Append(" AND pr.M_PriceList_Version_ID IN (" + plv_IDs + ")");
+                sbSql.Append(" AND pr.M_PriceList_Version_ID IN (" + plvIdsSafe + ")");
                 //sbGroup.Append(",M_PriceList_Version_ID");
             }
 
-            if (supp_IDs.Length > 0)
+            if (suppIdsSafe.Length > 0)
             {
-                sbSql.Append(" AND pu.C_BPartner_ID IN (" + supp_IDs + ")");
+                sbSql.Append(" AND pu.C_BPartner_ID IN (" + suppIdsSafe + ")");
                 //sbGroup.Append(",C_BPartner_ID");
             }
 
-            if (prodCat_IDs.Length > 0)
+            if (prodCatIdsSafe.Length > 0)
             {
-                sbSql.Append(" AND p.M_Product_Category_ID IN (" + prodCat_IDs + ")");
+                sbSql.Append(" AND p.M_Product_Category_ID IN (" + prodCatIdsSafe + ")");
                 //sbGroup.Append(",C_BPartner_ID");
             }
 
+            SqlParameter[] param = null;
             if (searchText.Length > 0)
             {
-                sbSql.Append(" AND UPPER(p.Name) LIKE UPPER('%" + searchText + "%') ");
+                sbSql.Append(" AND UPPER(p.Name) LIKE UPPER(@searchText) ");
+                param = new SqlParameter[] { new SqlParameter("@searchText", "%" + searchText + "%") };
             }
 
             //sbSql.Append(" ORDER BY p.Value DESC) prd ");
@@ -695,7 +739,7 @@ namespace VA011.Models
                 + " ORDER BY p.Value DESC) prd ";
             try
             {
-                count = Util.GetValueOfInt(DB.ExecuteScalar(qry, null, null));
+                count = Util.GetValueOfInt(DB.ExecuteScalar(qry, param, null));
             }
             catch (Exception ex)
             {
@@ -1208,8 +1252,8 @@ WHERE M_Product_ID = " + M_Product_ID;
                     upc = Util.GetValueOfString(columnName[i].UPC);
                 }
                 qry = "SELECT VAICNT_InventoryCountLine_ID FROM VAICNT_InventoryCountLine WHERE M_Product_ID = " + columnName[i].product_ID + " AND VAICNT_InventoryCount_ID=" + count_id +
-                    " AND NVL(C_UOM_ID,0) = " + columnName[i].C_Uom_ID + " AND NVL(M_AttributeSetInstance_ID,0) = " + columnName[i].attribute_ID + " AND nvl(UPC,' ') ='" + upc + "'";
-                lineID = Util.GetValueOfInt(DB.ExecuteScalar(qry, null, null));
+                    " AND NVL(C_UOM_ID,0) = " + columnName[i].C_Uom_ID + " AND NVL(M_AttributeSetInstance_ID,0) = " + columnName[i].attribute_ID + " AND nvl(UPC,' ') = @UPC";
+                lineID = Util.GetValueOfInt(DB.ExecuteScalar(qry, new SqlParameter[] { new SqlParameter("@UPC", upc) }, null));
                 MVAICNTInventoryCountLine iline = new MVAICNTInventoryCountLine(ctx, lineID, null);
                 pro = new MProduct(ctx, columnName[i].product_ID, null);
                 if (lineID > 0)
@@ -2312,13 +2356,15 @@ WHERE M_Product_ID = " + M_Product_ID;
             List<NameIDClass> pInfo = new List<NameIDClass>();
             StringBuilder sql = new StringBuilder(@"SELECT C_BPartner_ID, Name FROM C_BPartner WHERE AD_Client_ID = "
                     + ctx.GetAD_Client_ID() + " AND IsActive = 'Y' AND IsVendor = 'Y'");
+            SqlParameter[] param = null;
             if (value != "")
             {
-                sql.Append(" AND UPPER(Name) LIKE UPPER('%" + value + "%') ");
+                sql.Append(" AND UPPER(Name) LIKE UPPER(@value) ");
+                param = new SqlParameter[] { new SqlParameter("@value", "%" + value + "%") };
             }
             sql.Append(" ORDER BY Name");
 
-            DataSet ds = DB.ExecuteDataset(MRole.GetDefault(ctx).AddAccessSQL(sql.ToString(), "C_BPartner", true, false));
+            DataSet ds = DB.ExecuteDataset(MRole.GetDefault(ctx).AddAccessSQL(sql.ToString(), "C_BPartner", true, false), param, null);
             if (ds != null && ds.Tables[0].Rows.Count > 0)
             {
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
@@ -2780,6 +2826,7 @@ WHERE M_Product_ID = " + M_Product_ID;
         public List<Variant> LoadVariantGrid(Ctx ctx, int M_Product_ID, List<int> selWh, string orgString)
         {
             List<Variant> objVariant = new List<Variant>();
+            string orgStringSafe = SafeIntCsv(orgString);
             StringBuilder sqlVar = new StringBuilder("");
             StringBuilder sql = new StringBuilder("");
             sqlVar.Append(@"SELECT Name, M_Product_ID, UOM, Lot, SerNo, GuaranteeDate, SUM(QtyOnHand) AS QtyOnHand, M_AttributeSetInstance_ID, Description FROM ( ");
@@ -2804,8 +2851,8 @@ WHERE M_Product_ID = " + M_Product_ID;
                             + " INNER JOIN M_Product p ON (p.M_Product_ID = s.M_Product_ID) INNER JOIN C_UOM u ON (p.C_UOM_ID = u.C_UOM_ID) WHERE w.M_Warehouse_ID = " + selWh[w] + " AND s.M_Product_ID = " + M_Product_ID);
                         // + " AND bomQtyOnHandAttr(p.M_Product_ID, s.M_AttributeSetInstance_ID ,w.M_Warehouse_ID,0) > 0";
                     }
-                    if (orgString.Length > 0)
-                        sqlVar.Append(" AND w.AD_Org_ID IN (" + orgString + ")");
+                    if (orgStringSafe.Length > 0)
+                        sqlVar.Append(" AND w.AD_Org_ID IN (" + orgStringSafe + ")");
                     sqlVar.Append(" ) t GROUP BY Name,  M_Product_ID,  UOM,  lot,  serno,  M_AttributeSetInstance_ID,  guaranteedate,  Description");
                 }
             }
@@ -2816,8 +2863,8 @@ WHERE M_Product_ID = " + M_Product_ID;
                     + " INNER JOIN M_LOcator l ON (l.M_Locator_ID = s.M_Locator_ID) INNER JOIN M_Warehouse w ON (w.M_Warehouse_ID = l.M_Warehouse_ID) "
                     + " INNER JOIN M_Product p ON (p.M_Product_ID = s.M_Product_ID) INNER JOIN C_UOM u ON (p.C_UOM_ID = u.C_UOM_ID) WHERE s.M_Product_ID = " + M_Product_ID);
 
-                if (orgString.Length > 0)
-                    sqlVar.Append(sql.ToString() + " AND w.AD_Org_ID IN (" + orgString + ")");
+                if (orgStringSafe.Length > 0)
+                    sqlVar.Append(sql.ToString() + " AND w.AD_Org_ID IN (" + orgStringSafe + ")");
                 else
                     sqlVar.Append(MRole.GetDefault(ctx).AddAccessSQL(sql.ToString(), "s", true, false));
                 sqlVar.Append(") t GROUP BY Name, M_Product_ID, UOM, Lot, SerNo, M_AttributeSetInstance_ID, GuaranteeDate, Description");
@@ -2880,8 +2927,9 @@ WHERE M_Product_ID = " + M_Product_ID;
 
             //var groupBySec = "";
 
-            if (orgString.Length > 0)
-                selQuery += " AND w.AD_Org_ID IN (" + orgString + ")";
+            string orgStringSafe = SafeIntCsv(orgString);
+            if (orgStringSafe.Length > 0)
+                selQuery += " AND w.AD_Org_ID IN (" + orgStringSafe + ")";
 
             if (selWh != null && selWh.Count > 0)
             {
@@ -2937,6 +2985,7 @@ WHERE M_Product_ID = " + M_Product_ID;
         public List<Transaction> LoadDemandGrid(Ctx ctx, int M_Product_ID, List<int> selWh, string orgString)
         {
             List<Transaction> objTran = new List<Transaction>();
+            orgString = SafeIntCsv(orgString);
             StringBuilder sqlDmd = new StringBuilder("");
             StringBuilder sql = new StringBuilder("SELECT * FROM (");
 
@@ -3069,7 +3118,7 @@ WHERE M_Product_ID = " + M_Product_ID;
                     + " rep.M_WarehouseSource_ID AS SourceWarehouse, p.M_Product_ID FROM M_Product p LEFT JOIN M_Replenish rep ON (p.M_Product_ID = rep.M_Product_ID) LEFT JOIN M_Warehouse w "
                     + " ON (w.M_Warehouse_ID = rep.M_Warehouse_ID) LEFT JOIN M_Warehouse w1 ON (w1.M_Warehouse_ID = rep.M_WarehouseSource_ID) WHERE w.M_Warehouse_ID = " + M_Warehouse_ID + " AND p.IsActive = 'Y' AND p.AD_Client_ID = " + ctx.GetAD_Client_ID());
             }
-            sqlRep.Append(" AND p.M_Product_ID IN (" + sqlWhere + "");
+            sqlRep.Append(" AND p.M_Product_ID IN (" + SafeIntCsv(sqlWhere) + ")");
 
             DataSet ds = DB.ExecuteDataset(sqlRep.ToString());
             if (ds != null && ds.Tables[0].Rows.Count > 0)
@@ -3167,8 +3216,8 @@ WHERE M_Product_ID = " + M_Product_ID;
         /// <returns>window</returns>
         public int LoadWindow(string windowName)
         {
-            string sql = "SELECT ad_window_id FROM ad_window WHERE name = '" + windowName + "'";
-            int rule = Util.GetValueOfInt(DB.ExecuteScalar(sql, null, null));
+            string sql = "SELECT ad_window_id FROM ad_window WHERE name = @windowName";
+            int rule = Util.GetValueOfInt(DB.ExecuteScalar(sql, new SqlParameter[] { new SqlParameter("@windowName", windowName) }, null));
             return rule;
         }
 

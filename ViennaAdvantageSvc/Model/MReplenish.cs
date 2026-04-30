@@ -25,7 +25,7 @@ namespace ViennaAdvantage.Model
         {
             MReplenish retValue = null;
             String sql = "SELECT * FROM M_Replenish "
-                + "WHERE M_Warehouse_ID=" + M_Warehouse_ID + " AND M_Product_ID=" + M_Product_ID + " AND ";
+                + "WHERE M_Warehouse_ID=" + M_Warehouse_ID + " AND M_Product_ID=" + M_Product_ID;
             DataTable dt = null;
             IDataReader idr = null;
             try
