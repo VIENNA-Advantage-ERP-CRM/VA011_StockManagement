@@ -21,14 +21,14 @@ deleteFilesByPattern(path.resolve(__dirname, 'Areas/VA011/Scripts/dist'), /^VA01
 deleteFilesByPattern(path.resolve(__dirname, 'Areas/VA011/Contents'), /^VA011\.all\.min(\.\d+\.\d+\.\d+\.\d+)?\.css$/);
 
 const versions = {
-    'VA011.all': '1.0.0.0',   // JS version
+    'VA011.all': '2.1.1.0',   // JS version
     'VA011React': '1.0.0.0',  // React version
-    'VA011': '1.0.0.0'        // CSS version
+    'VA011': '2.1.1.0'        // CSS version
 };
 
 module.exports = {
-    mode: 'development',
-    //mode: 'production',
+    //mode: 'development',
+    mode: 'production',
     devtool: false,
     entry: {
         'VA011.all': './Areas/VA011/Scripts/src/VA011js.js',
