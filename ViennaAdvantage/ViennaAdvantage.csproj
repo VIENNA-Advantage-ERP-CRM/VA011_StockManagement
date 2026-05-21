@@ -185,6 +185,13 @@
     <Content Include="Areas\VA011\Scripts\jquery-barcode.js" />
     <Content Include="Areas\VA011\Scripts\model\callouts.js" />
     <Content Include="Areas\VA011\Scripts\VA011min.js" />
+    <Content Include="Areas\VA011\Scripts\src\VA011js.js" />
+    <Content Include="Areas\VA011\Scripts\src\VA011reactjs.js" />
+    <Content Include="Areas\VA011\Scripts\react\index.jsx" />
+    <Content Include="Areas\VA011\Contents\src\VA011css.css" />
+    <Content Include="webpack.config.js" />
+    <Content Include="babel.config.json" />
+    <Content Include="package.json" />
     <Content Include="Areas\VA011\Views\Inventory\Index.cshtml" />
     <Content Include="Areas\VA011\Scripts\apps\forms\inventory.js" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -251,7 +258,9 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
-    <PostBuildEvent>xcopy /E /Y /I  "$(ProjectDir)Areas\*" "$(SolutionDir)\ViennaAdvantageWeb\Areas"</PostBuildEvent>
+    <PreBuildEvent>npm run build</PreBuildEvent>
+    <PostBuildEvent>rmdir /s /q "$(SolutionDir)\ViennaAdvantageWeb\Areas\$(TargetName)"
+xcopy /E /Y /I  "$(ProjectDir)Areas\*" "$(SolutionDir)\ViennaAdvantageWeb\Areas"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
