@@ -325,16 +325,19 @@ namespace VA011.Models
                 + " ReplenishType, M_AttributeSetInstance_ID, Level_Min, Level_Max, QtyOnHand,QtyReserved,QtyOrdered,"
                 + " C_BPartner_ID, Order_Min, Order_Pack, QtyToOrder, ReplenishmentCreate , Serial_No) "
                 + "SELECT " + pins.GetAD_PInstance_ID()
-                    + ", r.M_Warehouse_ID,'" + _DocStatus + "', r.M_Product_ID, r.AD_Client_ID, r.AD_Org_ID,"
+                    + ", r.M_Warehouse_ID,@DocStatus, r.M_Product_ID, r.AD_Client_ID, r.AD_Org_ID,"
                 + " r.ReplenishType, r.M_AttributeSetInstance_ID, r.Level_Min, r.Level_Max, 0,0,0,"
                 + " po.C_BPartner_ID, po.Order_Min, CASE WHEN NVL(po.Order_Pack, 0) > 0 THEN po.Order_Pack ELSE NVL(r.DTD001_OrderPackQty, 0) END AS Order_Pack, 0, ";
+                List<SqlParameter> paramList = new List<SqlParameter>();
+                paramList.Add(new SqlParameter("@DocStatus", _DocStatus));
                 if (_ReplenishmentCreate == null)
                 {
                     sql += "null";
                 }
                 else
                 {
-                    sql += "'" + _ReplenishmentCreate + "'";
+                    sql += "@ReplenishmentCreate";
+                    paramList.Add(new SqlParameter("@ReplenishmentCreate", _ReplenishmentCreate));
                 }
                 sql += " , NVL(r.DTD001_MinOrderQty,0)";
                 sql += " FROM M_Replenish r"
@@ -347,7 +350,7 @@ namespace VA011.Models
                 {
                     sql += " AND po.C_BPartner_ID=" + _C_BPartner_ID;
                 }
-                no = DB.ExecuteQuery(sql, null, null);
+                no = DB.ExecuteQuery(sql, paramList.ToArray(), null);
                 // no = DB.ExecuteQuery(sql, null, null);
                 //log.Finest(sql);
                 //log.Fine("Insert (1) #" + no);
@@ -359,18 +362,21 @@ namespace VA011.Models
                         + " ReplenishType, Level_Min, Level_Max,"
                         + " C_BPartner_ID, Order_Min, Order_Pack, QtyToOrder, ReplenishmentCreate) "
                         + "SELECT " + pins.GetAD_PInstance_ID()
-                        + ", r.M_Warehouse_ID,'" + _DocStatus + "', r.M_Product_ID, r.AD_Client_ID, r.AD_Org_ID,"
+                        + ", r.M_Warehouse_ID,@DocStatus, r.M_Product_ID, r.AD_Client_ID, r.AD_Org_ID,"
                         + " r.ReplenishType, r.Level_Min, r.Level_Max,"
                         //jz + " null, 1, 1, 0, ";
                         + DB.NULL("I", Types.VARCHAR)
                         + " , 1, 1, 0, ";
+                    List<SqlParameter> paramList2 = new List<SqlParameter>();
+                    paramList2.Add(new SqlParameter("@DocStatus", _DocStatus));
                     if (_ReplenishmentCreate == null)
                     {
                         sql += "null";
                     }
                     else
                     {
-                        sql += "'" + _ReplenishmentCreate + "'";
+                        sql += "@ReplenishmentCreate";
+                        paramList2.Add(new SqlParameter("@ReplenishmentCreate", _ReplenishmentCreate));
                     }
                     sql += " FROM M_Replenish r "
                         + "WHERE r.ReplenishType<>'0' AND r.IsActive='Y'"
@@ -379,7 +385,7 @@ namespace VA011.Models
                             + "WHERE r.M_Product_ID=t.M_Product_ID"
                             + " AND AD_PInstance_ID=" + pins.GetAD_PInstance_ID() + ")";
 
-                    no = DB.ExecuteQuery(sql, null, null);
+                    no = DB.ExecuteQuery(sql, paramList2.ToArray(), null);
                     // no = DB.ExecuteQuery(sql, null, null);
                     //log.Fine("Insert (BP) #" + no);
                 }
@@ -394,16 +400,19 @@ namespace VA011.Models
                 + " ReplenishType, M_AttributeSetInstance_ID,Level_Min, Level_Max, QtyOnHand,QtyReserved,QtyOrdered,"
                 + " C_BPartner_ID, Order_Min, Order_Pack, QtyToOrder, ReplenishmentCreate) "
                 + "SELECT " + pins.GetAD_PInstance_ID()
-                    + ", r.M_Warehouse_ID,'" + _DocStatus + "', r.M_Product_ID, r.AD_Client_ID, r.AD_Org_ID,"
+                    + ", r.M_Warehouse_ID,@DocStatus, r.M_Product_ID, r.AD_Client_ID, r.AD_Org_ID,"
                 + " r.ReplenishType, r.M_AttributeSetInstance_ID, r.Level_Min, r.Level_Max, 0,0,0,"
                 + " po.C_BPartner_ID, po.Order_Min, CASE WHEN NVL(po.Order_Pack, 0) > 0 THEN po.Order_Pack ELSE NVL(r.DTD001_OrderPackQty, 0) END AS Order_Pack, 0,";
+                List<SqlParameter> paramListMMM = new List<SqlParameter>();
+                paramListMMM.Add(new SqlParameter("@DocStatus", _DocStatus));
                 if (_ReplenishmentCreate == null)
                 {
                     sql += "null";
                 }
                 else
                 {
-                    sql += "'" + _ReplenishmentCreate + "'";
+                    sql += "@ReplenishmentCreate";
+                    paramListMMM.Add(new SqlParameter("@ReplenishmentCreate", _ReplenishmentCreate));
                 }
                 sql += " FROM M_Replenish r"
                     + " INNER JOIN M_Product_PO po ON (r.M_Product_ID=po.M_Product_ID) "
@@ -415,7 +424,7 @@ namespace VA011.Models
                 {
                     sql += " AND po.C_BPartner_ID=" + _C_BPartner_ID;
                 }
-                no = DB.ExecuteQuery(sql, null, null);
+                no = DB.ExecuteQuery(sql, paramListMMM.ToArray(), null);
                 // no = DB.ExecuteQuery(sql, null, null);
                 // log.Finest(sql);
                 //log.Fine("Insert (1) #" + no);
@@ -427,18 +436,21 @@ namespace VA011.Models
                         + " ReplenishType, M_AttributeSetInstance_ID, Level_Min, Level_Max,"
                         + " C_BPartner_ID, Order_Min, Order_Pack, QtyToOrder, ReplenishmentCreate) "
                         + "SELECT " + pins.GetAD_PInstance_ID()
-                        + ", r.M_Warehouse_ID,'" + _DocStatus + "', r.M_Product_ID, r.AD_Client_ID, r.AD_Org_ID,"
+                        + ", r.M_Warehouse_ID,@DocStatus, r.M_Product_ID, r.AD_Client_ID, r.AD_Org_ID,"
                         + " r.ReplenishType,r.M_AttributeSetInstance_ID, r.Level_Min, r.Level_Max,"
                         //jz + " null, 1, 1, 0, ";
                         + DB.NULL("I", Types.VARCHAR)
                         + " , 1, 1, 0, ";
+                    List<SqlParameter> paramListMMM2 = new List<SqlParameter>();
+                    paramListMMM2.Add(new SqlParameter("@DocStatus", _DocStatus));
                     if (_ReplenishmentCreate == null)
                     {
                         sql += "null";
                     }
                     else
                     {
-                        sql += "'" + _ReplenishmentCreate + "'";
+                        sql += "@ReplenishmentCreate";
+                        paramListMMM2.Add(new SqlParameter("@ReplenishmentCreate", _ReplenishmentCreate));
                     }
                     sql += " FROM M_Replenish r "
                         + "WHERE r.ReplenishType<>'0' AND r.IsActive='Y'"
@@ -447,7 +459,7 @@ namespace VA011.Models
                             + "WHERE r.M_Product_ID=t.M_Product_ID"
                             + " AND AD_PInstance_ID=" + pins.GetAD_PInstance_ID() + ")";
 
-                    no = DB.ExecuteQuery(sql, null, null);
+                    no = DB.ExecuteQuery(sql, paramListMMM2.ToArray(), null);
                     // no = DB.ExecuteQuery(sql, null, null);
                     //log.Fine("Insert (BP) #" + no);
                 }
@@ -462,16 +474,19 @@ namespace VA011.Models
                 + " ReplenishType,M_AttributeSetInstance_ID, Level_Min, Level_Max, QtyOnHand,QtyReserved,QtyOrdered,"
                 + " C_BPartner_ID, Order_Min, Order_Pack, QtyToOrder, ReplenishmentCreate) "
                 + "SELECT " + pins.GetAD_PInstance_ID()
-                    + ", r.M_Warehouse_ID,'" + _DocStatus + "', r.M_Product_ID, r.AD_Client_ID, r.AD_Org_ID,"
+                    + ", r.M_Warehouse_ID,@DocStatus, r.M_Product_ID, r.AD_Client_ID, r.AD_Org_ID,"
                 + " r.ReplenishType,r.M_AttributeSetInstance_ID, r.Level_Min, r.Level_Max, 0,0,0,"
                 + " po.C_BPartner_ID,NVL(r.DTD001_MinOrderQty,0), NVL(r.DTD001_OrderPackQty,0), 0, ";
+                List<SqlParameter> paramListPOR = new List<SqlParameter>();
+                paramListPOR.Add(new SqlParameter("@DocStatus", _DocStatus));
                 if (_ReplenishmentCreate == null)
                 {
                     sql += "null";
                 }
                 else
                 {
-                    sql += "'" + _ReplenishmentCreate + "'";
+                    sql += "@ReplenishmentCreate";
+                    paramListPOR.Add(new SqlParameter("@ReplenishmentCreate", _ReplenishmentCreate));
                 }
                 sql += " FROM M_Replenish r"
                     + " INNER JOIN M_Product_PO po ON (r.M_Product_ID=po.M_Product_ID) "
@@ -485,12 +500,13 @@ namespace VA011.Models
                 {
                     sql += " AND po.C_BPartner_ID=" + _C_BPartner_ID;
                 }
-                no = DB.ExecuteQuery(sql, null, null);
+                SqlParameter[] paramArrPOR = paramListPOR.ToArray();
+                no = DB.ExecuteQuery(sql, paramArrPOR, null);
                 //  no = DB.ExecuteQuery(sql, null, null);
                 //log.Finest(sql);
                 // //log.Fine("Insert (1) #" + no);
 
-                ds = DB.ExecuteDataset(sql, null, null);
+                ds = DB.ExecuteDataset(sql, paramArrPOR, null);
 
                 if (_C_BPartner_ID == 0 || _C_BPartner_ID == -1)
                 {
@@ -499,18 +515,21 @@ namespace VA011.Models
                         + " ReplenishType, M_AttributeSetInstance_ID, Level_Min, Level_Max,"
                         + " C_BPartner_ID, Order_Min, Order_Pack, QtyToOrder, ReplenishmentCreate) "
                         + "SELECT " + pins.GetAD_PInstance_ID()
-                        + ", r.M_Warehouse_ID,'" + _DocStatus + "', r.M_Product_ID, r.AD_Client_ID, r.AD_Org_ID,"
+                        + ", r.M_Warehouse_ID,@DocStatus, r.M_Product_ID, r.AD_Client_ID, r.AD_Org_ID,"
                         + " r.ReplenishType, r.M_AttributeSetInstance_ID, r.Level_Min, r.Level_Max,"
                         //jz + " null, 1, 1, 0, ";
                         + DB.NULL("I", Types.VARCHAR)
                         + " , NVL(r.DTD001_MinOrderQty,0), NVL(r.DTD001_OrderPackQty,0), 0, ";
+                    List<SqlParameter> paramListPOR2 = new List<SqlParameter>();
+                    paramListPOR2.Add(new SqlParameter("@DocStatus", _DocStatus));
                     if (_ReplenishmentCreate == null)
                     {
                         sql += "null";
                     }
                     else
                     {
-                        sql += "'" + _ReplenishmentCreate + "'";
+                        sql += "@ReplenishmentCreate";
+                        paramListPOR2.Add(new SqlParameter("@ReplenishmentCreate", _ReplenishmentCreate));
                     }
                     sql += " FROM M_Replenish r "
                         + "WHERE r.ReplenishType<>'0' AND r.IsActive='Y'  AND  ( r.Level_Min<> 0 OR r.Level_Max <> 0 )  "
@@ -519,7 +538,7 @@ namespace VA011.Models
                             + "WHERE r.M_Product_ID=t.M_Product_ID"
                             + " AND AD_PInstance_ID=" + pins.GetAD_PInstance_ID() + ")";
 
-                    no = DB.ExecuteQuery(sql, null, null);
+                    no = DB.ExecuteQuery(sql, paramListPOR2.ToArray(), null);
                     //  no = DB.ExecuteQuery(sql, null, null);
                     ////log.Fine("Insert (BP) #" + no);
                 }

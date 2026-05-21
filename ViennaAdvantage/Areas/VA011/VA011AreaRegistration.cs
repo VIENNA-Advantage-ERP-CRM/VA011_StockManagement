@@ -29,39 +29,28 @@ namespace VA011 //  Please replace namespace with prefix of your module..
             ScriptBundle script = new ScriptBundle("~/Areas/VA011/Scripts/VA011minall.js");
 
 
-            style.Include("~/Areas/VA011/Contents/VA011_Inventory.css");
-            style.Include("~/Areas/VA011/Contents/VA011_style.css");
-            script.Include("~/Areas/VA011/Scripts/apps/forms/inventory.js",
-                       "~/Areas/VA011/Scripts/jquery-barcode.js");
+            //style.Include("~/Areas/VA011/Contents/VA011_Inventory.css");
+            //style.Include("~/Areas/VA011/Contents/VA011_style.css");
+            //script.Include("~/Areas/VA011/Scripts/apps/forms/inventory.js",
+            //           "~/Areas/VA011/Scripts/jquery-barcode.js");
 
+            script.Include("~/Areas/VA011/Scripts/dist/VA011.all.min.js");
+            script.Include("~/Areas/VA011/Scripts/dist/VA011React.min.js");
+            style.Include("~/Areas/VA011/Contents/VA011.all.min.css");
 
-            //style.Include("~/Areas/VA011/Contents/VA011minstyle.css");
-            //script.Include("~/Areas/VA011/Scripts/VA011min.js");
-
-            /*-------------------------------------------------------
-                    Here include all js files in style bundle......see example below....
-             --------------------------------------------------------*/
-
-
-            //script.Include("~/Areas/ViennaAdvantage/Scripts/example1.js",
-            //               "~/Areas/ViennaAdvantage/Scripts/example2.js");
-
-
-
-
-            /*-------------------------------------------------------
-              Please replace "ViennaAdvantage" with prefix of your module..
-             * 
-             * 1. first parameter is script/style bundle...
-             * 
-             * 2. Second parameter is module prefix...
-             * 
-             * 3. Third parameter is order of loading... (dafault is 10 )
-             * 
-             --------------------------------------------------------*/
+            script.Transforms.Clear();
+            script.Transforms.Add(new NoTransform());
 
             VAdvantage.ModuleBundles.RegisterScriptBundle(script, "VA011", 10);
             VAdvantage.ModuleBundles.RegisterStyleBundle(style, "VA011", 10);
+        }
+    }
+
+    public sealed class NoTransform : IBundleTransform
+    {
+        public void Process(BundleContext context, BundleResponse response)
+        {
+            // Do nothing: keep content as-is (no minify, no parse)
         }
     }
 }
