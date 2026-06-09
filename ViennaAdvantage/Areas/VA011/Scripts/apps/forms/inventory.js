@@ -285,7 +285,7 @@
                 btnZoomProduct.on("click touchstart", function (e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    zoomToWindow(_product_ID, "Product");
+                    zoomToWindow(_product_ID, "VAS_ProductMaster");
                 });
 
                 calculateReplenishLI = $("#VA011_calculateReplenishLI" + $self.windowNo);
@@ -6821,15 +6821,15 @@
                 // dr.dispose();
                 if (ad_window_Id > 0) {
                     var zoomQuery = new VIS.Query();
-                    if (windowName == "Product")
+                    if (windowName == "VAS_ProductMaster")
                         zoomQuery.addRestriction("M_Product_ID", VIS.Query.prototype.EQUAL, record_id);
-                    else if (windowName == "Attribute Set")
+                    else if (windowName == "VAS_AttributeGroup")
                         zoomQuery.addRestriction("M_AttributeSet_ID", VIS.Query.prototype.EQUAL, record_id);
-                    else if (windowName == "Product Category")
+                    else if (windowName == "VAS_ProductCategory")
                         zoomQuery.addRestriction("M_Product_Category_ID", VIS.Query.prototype.EQUAL, record_id);
-                    else if (windowName == "Tax Category")
+                    else if (windowName == "VAS_TaxCategory")
                         zoomQuery.addRestriction("C_TaxCategory_ID", VIS.Query.prototype.EQUAL, record_id);
-                    else if (windowName == "Unit of Measure")
+                    else if (windowName == "VAS_UnitofMeasure")
                         zoomQuery.addRestriction("C_Uom_ID", VIS.Query.prototype.EQUAL, record_id);
                     else if (windowName == "VAICNT_InventoryCount")
                         zoomQuery.addRestriction("VAICNT_InventoryCount_ID", VIS.Query.prototype.EQUAL, record_id);
